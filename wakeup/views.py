@@ -12,6 +12,23 @@ def home(request):
 def serveConference(request, confname):
     return HttpResponse(getXML(confname), mimetype="application/xml")
 
+def setAlarm(request):
+    if request.method == 'POST':
+        form = AlarmForm(request.POST)
+        if form.is_valid():
+            alarm = form.cleaned_data['alarm']
+
+    else:
+        form = AlarmForm()
+
+    return render(request, 'genericform.html', {
+        'form': form,
+        'name': 'Set Up Alarm'
+    })
+
+class AlarmForm(forms.Form):
+    time = forms.TimeField()
+
 def notFound(request):
     return render(request, '404.html')
 

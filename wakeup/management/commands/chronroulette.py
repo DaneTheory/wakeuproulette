@@ -14,7 +14,7 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         now = datetime.now()
-        rounded = now.minute - (now.minute % 15)  # +2 to avoid errors due to chron executed milliseconds before
+        rounded = now.minute - (now.minute % 30)  # +2 to avoid errors due to chron executed milliseconds before
         schedule = timedelta(hours=now.hour, minutes=rounded)
 
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
@@ -28,7 +28,6 @@ class Command(NoArgsCommand):
         lazy2 = None
 
         for person in towakeup:
-
             if not lazy1:
                 lazy1 = person
                 continue

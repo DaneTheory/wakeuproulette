@@ -60,9 +60,11 @@
         <div id="vactrack-slogan">Making Alarm Clocks Enjoyable.</div>
 
         {% if user.is_authenticated %}
-            <div style="width: 320px;" id="vactrack-buttons">
-                <a style="width: 130px" href="/createcase">Create Case</a>
-                <a style="width: 130px" href="#">My Cases</a>
+            <div id="vactrack-buttons">
+                <a style="width: 130px" href="/alarm">Set Up Alarm</a>
+                <div id="alarm-setup">
+                    Set Up Alarm
+                </div>
             </div>
         {% else %}
             <div id="vactrack-buttons">

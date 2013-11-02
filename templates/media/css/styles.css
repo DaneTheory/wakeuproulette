@@ -18,7 +18,19 @@
 
 #vactrack-buttons {
     margin: auto auto;
-    width: 250px;
+    width: 190px;
+}
+
+#alarm-setup {
+    display: none;
+    height: 100px;
+    width: 300px;
+    background: white;
+    border-radius: 15px;
+}
+
+a:target {
+    display: block;
 }
 
 #vactrack-buttons a {
@@ -41,6 +53,10 @@
     -moz-transition: background 0.5s linear;
     -o-transition: background 0.5s linear;
     transition: background 0.5s linear;
+}
+
+#id_time {
+
 }
 
 #vactrack-buttons a:hover {
@@ -385,6 +401,7 @@ article h1 {
 .errorlist {
     color: red;
 }
+
 #content-wrapper {
     background-color: white;
     border: none;
@@ -412,6 +429,14 @@ article h1 {
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
+}
+#base-body .white-box {
+    margin-top: 100px;
+    padding: 10px 30px 10px 30px;
+    line-height: 1em;
+}
+#base-body .white-box .mugshot {
+    float: right;
 }
 #content-wrapper form p {
     position: relative;
