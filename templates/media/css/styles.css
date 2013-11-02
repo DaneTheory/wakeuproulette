@@ -1,0 +1,451 @@
+@font-face {
+    font-family: Franchise;
+    src: url('fonts/Franchise-Bold.ttf')
+}
+
+@font-face {
+    font-family: Geosans;
+    src: url('fonts/GeosansLight.ttf')
+}
+
+@font-face {
+    font-family: NexaBold;
+    src: url(fonts/NexaBold.otf); }
+
+@font-face {
+    font-family: Ostrich;
+    src: url(fonts/Ostrich.otf); }
+
+#vactrack-buttons {
+    margin: auto auto;
+    width: 250px;
+}
+
+#vactrack-buttons a {
+    float: left;
+    margin-left: 20px;
+    width: 90px;
+    padding: 10px 5px;
+    font-family: 'Ostrich';
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    text-align:center;
+    background: rgba(0, 0, 0, 0.55);
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+}
+
+#vactrack-buttons a:hover {
+    background: url(../images/button-bg.jpg) no-repeat center top;
+    background: rgba(255, 255, 255, 1);
+    color: #000000;
+}
+
+#sitenav {
+    position: fixed;
+    font-family: 'Ostrich';
+    width: 100%;
+    top: 0px;
+    float: right;
+    left: 0px;
+    text-align: center;
+    display: block;
+    background: rgba(0, 0, 0, .5);
+    z-index: 100;
+
+    -webkit-transition: background 0.2s linear;
+    -moz-transition: background 0.2s linear;
+    -o-transition: background 0.2s linear;
+    transition: background 0.2s linear;
+}
+
+#sitenav.navsolid {
+    background: rgba(0, 0, 0, 1);
+}
+
+#main-nav.mainsolid a {
+    font-size: 1.3em;
+}
+
+#main-nav {
+    display: block;
+    list-style: none;
+    margin: 0;
+    margin: auto auto;
+    font-size: 1.6em;
+    width: 500px;
+}
+#main-nav a {
+    display: inline-block;
+    padding: 10px 15px;
+    color: white;
+
+    -webkit-transition: font-size 0.2s linear;
+    -moz-transition: font-size 0.2s linear;
+    -o-transition: font-size 0.2s linear;
+    transition: font-size 0.2s linear;
+}
+
+#main-nav a:hover {
+    padding: 5px 13px;
+    border: 2px solid;
+}
+
+#nav-logged {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 1.9em;
+}
+
+#nav-logged a:hover {
+    color: white;
+}
+
+#nav-logged b {
+    padding: 0px 20px;
+}
+
+#nav-buttons {
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    margin: auto auto;
+    padding: 0px;
+    list-style-type: none;
+    width: 260px;
+}
+
+
+#nav-buttons a {
+    float: left;
+    margin-left: 10px;
+    display: block;
+    width: 100px;
+    padding: 5px 5px;
+    font-family:Arial, sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    text-align:center;
+    background: transparent;
+    border: 1px solid;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+}
+
+#nav-buttons a:hover {
+    background: rgba(255, 255, 255, .8);
+    font-size: 1.2em;
+    color: black;
+}
+
+
+
+#home-body {
+    padding-top: 737px;
+    color: black;
+}
+
+#home {
+    height: 700px;
+    width: 100%;
+    position: fixed;
+    z-index: 0;
+    padding-top: 37px;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    z-index: 0;
+    background-size: cover;
+    background-position: bottom
+;
+}
+
+#vactrack-logo {
+    font-family: "Geosans";
+    text-align: center;
+    margin-top: 100px;
+    font-size: 10em;
+    color: white;
+}
+#vactrack-slogan {
+    font-family: 'Ostrich';
+    text-align: center;
+    padding: 0px 0px 20px 0px;
+    font-size: 1.6em;
+    color: white;
+}
+
+
+.organizer {
+    float: left;
+    width: 33.33333%;
+    display: block;
+    margin: 30px 0;
+    text-align: center; }
+.organizer img {
+    width: 250px;
+    height: 250px;
+    border-radius: 250px;
+    position: relative; }
+.organizer h2 {
+    margin-top: 15px;
+    margin-bottom: 0;
+    margin-right: 0; }
+.organizer ul {
+    display: block;
+    margin: 20px 0px;
+    padding: 0px 5%;
+    list-style: none; }
+.organizer li {
+    color: #4d4d4d;
+    padding: 10px 0px;
+    text-align: justify; }
+
+
+.share {
+    position: absolute;
+    top: 10px;
+    left: 5px; }
+
+a.twitter {
+    background-color: #f8f8f8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#d9d9d9));
+    background-image: -moz-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -o-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: linear-gradient(top, #f8f8f8, #d9d9d9);
+    border: 1px solid #bbbbbb;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    color: #333333;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    line-height: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    padding: 2px 6px 2px 6px;
+    text-decoration: none;
+    text-shadow: rgba(255, 255, 255, 0.49609) 0px 1px 0px;
+    vertical-align: top; }
+a.twitter:before {
+    content: "\f202";
+    font-family: "Genericons";
+    color: #00aced;
+    padding-right: 5px;
+    line-height: 15px;
+    font-weight: normal;
+    vertical-align: top; }
+a.twitter:focus, a.twitter:hover {
+    border-color: #bbbbbb;
+    background-color: #f8f8f8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#d9d9d9));
+    background-image: -moz-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -o-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: linear-gradient(top, #f8f8f8, #d9d9d9);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+a.twitter:active {
+    border-color: #bbbbbb;
+    background-color: #f8f8f8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#d9d9d9));
+    background-image: -moz-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -o-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #d9d9d9);
+    background-image: linear-gradient(top, #f8f8f8, #d9d9d9);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: #efefef;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1); }
+a.facebook {
+    background: #eceef5;
+    -webkit-border-radius: 3px;
+    border: 1px solid #cad4e7;
+    cursor: pointer;
+    padding: 3px 4px 4px 3px;
+    white-space: nowrap;
+    color: #3b5998;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+    text-decoration: none;
+    vertical-align: top;
+    margin-left: 10px; }
+a.facebook:before {
+    content: "\f203";
+    font-family: "Genericons";
+    padding-right: 4px;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 14px;
+    vertical-align: top; }
+a.facebook:hover {
+    border-color: #9dacce; }
+
+
+body {
+    margin: 0px;
+    font-family: Arial, "Lucida Grande", sans-serif;
+    font-weight: 300; }
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0px;
+    font-family: "Franchise"; }
+
+a {
+    color: #0099cc;
+    text-decoration: none; }
+a:hover {
+    color: #004d66; }
+a:focus {
+    color: #004d66; }
+
+
+article {
+    position: relative;
+    z-index: 10;
+    padding: 67px 0px 30px 0px;
+    background-color: white;
+    width: 100%;
+    zoom: 1; }
+article:before, article:after {
+    content: "";
+    display: table; }
+article:after {
+    clear: both; }
+
+.wrapper {
+    width: 80%;
+    margin: 0 auto;
+    zoom: 1; }
+.wrapper:before, .wrapper:after {
+    content: "";
+    display: table; }
+.wrapper:after {
+    clear: both; }
+
+article h1 {
+    font-family: "NexaBold";
+    font-size: 3em;
+    text-align: center;
+    font-weight: normal; }
+
+.column-3 {
+    width: 33.33333%;
+    min-width: 100px;
+    float: left;
+    display: block; }
+
+.column-5 {
+    width: 20%;
+    min-width: 100px;
+    float: left;
+    display: block; }
+
+.clearfix {
+    zoom: 1; }
+.clearfix:before, .clearfix:after {
+    content: "";
+    display: table; }
+.clearfix:after {
+    clear: both; }
+
+
+
+
+
+
+
+/*style for base.html*/
+.errorlist {
+    color: red;
+}
+#content-wrapper {
+    background-color: white;
+    border: none;
+    width: 600px;
+    font-family: 'Ostrich';
+    font-size: 2em;
+    margin: auto auto;
+
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+}
+#content-wrapper fieldset {
+    border: none;
+}
+#content-wrapper form legend {
+    text-align: center;
+
+}
+#content-wrapper form {
+    padding-top: 20px;
+    width: 600px;
+    position: relative;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#content-wrapper form p {
+    position: relative;
+    height: 30px;
+}
+#content-wrapper form label {
+    margin-top: 10px;
+    position: absolute;
+    width: 50%;
+    left: 0;
+}
+#content-wrapper form input {
+    position: absolute;
+    font-family: 'Ostrich';
+    font-size: 2em;
+    width: 50%;
+    right: 0;
+}
+
+
+/*Create Case style*/
+#case-created-container {
+    margin-top: 100px;
+    padding: 30px 30px 30px 30px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#case-created-container h1 {
+    font-size: 1.6em;
+}
+
+
+#success {
+    color: green;
+}
