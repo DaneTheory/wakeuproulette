@@ -698,7 +698,7 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'^\s*\(?(020[7,8]{1}\)?[ ]?[1-9]{1}[0-9]{2}[ ]?[0-9]{4})|(0[1-8]{1}[0-9]{3}\)?[ ]?[1-9]{1}[0-9]{2}[ ]?[0-9]{3})\s*$'
+PHONE_REGEX = r'^[0-9]*$'
 class WakeUpSignupForm(SignupForm):
     phone = forms.RegexField(   regex=PHONE_REGEX,
                                 max_length=30,

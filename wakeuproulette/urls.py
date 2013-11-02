@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', views.home, name='home'),
+    url(r'^conf/(?P<confname>.*)$', views.serveConference, name='conference'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls')),
