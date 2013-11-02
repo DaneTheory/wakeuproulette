@@ -8,8 +8,17 @@ PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+#USERENA OVERRIDE SETTINGS
+USERENA_REDIRECT_ON_SIGNOUT = '/'
+USERENA_SIGNIN_REDIRECT_URL = '/'
+USERENA_SIGNIN_AFTER_SIGNUP = False
+USERENA_ACTIVATION_DAYS = 30
+USERENA_ACTIVATION_NOTIFY = True
+USERENA_ACTIVATION_REQUIRED = False
+
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Alejandro Saucedo', 'axsauze@gmail.com'),
+    # ToDo Andrew + Matt
 )
 
 MANAGERS = ADMINS
@@ -112,7 +121,9 @@ ROOT_URLCONF = 'wakeuproulette.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'wakeuproulette.wsgi.application'
 
-TEMPLATE_DIRS = ('/Users/axsauze/IdeaProjects/wakeuproulette/templates',)
+TEMPLATE_DIRS = (
+        os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
+    )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -121,9 +132,43 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #Admin
     'django.contrib.admin',
+
+    #Userena
+    'userena',
+    'guardian',
+    'easy_thumbnails',
+    'accounts',
+
+    #App
     'wakeup'
 )
+
+#USED FOR USERENA AND GUARDIAN
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    )
+
+ANONYMOUS_USER_ID = -1
+
+#OVERRIDING AUTH METHODS
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
+#OVERRIDING AUTH METHODS
+
+#Use email
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'hackasoton@gmail.com'
+EMAIL_HOST_PASSWORD = 'HackaS0t0n'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
