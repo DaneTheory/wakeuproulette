@@ -5,7 +5,8 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
-WEB_ROOT = "http://127.0.0.1:8000/"
+#WEB_ROOT = "http://127.0.0.1:8000/"
+WEB_ROOT = "http://77f76d7c.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
