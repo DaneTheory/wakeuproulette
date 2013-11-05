@@ -1,0 +1,7 @@
+<Response>
+<Say>Welcome to Wake Up Roulette!</Say>
+    {% csrf_token %}
+<Dial timeLimit="30">
+<Conference>this</Conference>
+</Dial>
+</Response>
