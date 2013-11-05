@@ -26,6 +26,13 @@ from guardian.decorators import permission_required_or_403
 
 import warnings
 
+
+class SecureEditProfileForm(EditProfileForm):
+    def __init__(self, *args, **kwargs):
+        super (SecureEditProfileForm, self).__init__(*args,**kwargs)
+        self.fields.pop('reputation')
+        self.fields.pop('phone')
+
 class ExtraContextTemplateView(TemplateView):
     """ Add extra context to a simple template view """
     extra_context = None
@@ -516,7 +523,7 @@ def password_change(request, username, template_name='userena/password_form.html
         extra_context=extra_context)(request)
 @secure_required
 @permission_required_or_403('change_profile', (get_profile_model(), 'user__username', 'username'))
-def profile_edit(request, username, edit_profile_form=EditProfileForm,
+def profile_edit(request, username, edit_profile_form=SecureEditProfileForm,
                  template_name='userena/profile_form.html', success_url=None,
                  extra_context=None, **kwargs):
     """
@@ -692,7 +699,6 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         template_name=template_name,
         extra_context=extra_context,
         **kwargs)(request)
-
 
 
 

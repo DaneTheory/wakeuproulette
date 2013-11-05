@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     url(r'^$', views.home, name='home'),
     url(r'^alarm/', views.setAlarm, name='alarm'),
     url(r'^conf/(?P<confname>.*)$', views.serveConference, name='conference'),
+    url(r'sms/', views.processSMS, name='sms'),
+    url(r'start/', views.startRoulette, name='start'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls')),

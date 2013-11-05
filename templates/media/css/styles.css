@@ -18,7 +18,11 @@
 
 #vactrack-buttons {
     margin: auto auto;
-    width: 190px;
+    width: 270px;
+}
+
+body {
+    background-color: black;
 }
 
 #alarm-setup {
@@ -55,14 +59,14 @@ a:target {
     transition: background 0.5s linear;
 }
 
-#id_time {
-
-}
-
 #vactrack-buttons a:hover {
     background: url(../images/button-bg.jpg) no-repeat center top;
     background: rgba(255, 255, 255, 1);
     color: #000000;
+}
+
+#ui-widget {
+    height: 200px;
 }
 
 #sitenav {
@@ -176,7 +180,8 @@ a:target {
 
 #home-body {
     padding-top: 737px;
-    color: black;
+    background-color: black;
+    color: white;
 }
 
 #home {
@@ -215,6 +220,7 @@ a:target {
     width: 33.33333%;
     display: block;
     margin: 30px 0;
+    color: white;
     text-align: center; }
 .organizer img {
     width: 250px;
@@ -229,9 +235,10 @@ a:target {
     display: block;
     margin: 20px 0px;
     padding: 0px 5%;
+    color: white;
     list-style: none; }
 .organizer li {
-    color: #4d4d4d;
+    color: white;
     padding: 10px 0px;
     text-align: justify; }
 
@@ -346,7 +353,7 @@ article {
     position: relative;
     z-index: 10;
     padding: 67px 0px 30px 0px;
-    background-color: white;
+    background-color: black;
     width: 100%;
     zoom: 1; }
 article:before, article:after {
@@ -418,9 +425,21 @@ article h1 {
 #content-wrapper fieldset {
     border: none;
 }
+
+#box-nav {
+    line-height: 1em;
+}
+.helptext {
+    margin-top: 20px;
+    font-size: 20px;
+    padding-left: 10px;
+}
+#id_privacy {
+    margin-left: 100px;
+}
+
 #content-wrapper form legend {
     text-align: center;
-
 }
 #content-wrapper form {
     padding-top: 20px;

@@ -2,8 +2,12 @@
 <html lang='en'>
 <head>
     <title>Wake Up Roulette</title>
-    <link rel="stylesheet" type="text/css" href="/media/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="/media/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/pricing.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/about.css" />
+    <script type="text/javascript" src='/media/js/prefixfree.min.js'></script>
+
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
 
     <script>
@@ -22,16 +26,15 @@
 <nav id='sitenav'>
 
     <div class="share">
-        <a href="http://twitter.com/vaccinetracking" class="twitter">Tweet</a>
-        <a href="http://facebook.com/vactrack" class="facebook">Like</a>
+        <a href="http://twitter.com/wakeuproulette" class="twitter">Tweet</a>
+        <a href="http://facebook.com/wakeuproulette" class="facebook">Like</a>
     </div>
 
     <span id="main-nav">
         <a href="#home">Home</a>
-        <a href="#why">Why</a>
-        <a href="#what">What</a>
-        <a href="#how">How</a>
-        <a href="#who">Who</a>
+        <a href="#about">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#team">Team</a>
     </span>
 
     <div id="usersection">
@@ -52,7 +55,7 @@
 
 </nav>
 
-<div id="home" style="background-image: url(/media/images/home.jpg);">
+<div id="home" style="background-image: url(/media/images/alarmsea.jpg);">
 
     <div id="titles">
         <div id="vactrack-logo">Wake Up Roulette</div>
@@ -60,8 +63,8 @@
         <div id="vactrack-slogan">Making Alarm Clocks Enjoyable.</div>
 
         {% if user.is_authenticated %}
-            <div id="vactrack-buttons">
-                <a style="width: 130px" href="/alarm">Set Up Alarm</a>
+            <div style="width: 140px;" id="vactrack-buttons">
+                <a style="width: 130px; margin: auto auto;" href="/alarm">Set Up Alarm</a>
                 <div id="alarm-setup">
                     Set Up Alarm
                 </div>
@@ -76,46 +79,230 @@
 
 </div>
 
-<article id="why">
-    <div class="wrapper">
+<article id="about">
+    <div id="about-wrapper">
 
-        <h1>Why?</h1>
+        <h1>How does it work?</h1>
+        <br><br><br><br>
 
-        <p>
-            ToDo.
-        </p>
+        <div class="section group">
+
+            <div class="about-sub">
+                Set up your alarm!
+            </div>
+
+            <div class="col span_1_of_3">
+                <div class="img-box">
+                    <div id="setupman" class="img-left">
+                    </div>
+                    <div id="setupwoman" class="img-right">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col span_1_of_3">
+
+                <div class="about-sub">
+                    Wake up to an awesome conversation!
+                </div>
+
+                <div class="img-box">
+                    <div id="wakeupman" class="img-left">
+                    </div>
+                    <div id="wakeupwoman" class="img-right">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col span_1_of_3">
+
+                <div class="about-sub">
+                    Rate your wake-up buddy of the day!
+                </div>
+
+                <div class="img-box">
+                    <div id="rateman" class="img-left">
+                    </div>
+                    <div id="ratewoman" class="img-right">
+                    </div>
+                </div>
+
+            </div>
+        </div>
 
     </div>
 </article>
 
-<article id="what">
-    <section class='wrapper'>
-        <h1>What?</h1>
+<article id="pricing">
+    <section class='pricing-wrapper'>
+        <h1>Pricing</h1>
 
-        <p>
-            ToDo.
-        </p>
+
+        <ul class="pricing_table">
+            <li class="price_block">
+                <h3>Freemium</h3>
+                <div class="price">
+                    <div class="price_figure">
+                        <span class="price_number">FREE</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li>Free Random-Wake Alarms</li>
+                    <li>3 Trial Friend-Wakes</li>
+                    <li>3 Trial Matched-Wakes</li>
+                    <li>One alarm per day </li>
+                    <li>24/7 Email support</li>
+                    <li> -- </li>
+                </ul>
+                <div class="footer">
+                    <a href="/accounts/signup/" class="action_button">Register</a>
+                </div>
+            </li>
+            <li class="price_block">
+                <h3>Pay per Wake</h3>
+                <div class="price">
+                    <div class="price_figure">
+                        <span class="price_number">&#163;0.05</span>
+                        <span class="price_tenure">per wake</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li>Free Random-Wake Alarms</li>
+                    <li>Pay per Friend-Wake</li>
+                    <li>Pay per Matched-Wake</li>
+                    <li>One alarm per day</li>
+                    <li>24/7 Email support</li>
+                    <li> -- </li>
+                </ul>
+                <div class="footer">
+                    <a class="action_button">Coming soon</a>
+                </div>
+            </li>
+            <li class="price_block">
+                <h3>Premium</h3>
+                <div class="price">
+                    <div class="price_figure">
+                        <span class="price_number">&#163;0.99</span>
+                        <span class="price_tenure">per month</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li>Free Random-People-Wakes</li>
+                    <li>Free Friend-Wakes</li>
+                    <li>Free Matched-Wakes</li>
+                    <li>One alarm per day</li>
+                    <li>Customize profile for Matched-Wakes</li>
+                    <li>24/7 Email support</li>
+                </ul>
+                <div class="footer">
+                    <a  class="action_button">Coming soon</a>
+                </div>
+            </li>
+            <li class="price_block">
+                <h3>Unlimited</h3>
+                <div class="price">
+                    <div class="price_figure">
+                        <span class="price_number">&#163;5.00</span>
+                        <span class="price_tenure">per month</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li>Unlimited Random-People-Wakes</li>
+                    <li>Unlimited Friend-Wakes</li>
+                    <li>Unlimited Matched-Wakes</li>
+                    <li>Unlimited alarms per day</li>
+                    <li>Customize profile for Matched-Wakes</li>
+                    <li>24/7 Email support</li>
+                </ul>
+                <div class="footer">
+                    <a class="action_button">Coming soon</a>
+                </div>
+            </li>
+        </ul>
+
+
+        <ul class="skeleton pricing_table" style="margin-top: 100px; overflow: hidden;">
+            <li class="label" style="margin: 0 none;">ul.pricing_table</li>
+            <li class="price_block">
+                <span class="label">li.price_block</span>
+                <h3><span class="label">h3</span></h3>
+                <div class="price">
+                    <span class="label">div.price</span>
+                    <div class="price_figure">
+                        <span class="label">div.price_figure</span>
+					<span class="price_number">
+						<span class="label">span.price_number</span>
+					</span>
+					<span class="price_tenure">
+						<span class="label">span.price_tenure</span>
+					</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li class="label">ul.features</li>
+                    <br /><br /><br />
+                </ul>
+                <div class="footer">
+                    <span class="label">div.footer</span>
+                </div>
+            </li>
+
+
+            <li class="price_block" style="opacity: 0.5;">
+                <span class="label">li.price_block</span>
+                <h3><span class="label">h3</span></h3>
+                <div class="price">
+                    <span class="label">div.price</span>
+                    <div class="price_figure">
+                        <span class="label">div.price_figure</span>
+					<span class="price_number">
+						<span class="label">span.price_number</span>
+					</span>
+					<span class="price_tenure">
+						<span class="label">span.price_tenure</span>
+					</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li class="label">ul.features</li>
+                    <br /><br /><br />
+                </ul>
+                <div class="footer">
+                    <span class="label">div.footer</span>
+                </div>
+            </li>
+            <li class="price_block" style="opacity: 0.25;">
+                <span class="label">li.price_block</span>
+                <h3><span class="label">h3</span></h3>
+                <div class="price">
+                    <span class="label">div.price</span>
+                    <div class="price_figure">
+                        <span class="label">div.price_figure</span>
+					<span class="price_number">
+						<span class="label">span.price_number</span>
+					</span>
+					<span class="price_tenure">
+						<span class="label">span.price_tenure</span>
+					</span>
+                    </div>
+                </div>
+                <ul class="features">
+                    <li class="label">ul.features</li>
+                    <br /><br /><br />
+                </ul>
+                <div class="footer">
+                    <span class="label">div.footer</span>
+                </div>
+            </li>
+        </ul>
+        <script src="prefixfree.min.js" type="text/javascript"></script>
 
     </section>
 </article>
 
-
-<article id="how">
+<article id="team">
     <div class="wrapper">
-
-        <h1>How?</h1>
-
-        <p>
-            ToDo.
-        </p>
-
-    </div>
-</article>
-
-
-<article id="who">
-    <div class="wrapper">
-        <h1>Who?</h1>
+        <h1>Team</h1>
 
         <div itemscope itemtype ="http://schema.org/Person" class="organizer">
             <a href="http://www.linkedin.com/pub/alejandro-saucedo/41/6b3/4b0">
@@ -130,22 +317,26 @@
         </div>
 
         <div itemscope itemtype ="http://schema.org/Person" class="organizer">
-            <a href="http://www.linkedin.com/in/izidorflajsman">
+            <a href="http://mt.linkedin.com/pub/andrew-ellul/74/bb2/30b">
                 <img src="media/images/andrew.jpg" itemprop="image" alt="Andrew Ellus" />
             </a>
-            <h2 itemprop="name">Andrew Ellus</h2>
+            <h2 itemprop="name">Andrew Ellul</h2>
             <ul itemprop='description'>
-                <li>ToDo.</li>
+                <li>Application Developer at JP Morgan.</li>
+                <li>Scout leader in the National UK Scouts.</li>
+                <li>Peer Assisted Study Sessions at the University of Manchester.</li>
             </ul>
         </div>
 
         <div itemscope itemtype ="http://schema.org/Person" class="organizer">
-            <a href="http://ro.linkedin.com/in/vladvelici">
+            <a href="http://www.linkedin.com/in/matthewshawkat">
                 <img src="media/images/matt.jpg" itemprop="image" alt="Matthew Shawkat" />
             </a>
             <h2 itemprop="name">Matthew Shawkat</h2>
             <ul itemprop="description">
-                <li>ToDo.</li>
+                <li>Web & Mobile Developer at HexoLab Web Solutions.</li>
+                <li>Previous Software Engineer at Goldman Sachs.</li>
+                <li>Worked previously at Sysaro Systems.</li>
             </ul>
         </div>
     </div>

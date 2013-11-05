@@ -1,0 +1,101 @@
+
+/*IMAGES*/
+#setupman {
+    background: url('/media/images/about/setupman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+#setupwoman {
+    background: url('/media/images/about/setupwoman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+#wakeupman {
+    background: url('/media/images/about/wakeupman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+#wakeupwoman {
+    background: url('/media/images/about/wakeupwoman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+#rateman {
+    background: url('/media/images/about/rateman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+#ratewoman {
+    background: url('/media/images/about/ratewoman.jpg');
+    background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+.about-sub {
+    text-align: center;
+    width: 100%;
+    font-family: Ostrich;
+    font-size: 5em;
+    padding: 20px 0px 20px 0px;
+    border-top: solid;
+    border-bottom: solid;
+    color: white;
+    background-color: black;
+}
+
+
+
+#about-wrapper {
+    width: 100%;
+    margin: auto auto;
+}
+
+
+.section {
+    padding: 0px;
+    margin: 0px;
+}
+
+.col {
+    border-radius:25px;
+    text-align: center;
+}
+
+.img-box {
+    display: block;
+}
+
+.img-box div {
+    float: left;
+    width:50%;
+    height: 400px;
+}
+
+
+.section {
+    width: 100%; /* fix for Firefox */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+
+
+

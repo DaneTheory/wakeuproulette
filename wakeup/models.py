@@ -1,15 +1,12 @@
+from django.db import models
+from django.contrib.auth.models import User
 
-#NOT USED FOR NOW
+import datetime
+from django.utils.timezone import utc
 
-#from django.db import models
-#
-#import datetime
-#from django.utils.timezone import utc
-#
-#class Phones(models.Model):
-#    phoneid = models.AutoField(primary_key=True)
-#    phone = models.CharField("Phone Number", max_length=20)
-#
-#class Alarms(models.Model):
-#    alarmid = models.AutoField(primary_key=True)
-#    alarmtime = models.TimeField()
+class Conferences(models.Model):
+    conferenceid = models.AutoField(primary_key=True)
+    caller1 = models.ForeignKey(User,related_name='caller1')
+    caller2 = models.ForeignKey(User,related_name='caller2')
+    caller1done = models.BooleanField("Caller 1 Done", default=False)
+    caller2done = models.BooleanField("Caller 2 Done", default=False)

@@ -9,4 +9,5 @@ class UserProfile(UserenaBaseProfile):
         verbose_name=_('user'),related_name='profile')
     alarm = models.TimeField(_("Alarm Time"), null=True, blank=True)
     phone = models.CharField(_("Phone Number"), max_length=20)
+    reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
 

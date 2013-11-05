@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+
+    <link rel="Stylesheet" media="screen" href="/media/timepicker/ui.core.css">
+    <link rel="Stylesheet" media="screen" href="/media/timepicker/ui.timepicker.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
+
+    <script type="text/javascript" src="/media/timepicker/jquery.js"></script>
+    <script type="text/javascript" src="/media/timepicker/jquery.utils.js"></script>
+    <script type="text/javascript" src="/media/timepicker/jquery.strings.js"></script>
+    <script type="text/javascript" src="/media/timepicker/jquery.anchorHandler.js"></script>
+    <script type="text/javascript" src="/media/timepicker/jquery.ui.all.js"></script>
+    <script type="text/javascript" src="/media/timepicker/ui.timepickr.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            //$('#test-1').timepickr({trigger: '#trigger-test'});
+            $('#demo-1').timepickr().focus();
+            $('#demo-2').timepickr({convention:12});
+            $('#demo-1').next().find('ol').show().find('li:eq(2)').mouseover();
+            // temporary fix..
+            $('.ui-timepickr ol:eq(0) li:first').mouseover();
+
+            $('input[type="checkbox"]').click(function() {
+                $('#demo').toggle( "slow", function() {
+                    // Animation complete.
+                });
+                $('d-demo-wrapper-1').toggle( "slow", function() {
+                    // Animation complete.
+                });
+            });
+        });
+    </script>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>{{ name }}</legend>
+
+            <div id="splash">
+                <p>Unfortunately our service is not on yet, but we will keep you updated when we release it!</p>
+
+                <div style="position: absolute; width: 170px; top: 10px" id="switch">
+                    <input type="checkbox" name="switch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+                    <label class="onoffswitch-label" for="myonoffswitch">
+                        <div class="onoffswitch-inner">
+                            <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+                            <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+                        </div>
+                    </label>
+                </div>
+
+                {% for field in form %}
+                    {{ field.errors }}
+                {% endfor %}
+                <div style="padding-top: 10px; height: 200px;" id="demo">
+                    <div  id="d-demo-wrapper-1" class="demo-wrapper">
+                        <input id="demo-1" name="alarm" type="text" value="" class="demo">
+                        <div class="ui-helper-reset ui-timepickr ui-widget" style="left: -300px; display: none;">
+                            <ol class="ui-timepickr-row ui-helper-clearfix prefix" style="display: block;">
+                                <li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all ui-state-hover">am</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">pm</span></li></ol><ol class="ui-timepickr-row ui-helper-clearfix hours" style="display: block; left: 0px;"><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all ui-state-hover">00</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">01</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">02</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">03</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">04</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">05</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">06</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">07</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">08</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">09</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">10</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">11</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">12</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">13</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">14</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">15</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">16</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">17</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">18</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">19</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">20</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">21</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">22</span></li><li class="ui-timepickr-button" style="display: none;"><span class="ui-state-default ui-corner-all">23</span></li></ol><ol class="ui-timepickr-row ui-helper-clearfix minutes" style="display: block; left: 0px;"><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">00</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">15</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all ui-state-hover">30</span></li><li class="ui-timepickr-button"><span class="ui-state-default ui-corner-all">45</span></li></ol></div>
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+        <input type="submit" value="{% trans "Wake Me Up" %}" />
+        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+    </form>
+{% endblock %}
