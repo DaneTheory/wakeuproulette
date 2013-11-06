@@ -704,13 +704,13 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'^[0-9]*$'
+PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'
 class WakeUpSignupForm(SignupForm):
     phone = forms.RegexField(   regex=PHONE_REGEX,
                                 max_length=30,
                                 widget=forms.TextInput(attrs = {'class': 'required'}),
                                 label=_("Phone"),
-                                error_messages={'invalid': _('Phone number invalid - please try again.')})
+                                error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
 
     def clean_phone(self):
         return self.cleaned_data['phone']
