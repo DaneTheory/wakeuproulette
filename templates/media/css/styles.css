@@ -215,9 +215,15 @@ a:target {
 }
 
 
+#organizer-wrapper {
+    width: 800px;
+    border: white;
+    margin: auto auto;
+}
 .organizer {
     float: left;
-    width: 33.33333%;
+    /*width: 33.33333%;*/
+    width: 50%;
     display: block;
     margin: 30px 0;
     color: white;
