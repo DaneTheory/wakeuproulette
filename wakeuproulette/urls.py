@@ -10,7 +10,9 @@ urlpatterns = patterns('',
     url(r'^alarm/', views.setAlarm, name='alarm'),
     url(r'^conf/(?P<confname>.*)$', views.serveConference, name='conference'),
     url(r'sms/', views.processSMS, name='sms'),
-    url(r'start/', views.startRoulette, name='start'),
+#    url(r'start/', views.startRoulette, name='start'),
+    url(r'newsletter/', views.newsletter, name='newsletter'),
+
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls')),

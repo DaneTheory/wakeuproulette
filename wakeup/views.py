@@ -86,5 +86,8 @@ def startRoulette(request):
     call_command('chronroulette')
     return render(request, 'start.html')
 
+def newsletter(request):
+    return render(request, 'newsletter.html')
+
 def notFound(request):
     return render(request, '404.html')
