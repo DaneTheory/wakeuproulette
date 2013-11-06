@@ -12,7 +12,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
-
 from userena.forms import (SignupForm, SignupFormOnlyEmail, AuthenticationForm,
                            ChangeEmailForm, EditProfileForm)
 from userena.models import UserenaSignup
@@ -25,6 +24,15 @@ from userena import settings as userena_settings
 from guardian.decorators import permission_required_or_403
 
 import warnings
+
+
+#Imports forr custom functions:
+from django.core.mail import send_mail
+import re
+import smtplib
+import dns.resolver
+from django.core.exceptions import ValidationError
+
 
 
 class SecureEditProfileForm(EditProfileForm):
@@ -125,6 +133,14 @@ def signup(request, signup_form=SignupForm,
         form = signup_form(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+
+            phone = user.profile.phone
+            gateways = get_all_gateways(phone)
+            print "sending email to: "
+            print gateways
+
+            msg = "Thank you very much for signing up to WakeUpRoulette!"
+            send_mail("", msg, "Wake Up Roulette", gateways, False)
 
             # Send the signup complete signal
             userena_signals.signup_complete.send(sender=None,
@@ -713,7 +729,9 @@ class WakeUpSignupForm(SignupForm):
                                 error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
 
     def clean_phone(self):
-        return self.cleaned_data['phone']
+        cleaned = self.cleaned_data['phone']
+        without_trailing = re.sub(r'(0044|44|0)(\d+)', r'\2', cleaned)
+        return without_trailing
 
     def save(self):
         """
@@ -727,3 +745,43 @@ class WakeUpSignupForm(SignupForm):
         user_profile.save()
 
         return user
+
+def get_valid_gateway(phone):
+    valid_gateway = ""
+
+    gateways = []
+    gateways.append("44" + phone + "@mmail.co.uk")      # O2
+    gateways.append("44" + phone + "@three.co.uk")      # 3
+    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
+    gateways.append("44" + phone + "@omail.net")        # Orange
+    gateways.append("44" + phone + "@orange.net")       # Orange
+    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
+    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
+
+    for gate in gateways:
+        hostname = gate.split('@')[-1]
+
+        try:
+            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
+                try:
+                    smtp = smtplib.SMTP()
+                    smtp.connect(server)
+                    status = smtp.helo()
+                    if status[0] != 250:
+                        continue
+                    smtp.mail('')
+                    status = smtp.rcpt(gate)
+                    if status[0] != 250:
+                        raise ValidationError(_('Invalid email address.'))
+                    valid_gateway = gate # Valid Gateway found
+                    break
+                except smtplib.SMTPServerDisconnected:
+                    break
+                except smtplib.SMTPConnectError:
+                    continue
+        except dns.resolver.NXDOMAIN:
+            continue # Not valid
+        except dns.resolver.NoAnswer:
+            continue # Not valid
+
+    return gateways

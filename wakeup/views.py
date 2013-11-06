@@ -82,8 +82,64 @@ class AlarmForm(forms.Form):
     alarm = forms.TimeField()
     switch = forms.CheckboxInput()
 
+from django.core.mail import send_mail
+import re
+import smtplib
+import dns.resolver
+from django.core.exceptions import ValidationError
+def get_valid_gateway(phone):
+    valid_gateway = ""
+
+    gateways = []
+    gateways.append("44" + phone + "@mmail.co.uk")      # O2
+    gateways.append("44" + phone + "@three.co.uk")      # 3
+    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
+    gateways.append("44" + phone + "@omail.net")        # Orange
+    gateways.append("44" + phone + "@orange.net")       # Orange
+    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
+    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
+
+    for gate in gateways:
+        print "\n\ntesting gateway " + gate
+        hostname = gate.split('@')[-1]
+
+        try:
+            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
+                try:
+                    print "creating smtp"
+                    smtp = smtplib.SMTP()
+                    print "creating connecition"
+                    smtp.connect(server)
+                    print "helo"
+                    status = smtp.helo()
+                    print "code 250? " + str(status[0])
+                    if status[0] != 250:
+                        continue
+                    print "checking mail"
+                    smtp.mail('')
+                    status = smtp.rcpt(gate)
+                    print "code 250? " + str(status[0])
+                    if status[0] != 250:
+                        raise ValidationError(_('Invalid email address.'))
+                    valid_gateway = gate # Valid Gateway found
+                    break
+                except smtplib.SMTPServerDisconnected:
+                    break
+                except smtplib.SMTPConnectError:
+                    continue
+        except dns.resolver.NXDOMAIN:
+            continue # Not valid
+        except dns.resolver.NoAnswer:
+            continue # Not valid
+
+    return gateways
+
 def startRoulette(request):
-    call_command('chronroulette')
+#    call_command('chronroulette')
+
+    print "getting ready to test numbers"
+    print get_valid_gateway("7926925347")
+
     return render(request, 'start.html')
 
 def newsletter(request):
