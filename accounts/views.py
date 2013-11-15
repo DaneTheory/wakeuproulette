@@ -40,6 +40,8 @@ class SecureEditProfileForm(EditProfileForm):
         super (SecureEditProfileForm, self).__init__(*args,**kwargs)
         self.fields.pop('reputation')
         self.fields.pop('phone')
+        self.fields.pop('gender')
+        self.fields.pop('active')
 
 class ExtraContextTemplateView(TemplateView):
     """ Add extra context to a simple template view """
@@ -134,13 +136,13 @@ def signup(request, signup_form=SignupForm,
         if form.is_valid():
             user = form.save()
 
-            phone = user.profile.phone
-            gateways = get_all_gateways(phone)
-            print "sending email to: "
-            print gateways
-
-            msg = "Thank you very much for signing up to WakeUpRoulette!"
-            send_mail("", msg, "Wake Up Roulette", gateways, False)
+#            phone = user.profile.phone
+#            gateways = get_all_gateways(phone)
+#            print "sending email to: "
+#            print gateways
+#
+#            msg = "Thank you very much for signing up to WakeUpRoulette!"
+#            send_mail("", msg, "Wake Up Roulette", gateways, False)
 
             # Send the signup complete signal
             userena_signals.signup_complete.send(sender=None,
@@ -727,11 +729,13 @@ class WakeUpSignupForm(SignupForm):
                                 widget=forms.TextInput(attrs = {'class': 'required'}),
                                 label=_("Phone"),
                                 error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
+    gender = forms.ModelChoiceField({'M':'Male', 'F':'Female'},initial='M',required=True)
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']
-        without_trailing = re.sub(r'(0044|44|0)(\d+)', r'\2', cleaned)
-        return without_trailing
+        without_trailing = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', cleaned)
+        with_uk_extension = "+44" + without_trailing
+        return with_uk_extension
 
     def save(self):
         """
@@ -741,47 +745,48 @@ class WakeUpSignupForm(SignupForm):
         user = super(WakeUpSignupForm, self).save()
         user_profile = user.get_profile()
         user_profile.phone = self.cleaned_data['phone']
+        user_profile.gender = self.cleaned_data['gender']
 
         user_profile.save()
 
         return user
 
-def get_valid_gateway(phone):
-    valid_gateway = ""
-
-    gateways = []
-    gateways.append("44" + phone + "@mmail.co.uk")      # O2
-    gateways.append("44" + phone + "@three.co.uk")      # 3
-    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
-    gateways.append("44" + phone + "@omail.net")        # Orange
-    gateways.append("44" + phone + "@orange.net")       # Orange
-    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
-    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
-
-    for gate in gateways:
-        hostname = gate.split('@')[-1]
-
-        try:
-            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
-                try:
-                    smtp = smtplib.SMTP()
-                    smtp.connect(server)
-                    status = smtp.helo()
-                    if status[0] != 250:
-                        continue
-                    smtp.mail('')
-                    status = smtp.rcpt(gate)
-                    if status[0] != 250:
-                        raise ValidationError(_('Invalid email address.'))
-                    valid_gateway = gate # Valid Gateway found
-                    break
-                except smtplib.SMTPServerDisconnected:
-                    break
-                except smtplib.SMTPConnectError:
-                    continue
-        except dns.resolver.NXDOMAIN:
-            continue # Not valid
-        except dns.resolver.NoAnswer:
-            continue # Not valid
-
-    return gateways
+#def get_valid_gateway(phone):
+#    valid_gateway = ""
+#
+#    gateways = []
+#    gateways.append("44" + phone + "@mmail.co.uk")      # O2
+#    gateways.append("44" + phone + "@three.co.uk")      # 3
+#    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
+#    gateways.append("44" + phone + "@omail.net")        # Orange
+#    gateways.append("44" + phone + "@orange.net")       # Orange
+#    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
+#    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
+#
+#    for gate in gateways:
+#        hostname = gate.split('@')[-1]
+#
+#        try:
+#            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
+#                try:
+#                    smtp = smtplib.SMTP()
+#                    smtp.connect(server)
+#                    status = smtp.helo()
+#                    if status[0] != 250:
+#                        continue
+#                    smtp.mail('')
+#                    status = smtp.rcpt(gate)
+#                    if status[0] != 250:
+#                        raise ValidationError(_('Invalid email address.'))
+#                    valid_gateway = gate # Valid Gateway found
+#                    break
+#                except smtplib.SMTPServerDisconnected:
+#                    break
+#                except smtplib.SMTPConnectError:
+#                    continue
+#        except dns.resolver.NXDOMAIN:
+#            continue # Not valid
+#        except dns.resolver.NoAnswer:
+#            continue # Not valid
+#
+#    return gateways

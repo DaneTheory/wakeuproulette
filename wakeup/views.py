@@ -7,6 +7,9 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from models import Conferences
 from django.core.management import call_command
+from django.utils.translation import ugettext as _
+from wakeuproulette.settings import WEB_ROOT
+from accounts.models import UserProfile
 
 
 def home(request):
@@ -14,9 +17,70 @@ def home(request):
 
 @csrf_exempt
 def serveConference(request, confname):
-    data = render_to_response("twilioresponse.xml", {'confname':confname})
+    post = request.POST
+
+    if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
+        phone = post['To']
+        user = UserProfile.objects.get(phone=phone)
+        user.alarmon = False
+        user.save()
+
+        try:
+            conf = Conferences.objects.get(conferencename=confname)
+        except Conferences.DoesNotExist:
+            conf = Conferences(conferencename=confname)
+
+        if not conf.caller1: conf.caller1 = user
+        else: conf.caller2 = user
+
+        conf.save()
+
+
+    elif post['CallStatus'] == 'completed':
+        phone = post['To']
+        user = UserProfile.objects.get(phone=phone)
+        user.active = False
+        user.save()
+
+        # Check for recording
+        if 'RecordingUrl' in post:
+            conf = None
+            try:
+                conf = Conferences.objects.get(conferencename=confname)
+
+                rURL = post['RecordingUrl']
+                rDuration = post['RecordingDuration']
+
+                if conf.recordingduration and conf.recordingduration < rDuration:
+                    conf.recordingurl = rURL
+                    conf.recordingduration = rDuration
+
+                    conf.save()
+
+            except Conferences.DoesNotExist:
+                print "Something is wrong! Check why the conference is not being created!"
+
+
+    elif post['CallStatus'] == 'no-answer' or post['CallStatus'] == 'in-progress':
+        print "Serving conference room"
+
+    print "Variables from Serving Conference:"
+    for var in post:
+        print var, " : ", post[var]
+
+    data = render_to_response("twilioresponse.xml", {'confname':confname, 'webroot':WEB_ROOT})
 
     return HttpResponse(data, mimetype="application/xml")
+
+@csrf_exempt
+def processCallFeedback(request, conf):
+    post = request.POST
+
+    for var in post:
+        print var, " : ", post[var]
+
+    return HttpResponse()
+
 
 def processSMS(request):
     fromresponse = request.GET.get("From", "")
@@ -61,11 +125,12 @@ def setAlarm(request):
     if request.method == 'POST':
         form = AlarmForm(request.POST)
         if form.is_valid():
-            switch = request.POST.get('switch', False)
-            alarm = form.cleaned_data['alarm'] if switch else None
+            alarmon = request.POST.get('alarmon', False)
+            alarm = form.cleaned_data['alarm']
 
             profile = request.user.profile
             profile.alarm = alarm
+            profile.alarmon = alarmon
             profile.save()
             return render(request, 'alarm.html', {
                 'name': 'Alarm set up successfully!'
@@ -80,65 +145,68 @@ def setAlarm(request):
 
 class AlarmForm(forms.Form):
     alarm = forms.TimeField()
-    switch = forms.CheckboxInput()
+    alarmon = forms.CheckboxInput()
 
-from django.core.mail import send_mail
-import re
-import smtplib
-import dns.resolver
-from django.core.exceptions import ValidationError
-def get_valid_gateway(phone):
-    valid_gateway = ""
 
-    gateways = []
-    gateways.append("44" + phone + "@mmail.co.uk")      # O2
-    gateways.append("44" + phone + "@three.co.uk")      # 3
-    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
-    gateways.append("44" + phone + "@omail.net")        # Orange
-    gateways.append("44" + phone + "@orange.net")       # Orange
-    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
-    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
 
-    for gate in gateways:
-        print "\n\ntesting gateway " + gate
-        hostname = gate.split('@')[-1]
-
-        try:
-            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
-                try:
-                    print "creating smtp"
-                    smtp = smtplib.SMTP()
-                    print "creating connecition"
-                    smtp.connect(server)
-                    print "helo"
-                    status = smtp.helo()
-                    print "code 250? " + str(status[0])
-                    if status[0] != 250:
-                        continue
-                    print "checking mail"
-                    smtp.mail('')
-                    status = smtp.rcpt(gate)
-                    print "code 250? " + str(status[0])
-                    if status[0] != 250:
-                        raise ValidationError(_('Invalid email address.'))
-                    valid_gateway = gate # Valid Gateway found
-                    break
-                except smtplib.SMTPServerDisconnected:
-                    break
-                except smtplib.SMTPConnectError:
-                    continue
-        except dns.resolver.NXDOMAIN:
-            continue # Not valid
-        except dns.resolver.NoAnswer:
-            continue # Not valid
-
-    return gateways
+#
+#from django.core.mail import send_mail
+#import re
+#import smtplib
+#import dns.resolver
+#from django.core.exceptions import ValidationError
+#def get_valid_gateway(phone):
+#    valid_gateway = ""
+#
+#    gateways = []
+#    gateways.append("44" + phone + "@mmail.co.uk")      # O2
+#    gateways.append("44" + phone + "@smtp-mbb.three.co.uk")      # 3
+#    gateways.append("44" + phone + "@mms.ee.co.uk")     # EE
+#    gateways.append("44" + phone + "@omail.net")        # Orange
+#    gateways.append("44" + phone + "@orange.net")       # Orange
+#    gateways.append("0" + phone + "@t-mobile.uk.net")   # T-Mobile
+#    gateways.append("44" + phone + "@vodafone.net")     # Vodafone
+#
+#    for gate in gateways:
+#        print "\n\ntesting gateway " + gate
+#        hostname = gate.split('@')[-1]
+#
+#        try:
+#            for server in [ str(r.exchange).rstrip('.') for r in dns.resolver.query(hostname, 'MX') ]:
+#                try:
+#                    print "creating smtp"
+#                    smtp = smtplib.SMTP()
+#                    print "creating connecition"
+#                    smtp.connect(server)
+#                    print "helo"
+#                    status = smtp.helo()
+#                    print "code 250? " + str(status[0])
+#                    if status[0] != 250:
+#                        continue
+#                    print "checking mail"
+#                    smtp.mail('')
+#                    status = smtp.rcpt(gate)
+#                    print "code 250? " + str(status[0])
+#                    if status[0] != 250:
+#                        raise ValidationError(_('Invalid email address.'))
+#                    valid_gateway = gate # Valid Gateway found
+#                    break
+#                except smtplib.SMTPServerDisconnected:
+#                    break
+#                except smtplib.SMTPConnectError:
+#                    continue
+#        except dns.resolver.NXDOMAIN:
+#            continue # Not valid
+#        except dns.resolver.NoAnswer:
+#            continue # Not valid
+#
+#    return gateways
 
 def startRoulette(request):
-#    call_command('chronroulette')
+    call_command('chronroulette')
 
     print "getting ready to test numbers"
-    print get_valid_gateway("7926925347")
+#    print get_valid_gateway("7926925347")
 
     return render(request, 'start.html')
 
