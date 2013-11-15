@@ -196,8 +196,8 @@ class Command(NoArgsCommand):
         total = towakeup.count()
         waiting = {}
         liveConferences = []
-        maxTries = 1
-        tries = 0
+        maxTries = 2
+        waitingtime = 20
 
 
         for user in towakeup:
@@ -210,6 +210,7 @@ class Command(NoArgsCommand):
 
         unmatchedPeople = None
 
+        tries = 0
         # Iterate until we don't have any more people we need to wake up, or our tries have ran out
         while towakeup and tries < maxTries:
 
@@ -219,7 +220,6 @@ class Command(NoArgsCommand):
             usersToConferences = clear_innactive(waiting, liveConferences)
             unmatchedPeople = populate_rooms(liveConferences, waiting, usersToConferences)
 
-            waitingtime = 1
             print "Waiting " + str(waitingtime) + " Seconds"
             time.sleep(waitingtime)
 

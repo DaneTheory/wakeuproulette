@@ -21,17 +21,17 @@ def serveConference(request, confname):
 
     if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
         phone = post['To']
-        user = UserProfile.objects.get(phone=phone)
-        user.alarmon = False
-        user.save()
+        profile = UserProfile.objects.get(phone=phone)
+        profile.alarmon = False
+        profile.save()
 
         try:
             conf = Conferences.objects.get(conferencename=confname)
         except Conferences.DoesNotExist:
             conf = Conferences(conferencename=confname)
 
-        if not conf.caller1: conf.caller1 = user
-        else: conf.caller2 = user
+        if not conf.caller1: conf.caller1 = profile.user
+        else: conf.caller2 = profile.user
 
         conf.save()
 
