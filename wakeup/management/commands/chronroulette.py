@@ -5,6 +5,12 @@ from twilio.rest import TwilioRestClient
 from wakeup.models import Conferences
 import time
 from django.conf import settings
+from django.db import transaction
+
+@transaction.commit_manually
+def flush_transaction():
+    transaction.commit()
+
 
 class ConferenceObject(object):
 
@@ -31,26 +37,25 @@ class ConferenceObject(object):
         timeout = 15
 
         if self.u1 and self.u1.alarmon:
+            print "Calling", self.u1, self.u1.alarmon
             call1 = client.calls.create(
-                url=confurl
+                  url=confurl
                 , to = self.u1.phone
                 , from_ = "+441279702159"
                 , timeout = timeout
                 , fallback_method = 'POST'
                 , fallback_url=confurl
-                , status_callback=confurl
                 , if_machine = 'Hangup')
 
         # Check if the u2 variable is set
         if self.u2 and self.u2.alarmon:
+            print "Calling", self.u2, self.u2.alarmon
             call2 = client.calls.create(
-                url=confurl
+                  url=confurl
                 , to = self.u2.phone
                 , from_ = "+441279702159"
                 , timeout = 5
                 , fallback_method = 'POST'
-                , fallback_url=confurl
-                , status_callback=confurl
                 , if_machine = 'Hangup')
 
     def __init__(self, name, u1=None, u2=None):
@@ -149,6 +154,7 @@ class Command(NoArgsCommand):
                 if p2 and waiting[p2] and p2 in usersToConferences[p2]: conf = usersToConferences[p2]
 
                 if not conf: conf = get_free_conference_room(liveConferences)
+                print "Checking free conf room: ", conf, conf.u1, conf.u2, conf.u1.alarmon if conf.u1 else ""
 
                 conf.u1 = p1
                 conf.u2 = p2
@@ -172,12 +178,19 @@ class Command(NoArgsCommand):
 
                 # Clear users if they didn't answer the phone - hence they are not waiting
                 if conf.u1:
-                    if not waiting[conf.u1]: conf.u1 = None
-                    else: usersToConferences[conf.u1] = conf
+                    print "Reloading u1: "
+                    print conf.u1.alarmon
+                    conf.u1.reload()
+                    print conf.u1.alarmon
+                    if conf.u1.alarmon: conf.u1 = None
+                    else:
+                        usersToConferences[conf.u1] = conf
 
                 if conf.u2:
-                    if not waiting[conf.u2]: conf.u2 = None
-                    else: usersToConferences[conf.u2] = conf
+                    conf.u2.reload()
+                    if conf.u2.alarmon: conf.u2 = None
+                    else:
+                        usersToConferences[conf.u2] = conf
 
             return usersToConferences
 
@@ -197,11 +210,11 @@ class Command(NoArgsCommand):
         waiting = {}
         liveConferences = []
         maxTries = 2
-        waitingtime = 20
+        waitingtime = 30
 
 
         for user in towakeup:
-            waiting[user] = not user.alarmon
+            waiting[user] = False
 
         # Creating all empty conferences
         for i in xrange((total+1)/2):
@@ -215,13 +228,19 @@ class Command(NoArgsCommand):
         while towakeup and tries < maxTries:
 
             tries = tries + 1
-            towakeup = UserProfile.objects.filter(active=True)
 
+            print liveConferences
             usersToConferences = clear_innactive(waiting, liveConferences)
             unmatchedPeople = populate_rooms(liveConferences, waiting, usersToConferences)
 
             print "Waiting " + str(waitingtime) + " Seconds"
             time.sleep(waitingtime)
+
+            flush_transaction()
+            towakeup = UserProfile.objects.filter(active=True)
+            waiting = {}
+            for user in towakeup:
+                waiting[user] = not user.alarmon
 
 
         # Wake up all the ForeverAlloners lol

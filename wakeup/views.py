@@ -19,7 +19,20 @@ def home(request):
 def serveConference(request, confname):
     post = request.POST
 
-    if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
+    print "Handling request"
+    print "CallStatus: ", post['CallStatus']
+    if 'AnsweredBy' in post: print "AnsweredBy: ", post['AnsweredBy']
+    if 'DialCallStatus' in post: print "DialCallStatus: ", post['DialCallStatus']
+    if 'RecordingUrl' in post:
+        print "Recoding URL: ", post['RecordingUrl']
+        print "Recording Duration: ", post['RecordingDuration']
+
+
+
+    if 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
+        print "Call has been answered!"
+        print '\n'
+
         phone = post['To']
         profile = UserProfile.objects.get(phone=phone)
         profile.alarmon = False
@@ -35,10 +48,18 @@ def serveConference(request, confname):
 
         conf.save()
 
+        data = render_to_response("twilioresponse.xml", {'confname':confname, 'webroot':WEB_ROOT})
 
-    elif post['CallStatus'] == 'completed':
+        return HttpResponse(data, mimetype="application/xml")
+
+
+    elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
+        print "Call has been completed!"
+        print '\n'
+
         phone = post['To']
         user = UserProfile.objects.get(phone=phone)
+        user.alarmon = False
         user.active = False
         user.save()
 
@@ -61,16 +82,12 @@ def serveConference(request, confname):
                 print "Something is wrong! Check why the conference is not being created!"
 
 
-    elif post['CallStatus'] == 'no-answer' or post['CallStatus'] == 'in-progress':
-        print "Serving conference room"
+        return HttpResponse(mimetype="application/xml")
 
-    print "Variables from Serving Conference:"
-    for var in post:
-        print var, " : ", post[var]
+    print "nothing happened..."
+    print '\n'
 
-    data = render_to_response("twilioresponse.xml", {'confname':confname, 'webroot':WEB_ROOT})
-
-    return HttpResponse(data, mimetype="application/xml")
+    return HttpResponse(mimetype="application/xml")
 
 @csrf_exempt
 def processCallFeedback(request, conf):

@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
 from datetime import time
 
+
 GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -19,6 +20,10 @@ class UserProfile(UserenaBaseProfile):
     phone = models.CharField(_("Phone Number"), max_length=20, unique=True)
     reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+
+    def reload(self):
+        new_self = self.__class__.objects.get(pk=self.pk)
+        self.__dict__.update(new_self.__dict__)
 
 
 
