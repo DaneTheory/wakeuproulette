@@ -72,7 +72,8 @@ def serveConference(request, confname):
                 rURL = post['RecordingUrl']
                 rDuration = post['RecordingDuration']
 
-                if conf.recordingduration and conf.recordingduration < rDuration:
+                # If the conference is full, the call has been recorded, AND the new recording is less than the current
+                if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
                     conf.recordingurl = rURL
                     conf.recordingduration = rDuration
 

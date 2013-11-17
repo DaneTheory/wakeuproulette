@@ -729,7 +729,8 @@ class WakeUpSignupForm(SignupForm):
                                 widget=forms.TextInput(attrs = {'class': 'required'}),
                                 label=_("Phone"),
                                 error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
-    gender = forms.ModelChoiceField({'M':'Male', 'F':'Female'},initial='M',required=True)
+
+    gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female')))
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']

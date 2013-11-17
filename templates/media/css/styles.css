@@ -505,6 +505,9 @@ article h1 {
 #id_privacy {
     margin-left: 100px;
 }
+#id_gender {
+    float: right;
+}
 
 #content-wrapper form legend {
     text-align: center;
