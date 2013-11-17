@@ -247,8 +247,8 @@ class Command(NoArgsCommand):
             unmatchedPeople = populate_rooms(liveConferences, waiting, usersToConferences)
 
             print "\n\n"
-#            time.sleep(waitingtime)
-            raw_input('Press enter to continue')
+            time.sleep(waitingtime)
+#            raw_input('Press enter to continue')
 
             flush_transaction() # We flush so that the changes reflect in the database
             towakeup = UserProfile.objects.filter(active=True)
@@ -269,8 +269,7 @@ class Command(NoArgsCommand):
                 conf.call()
 
 
-#        towakeup.update(active=False, alarmon=False)
-        towakeup.update(active=False)
+        towakeup.update(active=False, alarmon=False)
 
 
     #Wait 60 seconds before sending feedback texts

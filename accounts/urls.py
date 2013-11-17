@@ -3,15 +3,17 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from accounts.views import WakeUpSignupForm
+from django.views.generic.base import RedirectView
 
 from accounts import views as account_views
 from userena import settings as userena_settings
 
 urlpatterns = patterns('',
     # Signup, signin and signout
-    url(r'^signup/$',
-        account_views.signup,
-        {'signup_form': WakeUpSignupForm}),
+#    url(r'^signup/$',
+#        account_views.signup,
+#        {'signup_form': WakeUpSignupForm}),
+    url(r'^signup/$', RedirectView.as_view(url='/beta', permanent=False), name='beta'),
     url(r'^signin/$',
         account_views.signin,
         name='userena_signin'),

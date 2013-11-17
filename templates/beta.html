@@ -24,9 +24,9 @@
     <div class="share">
         <a href="http://twitter.com/wakeuproulette" class="twitter">Tweet</a>
         <a href="http://facebook.com/wakeuproulette" class="facebook">Like</a>
-        <a href="/newsletter" class="newsletter">
-            Newsletter
-        </a>
+{#        <a href="/newsletter" class="newsletter">#}
+{#            Newsletter#}
+{#        </a>#}
     </div>
 
     <div id="usersection">
@@ -69,9 +69,14 @@
     </style>
     <div class="white-box">
         <div id="mc_embed_signup">
-            <form action="http://hackasoton.us3.list-manage.com/subscribe/post?u=bd965a5d6f46fe82302d4398d&amp;id=0f8f90eadc" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <h2>Thank you for your interest!</h2>
+            <form action="http://hackasoton.us3.list-manage.com/subscribe/post?u=bd965a5d6f46fe82302d4398d&amp;id=510af30c75" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                <h2>Sign Up For The Beta!</h2>
+                <h1>Wake-ups will kick off this coming Monday the 2nd of December!!</h1>
                 <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                <div class="mc-field-group">
+                    <label for="mce-FNAME">First Name <span class="asterisk">*</span> </label>
+                    <input type="text" value="" name="FNAME" class="required firstname" id="mce-FNAME">
+                </div>
                 <div class="mc-field-group">
                     <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
                     </label>
@@ -81,6 +86,9 @@
                     <div class="response" id="mce-error-response" style="display:none"></div>
                     <div class="response" id="mce-success-response" style="display:none"></div>
                 </div>	<div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                <div style="font-family: 'Ostrich'; font-size: 4em; text-align: center; padding: 20px 0px 20px">
+                    Start enjoying this new way of waking up!
+                </div>
             </form>
         </div>
     </div>
@@ -149,7 +157,7 @@
             var options = { errorClass: 'mce_inline_error', errorElement: 'div', onkeyup: function(){}, onfocusout:function(){}, onblur:function(){}  };
             var mce_validator = $("#mc-embedded-subscribe-form").validate(options);
             $("#mc-embedded-subscribe-form").unbind('submit');//remove the validator so we can get into beforeSubmit on the ajaxform, which then calls the validator
-            options = { url: 'http://hackasoton.us3.list-manage.com/subscribe/post-json?u=bd965a5d6f46fe82302d4398d&id=0f8f90eadc&c=?', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
+            options = { url: 'http://hackasoton.us3.list-manage1.com/subscribe/post-json?u=bd965a5d6f46fe82302d4398d&id=510af30c75&c=?', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
                 beforeSubmit: function(){
                     $('#mce_tmp_error_msg').remove();
                     $('.datefield','#mc_embed_signup').each(
@@ -221,24 +229,25 @@
         } else {
             var index = -1;
             var msg;
-            try {
-                var parts = resp.msg.split(' - ',2);
-                if (parts[1]==undefined){
-                    msg = resp.msg;
-                } else {
-                    i = parseInt(parts[0]);
-                    if (i.toString() == parts[0]){
-                        index = parts[0];
-                        msg = parts[1];
-                    } else {
-                        index = -1;
-                        msg = resp.msg;
-                    }
-                }
-            } catch(e){
-                index = -1;
-                msg = resp.msg;
-            }
+{#            try {#}
+{#                var parts = resp.msg.split(' - ',2);#}
+{#                if (parts[1]==undefined){#}
+{#                    msg = resp.msg;#}
+{#                } else {#}
+{#                    i = parseInt(parts[0]);#}
+{#                    if (i.toString() == parts[0]){#}
+{#                        index = parts[0];#}
+{#                        msg = parts[1];#}
+{#                    } else {#}
+{#                        index = -1;#}
+{#                        msg = resp.msg;#}
+{#                    }#}
+{#                }#}
+{#            } catch(e){#}
+{#                index = -1;#}
+{#                msg = resp.msg;#}
+{#            }#}
+            msg = "You've already signed up your interest for our Beta - You're Awesome! Thank you!"
             try{
                 if (index== -1){
                     $('#mce-'+resp.result+'-response').show();

@@ -1,0 +1,57 @@
+{% extends 'userena/base_userena.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Signin" %}{% endblock %}
+
+{% block content %}
+<style>
+    #content-wrapper{
+        width: 800px;
+        height: 500px
+    }
+    #google-survey {
+        padding: 20px 20px 20px 20px;
+        height: 200px;
+        overflow: hidden;
+    }
+    #survey-box {
+        margin-top: 150px;
+        padding: 20px 20px 20px 20px;
+    }
+    .ss-form-container {
+        overflow: hidden;
+        height: 100px;
+    }
+    .ss-form-heading {
+        visibility: hidden;
+    }
+    #survey-title {
+        font-family: Ostrich;
+        font-size: 2em;
+        text-align: center;
+        padding: 20px 20px 20px 20px;
+    }
+    #beta-title {
+        font-family: Ostrich;
+        font-size: 2em;
+        padding: 20px 20px 20px 20px;
+    }
+    #beta-footer {
+        text-align: center;
+        font-family: Franchise;
+    }
+</style>
+
+<div id="survey-box">
+    <div id="survey-title">Wake Up Roulette Survey!</div>
+    <div id="google-survey">
+        <iframe src="https://docs.google.com/forms/d/1h4wTo2sFyBm0LmtiuaNKcqz5SpjkaCu74Z58q95PZNw/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+    </div>
+    <div id="beta-footer">
+        <div id="beta-title">By the way!</div>
+        Registrations for the Beta are now open! <a href="/beta">Sign Up Now!</a>
+    </div>
+</div>
+
+{% endblock %}

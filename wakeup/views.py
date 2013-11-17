@@ -228,8 +228,11 @@ def startRoulette(request):
 
     return render(request, 'start.html')
 
-def newsletter(request):
-    return render(request, 'newsletter.html')
+def survey(request):
+    return render(request, 'survey.html')
+
+def beta(request):
+    return render(request, 'beta.html')
 
 def notFound(request):
     return render(request, '404.html')
