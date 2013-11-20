@@ -8,6 +8,26 @@ from django.conf import settings
 from django.db import transaction
 import random
 
+
+# Settings Variables
+dialingtimeout = 15
+maxTries = 3
+waitingtime = 45
+
+
+# Global Variables
+account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
+token = "5a556d4a9acf96753850c39111646ca4"
+client = TwilioRestClient(account, token)
+fromnumber = "+441279702159"
+
+# Variables for testing
+#account = "AC8698b1cf15def42651825fc466513ef4"
+#token = "2d778c2946ebd9c7fcb96a985660c179"
+#client = TwilioRestClient(account, token)
+#fromnumber = "+15005550006"
+
+
 @transaction.commit_manually
 def flush_transaction():
     transaction.commit()
@@ -31,33 +51,29 @@ class ConferenceObject(object):
 
     def call(self):
         #Executing the call
-        account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
-        token = "5a556d4a9acf96753850c39111646ca4"
-        client = TwilioRestClient(account, token)
         confurl = settings.WEB_ROOT + "conf/" + self.confName
-        timeout = 15
 
         if self.p1 and self.p1.alarmon:
             print "Calling", self.p1, self.p1.alarmon
-#            call1 = client.calls.create(
-#                  url=confurl
-#                , to = self.p1.phone
-#                , from_ = "+441279702159"
-#                , timeout = timeout
-#                , fallback_method = 'POST'
-#                , fallback_url=confurl
-#                , if_machine = 'Hangup')
+            call1 = client.calls.create(
+                  url=confurl
+                , to = self.p1.phone
+                , from_ = fromnumber
+                , timeout = dialingtimeout
+                , fallback_method = 'POST'
+                , fallback_url=confurl
+                , if_machine = 'Hangup')
 
         # Check if the p2 variable is set
         if self.p2 and self.p2.alarmon:
             print "Calling", self.p2, self.p2.alarmon
-#            call2 = client.calls.create(
-#                  url=confurl
-#                , to = self.p2.phone
-#                , from_ = "+441279702159"
-#                , timeout = 5
-#                , fallback_method = 'POST'
-#                , if_machine = 'Hangup')
+            call2 = client.calls.create(
+                  url=confurl
+                , to = self.p2.phone
+                , from_ = fromnumber
+                , timeout = dialingtimeout
+                , fallback_method = 'POST'
+                , if_machine = 'Hangup')
 
     def __init__(self, name, p1=None, p2=None):
         self.confName = name
@@ -69,7 +85,7 @@ class ConferenceObject(object):
 
 class Command(NoArgsCommand):
 
-    help = "Excecute Chron Wake Up Chron Roulette for the current 15 minute window."
+    help = "Excecute Chron Wake Up Chron Roulette for the current batch of wake-ups."
 
     option_list = NoArgsCommand.option_list + (
             make_option('--verbose', action='store_true'),
@@ -136,7 +152,7 @@ class Command(NoArgsCommand):
             for conf in liveConferences:
                 if conf.is_empty(): return conf
 
-            conf = ConferenceObject("Conf-" + str(len(liveConferences)) + "-" + str(schedule))
+            conf = ConferenceObject("Conf-" + str(len(liveConferences)) + "-" + str(schedulenow))
             liveConferences.append(conf)
             return conf
 
@@ -158,7 +174,7 @@ class Command(NoArgsCommand):
                 if not conf: conf = get_free_conference_room(liveConferences)
 
                 # Check if no matches were found
-                print "Printing p1, p2: ", p1, p2
+                print "Pairs: ", p1, p2
                 if not (p1 and p2):
                     if p1: unmatchedPeople.append(p1)
                     elif p2: unmatchedPeople.append(p2)
@@ -167,6 +183,8 @@ class Command(NoArgsCommand):
                     conf.p1 = p1
                     conf.p2 = p2
                     conf.call()
+
+                print "\n"
 
             return unmatchedPeople
 
@@ -187,6 +205,7 @@ class Command(NoArgsCommand):
                     conf.p2.alarmon if conf.p2 else "",     \
                     conf.is_done()
 
+                print "Checking if finished"
                 # If the confernce room is occupied and active, remove it, and set its users to innactive
                 if conf.is_done():
                     conf.p1.active = False
@@ -201,12 +220,12 @@ class Command(NoArgsCommand):
 
                 # Clear users if they didn't answer the phone - hence they are not waiting
                 if conf.p1:
-                    if conf.p1.alarmon: conf.p1 = None
+                    if conf.p1.alarmon or conf.p1.active == False: conf.p1 = None
                     else:
                         usersToConferences[conf.p1] = conf
 
                 if conf.p2:
-                    if conf.p2.alarmon: conf.p2 = None
+                    if conf.p2.alarmon or conf.p2.active  == False: conf.p2 = None
                     else:
                         usersToConferences[conf.p2] = conf
 
@@ -217,6 +236,7 @@ class Command(NoArgsCommand):
         minute = now.minute + 2  # +2 to avoid errors due to chron executed milliseconds before
         rounded = minute - (minute % 30)
         schedule = timedelta(hours=now.hour, minutes=rounded)
+        schedulenow = timedelta(hours=now.hour,minutes=now.minute,seconds=now.second)
 
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
 
@@ -227,8 +247,6 @@ class Command(NoArgsCommand):
         total = towakeup.count()
         waiting = {}
         liveConferences = []
-        maxTries = 3
-        waitingtime = 40
 
         for profile in towakeup:
             waiting[profile] = False
@@ -247,8 +265,8 @@ class Command(NoArgsCommand):
             unmatchedPeople = populate_rooms(liveConferences, waiting, usersToConferences)
 
             print "\n\n"
-            time.sleep(waitingtime)
-#            raw_input('Press enter to continue')
+#            time.sleep(waitingtime)
+            raw_input('Press enter to continue')
 
             flush_transaction() # We flush so that the changes reflect in the database
             towakeup = UserProfile.objects.filter(active=True)
@@ -269,7 +287,7 @@ class Command(NoArgsCommand):
                 conf.call()
 
 
-        towakeup.update(active=False, alarmon=False)
+#        towakeup.update(active=False, alarmon=False)
 
 
     #Wait 60 seconds before sending feedback texts

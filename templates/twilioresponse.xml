@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say>Good Morning, and welcome to Wake Up Roulette! We'll now connect you with an awesome person!</Say>
-    <Dial timeLimit="59" endConferenceOnExit="true" action="/conf/{{ confname }}" method="POST" record="true">
-        <Conference>{{ confname }}</Conference>
-    </Dial>
+    {% if say %}
+        <Say>{{ say }}</Say>
+    {% endif %}
+    {% if confname %}
+        <Dial timeLimit="60" endConferenceOnExit="true" action="/conf/{{ confname }}" method="POST" record="true">
+            <Conference>{{ confname }}</Conference>
+        </Dial>
+    {% endif %}
+    {% if hangup %}
+        <Hangup/>
+    {% endif %}
 </Response>

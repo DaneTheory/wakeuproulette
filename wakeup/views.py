@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from models import Conferences
 from django.core.management import call_command
 from django.utils.translation import ugettext as _
-from wakeuproulette.settings import WEB_ROOT
 from accounts.models import UserProfile
 
 
@@ -21,6 +20,7 @@ def serveConference(request, confname):
 
     print "Handling request"
     print "CallStatus: ", post['CallStatus']
+    print "Phone: ", post['To']
     if 'AnsweredBy' in post: print "AnsweredBy: ", post['AnsweredBy']
     if 'DialCallStatus' in post: print "DialCallStatus: ", post['DialCallStatus']
     if 'RecordingUrl' in post:
@@ -30,31 +30,57 @@ def serveConference(request, confname):
 
 
     if 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
-        print "Call has been answered!"
+
+        data = None
+
+        # Check if the conversation is already timed-out
+        if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
+            print "Call has reached the time limit! Hanging up now!"
+            phone = post['To']
+            profile = UserProfile.objects.get(phone=phone)
+            profile.active = False
+            profile.save()
+
+            say = "We hope you enjoyed the conversation! Make sure you rate your wake up buddy at wakeuproulette.com!"
+            data = render_to_response("twilioresponse.xml", {'hangup':True, 'say':say})
+
+        else:
+            print "Call has been answered!"
+
+            phone = post['To']
+            profile = UserProfile.objects.get(phone=phone)
+            profile.alarmon = False
+            profile.save()
+            print "Profile: ", profile
+
+            try:
+                print "Getting Conference Room: ", confname
+                conf = Conferences.objects.get(conferencename=confname)
+                print "Conference room found!"
+            except Conferences.DoesNotExist:
+                print "Conference room not found, creating a new conference room"
+                conf = Conferences(conferencename=confname)
+
+            if not conf.caller1:
+                print "Saving caller1 as: ", profile
+                conf.caller1 = profile.user
+            else:
+                print "Caller 1 already there: ", conf.caller1.profile
+                print "Saving Caller 2 as: ", profile
+                conf.caller2 = profile.user
+
+            conf.save()
+
+            say = "Welcome to Wake Up Roulette! We will now connect you with an awesome person!"
+            data = render_to_response("twilioresponse.xml", {'confname' : confname, 'say' : say})
+
         print '\n'
-
-        phone = post['To']
-        profile = UserProfile.objects.get(phone=phone)
-        profile.alarmon = False
-        profile.save()
-
-        try:
-            conf = Conferences.objects.get(conferencename=confname)
-        except Conferences.DoesNotExist:
-            conf = Conferences(conferencename=confname)
-
-        if not conf.caller1: conf.caller1 = profile.user
-        else: conf.caller2 = profile.user
-
-        conf.save()
-
-        data = render_to_response("twilioresponse.xml", {'confname':confname, 'webroot':WEB_ROOT})
-
         return HttpResponse(data, mimetype="application/xml")
 
 
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
         print "Call has been completed!"
+        print "Conference Room", confname
         print '\n'
 
         phone = post['To']
@@ -83,12 +109,16 @@ def serveConference(request, confname):
                 print "Something is wrong! Check why the conference is not being created!"
 
 
-        return HttpResponse(mimetype="application/xml")
+        data = render_to_response("twilioresponse.xml")
+        return HttpResponse(data, mimetype="application/xml")
 
-    print "nothing happened..."
+    print "Something else happened! Check what was it:"
+    for var in post:
+        print var, post[var]
     print '\n'
 
-    return HttpResponse(mimetype="application/xml")
+    data = render_to_response("twilioresponse.xml")
+    return HttpResponse(data, mimetype="application/xml")
 
 @csrf_exempt
 def processCallFeedback(request, conf):

@@ -10,10 +10,10 @@ from userena import settings as userena_settings
 
 urlpatterns = patterns('',
     # Signup, signin and signout
-#    url(r'^signup/$',
-#        account_views.signup,
-#        {'signup_form': WakeUpSignupForm}),
-    url(r'^signup/$', RedirectView.as_view(url='/beta', permanent=False), name='beta'),
+    url(r'^signup/$',
+        account_views.signup,
+        {'signup_form': WakeUpSignupForm}),
+#    url(r'^signup/$', RedirectView.as_view(url='/beta', permanent=False), name='beta'),
     url(r'^signin/$',
         account_views.signin,
         name='userena_signin'),
