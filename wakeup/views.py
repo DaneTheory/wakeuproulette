@@ -16,7 +16,7 @@ from datetime import datetime
 
 
 # Global Variables
-CALL_LIMIT = 10
+CALL_LIMIT = 30
 WELCOME_LIMIT = 5
 HOLD_LIMIT = 10
 TIMEOUT = 15
@@ -51,10 +51,8 @@ def get_active_conference_for(profile, schedule):
     # Refresh Database Changes
     flush_transaction()
     try:
-        found = Conferences.objects.get(Q(datecreated__gt=laterthan), Q(caller1=profile) | Q(caller2=profile))
-        print "CONFERENCE FOUND\n#####\n#####\n",found.conferencename,"\n#####\n#####"
 #        return Conferences.objects.filter(datecreated__lt=laterthan).get(Q(caller1=profile) | Q(caller2=profile))
-        return found
+        return Conferences.objects.get(Q(datecreated__gt=laterthan), Q(caller1=profile) | Q(caller2=profile))
     except Conferences.DoesNotExist:
         return None
 
@@ -131,7 +129,7 @@ def match_or_send_to_waiting_room(profile, schedule):
                                                             , 'beep' : True
                                                         })
     else:
-        return send_to_waiting_room(HOLD_LIMIT, confname, "Please bare with us - we'll find the best match for you!")
+        return send_to_waiting_room(HOLD_LIMIT, schedule, "Please bare with us - we'll find the best match for you!")
 
 @csrf_exempt
 def wakeUpRequest(request, schedule):
@@ -248,9 +246,11 @@ def answerCallback(request, schedule):
         print "Conference Room", schedule
         print '\n'
 
+        # Resetting all wakeup flags
         profile.alarmon = False
         profile.active = False
         profile.booked = False
+        profile.redials = 0
         profile.save()
 
         # Check for recording
