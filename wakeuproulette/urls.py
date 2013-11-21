@@ -8,8 +8,12 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', views.home, name='home'),
     url(r'^alarm/', views.setAlarm, name='alarm'),
-    url(r'^conf/(?P<confname>.+)$', views.serveConference, name='conference'),
     url(r'start/', views.startRoulette, name='start'),
+
+    # Serving Calls
+    url(r'^conf/(?P<confname>.+)$', views.serveConference, name='conference'),
+    url(r'^wakeuprequest/(?P<confname>.+)$', views.wakeUpRequest, name='wakeup'),
+    url(r'^answercallback/(?P<confname>.+)$', views.answerCallback, name='answer-callback'),
 
 #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'beta/', views.beta, name='beta'),

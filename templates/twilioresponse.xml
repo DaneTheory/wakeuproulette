@@ -4,9 +4,16 @@
         <Say>{{ say }}</Say>
     {% endif %}
     {% if confname %}
-        <Dial timeLimit="60" endConferenceOnExit="true" action="/conf/{{ confname }}" method="POST" record="true">
-            <Conference>{{ confname }}</Conference>
+        <Dial         {% if timelimit %}timeLimit="{{ timelimit }}"{% endif %}
+                      {% if record %}record="true"{% endif %}
+                      {% if link %}action="/wakeuprequest/{{ confname }}" method="POST"{% endif %}>
+        {% if confname %}
+            <Conference beep="{{ beep }}">{{ confname }}</Conference>
+        {% endif %}
         </Dial>
+    {% endif %}
+    {% if aftersay %}
+        <Say>{{ aftersay }}</Say>
     {% endif %}
     {% if hangup %}
         <Hangup/>
