@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     url(r'start/', views.startRoulette, name='start'),
 
     # Serving Calls
-    url(r'^wakeuprequest/(?P<confname>.+)$', views.wakeUpRequest, name='wakeup'),
-    url(r'^answercallback/(?P<confname>.+)$', views.answerCallback, name='answer-callback'),
+    url(r'^wakeuprequest/(?P<schedule>.+)$', views.wakeUpRequest, name='wakeup'),
+    url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer-callback'),
 
 #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'beta/', views.beta, name='beta'),

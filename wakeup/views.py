@@ -16,10 +16,12 @@ from datetime import datetime
 
 
 # Global Variables
-CALL_LIMIT = 30
-WELCOME_LIMIT = 10
+CALL_LIMIT = 10
+WELCOME_LIMIT = 5
 HOLD_LIMIT = 10
 TIMEOUT = 15
+RE_DIAL_LIMIT = 3
+CONFERENCE_SCHEDULE_DELIMITER = ':'
 
 
 @transaction.commit_manually
@@ -42,26 +44,31 @@ def find_match(profile):
     else:
         return None
 
-def get_active_conference_for(profile):
-    # TODO Implement a way to identify only conferences that are currently active. This could be through a uid or date
+def get_active_conference_for(profile, schedule):
+    scheduleparts = schedule.split(CONFERENCE_SCHEDULE_DELIMITER)
+    now = datetime.now()
+    laterthan = now.replace(hour=int(scheduleparts[0]),minute=int(scheduleparts[1]),second=0,microsecond=0)
     # Refresh Database Changes
     flush_transaction()
     try:
-        return Conferences.objects.get(Q(caller1=profile) | Q(caller2=profile))
+        found = Conferences.objects.get(Q(datecreated__gt=laterthan), Q(caller1=profile) | Q(caller2=profile))
+        print "CONFERENCE FOUND\n#####\n#####\n",found.conferencename,"\n#####\n#####"
+#        return Conferences.objects.filter(datecreated__lt=laterthan).get(Q(caller1=profile) | Q(caller2=profile))
+        return found
     except Conferences.DoesNotExist:
         return None
 
 
-def send_to_waiting_room(timelimit, confname, say):
+def send_to_waiting_room(timelimit, schedule, say):
     return render_to_response("twilioresponse.xml", { 'say' :say
-                                                    , 'confname' : confname
+                                                    , 'confname' : schedule
                                                     , 'timelimit' : timelimit
                                                     , 'link' : True
                                                     , 'record' : False
                                                     , 'beep' : False})
 
 @transaction.commit_on_success
-def match_or_send_to_waiting_room(profile, confname):
+def match_or_send_to_waiting_room(profile, schedule):
 
 ##    Person has reached his waiting limit, hang up
 #    if person.waiting > waitinglimit:
@@ -71,7 +78,7 @@ def match_or_send_to_waiting_room(profile, confname):
 #        data = render_to_response("twilioresponse.xml", {'say' :say, 'hangup' : True})
 
     if profile.booked:
-        conf = get_active_conference_for(profile)
+        conf = get_active_conference_for(profile, schedule)
         if conf:
             confname = conf.conferencename
             other = None
@@ -103,7 +110,7 @@ def match_or_send_to_waiting_room(profile, confname):
     match = find_match(profile)
     if match:
         conf = Conferences()
-        conf.conferencename = profile.user.username + "-" + match.user.username + "-" + confname
+        conf.conferencename = profile.user.username + "-" + match.user.username + "-" + schedule
         conf.caller1 = profile.user
         conf.caller2 = match.user
         conf.save()
@@ -127,9 +134,9 @@ def match_or_send_to_waiting_room(profile, confname):
         return send_to_waiting_room(HOLD_LIMIT, confname, "Please bare with us - we'll find the best match for you!")
 
 @csrf_exempt
-def wakeUpRequest(request, confname):
+def wakeUpRequest(request, schedule):
     # Removing any trailing '/'
-    confname = confname.replace("/", "")
+    schedule = schedule.replace("/", "")
 
     post = request.POST
 
@@ -161,7 +168,7 @@ def wakeUpRequest(request, confname):
         # If user is currently waiting
         if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
             print "Person is still awake, and he's still waiting!"
-            data = match_or_send_to_waiting_room(profile, confname)
+            data = match_or_send_to_waiting_room(profile, schedule)
 
         # Else, person has just woken up
         else:
@@ -170,7 +177,7 @@ def wakeUpRequest(request, confname):
             profile.alarmon = False
             profile.save()
 
-            data = send_to_waiting_room(WELCOME_LIMIT, confname, "Welcome to Wake Up Roulette! We'll find you an awesome person! On the meantime, why don't you relax in the waiting room? Smiley Face. L O L")
+            data = send_to_waiting_room(WELCOME_LIMIT, schedule, "Welcome to Wake Up Roulette! We'll find you an awesome person! On the meantime, why don't you relax in the waiting room? Smiley Face. L O L")
 
         print '\n'
 
@@ -184,71 +191,81 @@ def wakeUpRequest(request, confname):
     return HttpResponse(data, mimetype="application/xml")
 
 @csrf_exempt
-def answerCallback(request, confname):
+def answerCallback(request, schedule):
     post = request.POST
     phone = post['To']
+
+    # Refresh Database Changes
+    flush_transaction()
+    profile = UserProfile.objects.get(phone=phone)
 
     print "Handling ANSWER CALLBACK request"
     print "CallStatus: ", post['CallStatus']
     print "Phone: ", post['To']
+    if 'AnsweredBy' in post: print "AnsweredBy: ", post['AnsweredBy']
+    if 'DialCallStatus' in post: print "DialCallStatus: ", post['DialCallStatus']
+    if 'RecordingUrl' in post:
+        print "Recoding URL: ", post['RecordingUrl']
+        print "Recording Duration: ", post['RecordingDuration']
 
     # If dude didn't answer, call him again
     if post['CallStatus'] == 'no-answer':
-        # TODO: THIS SHOULD REALLY BE DEALT WITH A SIMPLE XMLRESPONSE RATHER THAN API CALL
-        # TODO: THIS CAN BE DEALT IN ITS OWN METHOD - ESPECIALLY BECAUSE IT GENERATES REPEATED COMPLETED REQUESTS FROM TWILIO
-        account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
-        token = "5a556d4a9acf96753850c39111646ca4"
-        client = TwilioRestClient(account, token)
-        fromnumber = "+441279702159"
-        confurl = settings.WEB_ROOT + 'wakeuprequest/' + confname
-        noanswerurl = settings.WEB_ROOT + 'answercallback/' + confname
-        fallbackurl = settings.WEB_ROOT + 'fallback/' + confname
-        print "No answer, calling again: ", phone, confurl
-        call1 = client.calls.create(
-              url=confurl
-            , to = phone
-            , from_ = fromnumber
-            , timeout = TIMEOUT
-            , fallback_method = 'POST'
-            , fallback_url=fallbackurl
-            , if_machine = 'Hangup'
-            , status_callback = noanswerurl
-            , status_method = 'Post')
-        data = render_to_response("twilioresponse.xml")
+        # Make sure that number of re-dials has not been exceeded
+        if profile.redials >= RE_DIAL_LIMIT:
+            data = render_to_response("twilioresponse.xml")
+
+            # Re-setting redial count
+            profile.redials = 0
+            profile.save()
+        else:
+            # TODO: THIS SHOULD REALLY BE DEALT WITH A SIMPLE XMLRESPONSE RATHER THAN API CALL
+            account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
+            token = "5a556d4a9acf96753850c39111646ca4"
+            client = TwilioRestClient(account, token)
+            fromnumber = "+441279702159"
+            confurl = settings.WEB_ROOT + 'wakeuprequest/' + schedule
+            noanswerurl = settings.WEB_ROOT + 'answercallback/' + schedule
+            fallbackurl = settings.WEB_ROOT + 'fallback/' + schedule
+            print "No answer, calling again: ", phone, confurl
+            call1 = client.calls.create(
+                  url=confurl
+                , to = phone
+                , from_ = fromnumber
+                , timeout = TIMEOUT
+                , fallback_method = 'POST'
+                , fallback_url=fallbackurl
+                , if_machine = 'Hangup'
+                , status_callback = noanswerurl
+                , status_method = 'Post'
+                , record = True)
+            data = render_to_response("twilioresponse.xml")
+
+            profile.redials = profile.redials + 1
+            profile.save()
 
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
         print "Call has been completed!"
-        print "Conference Room", confname
+        print "Conference Room", schedule
         print '\n'
-
-        # Refresh Database Changes
-        flush_transaction()
-        profile = UserProfile.objects.get(phone=phone)
 
         profile.alarmon = False
         profile.active = False
         profile.booked = False
         profile.save()
 
-        # TODO DEAL WITH SOMEONE THAT HANGS UP IN THE WAITING ROOM BUT THE OTHER PERSON IS WAITING
-        # Check if the user hung up in the waiting room
-        if len(confname.split('-')) > 1:
-            conf = Conferences.objects.get(conferencename=confname)
-            otherprofile = None
-            if conf.caller1 != profile.user: otherprofile = conf.caller1.profile
-            if conf.caller2 != profile.user: otherprofile = conf.caller2.profile
+        # Check for recording
+        if 'RecordingUrl' in post:
+            conf = get_active_conference_for(profile, schedule)
 
-            # Check for recording
-            if 'RecordingUrl' in post:
-                rURL = post['RecordingUrl']
-                rDuration = post['RecordingDuration']
+            rURL = post['RecordingUrl']
+            rDuration = post['RecordingDuration']
 
-                # If the conference is full, the call has been recorded, AND the new recording is less than the current
-                if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
-                    conf.recordingurl = rURL
-                    conf.recordingduration = rDuration
+            # If the conference is full, the call has been recorded, AND the new recording is less than the current
+            if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
+                conf.recordingurl = rURL
+                conf.recordingduration = rDuration
 
-                conf.save()
+            conf.save()
 
         data = render_to_response("twilioresponse.xml")
 

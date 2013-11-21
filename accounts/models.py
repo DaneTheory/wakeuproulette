@@ -21,6 +21,10 @@ class UserProfile(UserenaBaseProfile):
     active = models.BooleanField(_("Being Waken Up"), default=False)
     # booked - If the user is booked, the user is currently active and has been assigned a conference room
     booked = models.BooleanField(_("Conference Room Assigned"), default=False)
+
+    snoozelimit = models.IntegerField(_("Snooze Limit"), default=0)
+    redials = models.IntegerField(_("Current Snooze"), default=0)
+
     phone = models.CharField(_("Phone Number"), max_length=20, unique=True)
     reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)

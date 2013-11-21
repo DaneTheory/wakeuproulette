@@ -43,13 +43,11 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
 
-        # THIS IS JUST TEMP UNTIL CONFERENCES ARE DEALT INTELLIGENTLY
-        Conferences.objects.all().delete()
-
         now = datetime.now()
         minute = now.minute + 2  # +2 to avoid errors due to chron executed milliseconds before
         rounded = minute - (minute % 30)
-        schedule = timedelta(hours=now.hour, minutes=rounded)
+#        schedule = timedelta(hours=now.hour, minutes=rounded)
+        schedule = timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
         confname = str(schedule)
         confurl = settings.WEB_ROOT + "wakeuprequest/" + confname
         noanswerurl = settings.WEB_ROOT + 'answercallback/' + confname
@@ -79,7 +77,8 @@ class Command(NoArgsCommand):
                     , fallback_url=fallbackurl
                     , if_machine = 'Hangup'
                     , status_callback = noanswerurl
-                    , status_method = 'Post')
+                    , status_method = 'Post'
+                    , record=True)
 
             print "\n\n"
             #            time.sleep(waitingtime)
