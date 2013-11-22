@@ -22,7 +22,7 @@ HOLD_LIMIT = 10
 TIMEOUT = 15
 
 RE_DIAL_LIMIT = 4
-REDIRECT_LIMIT = 4
+REDIRECT_LIMIT = 3
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -60,13 +60,14 @@ def get_active_conference_for(profile, schedule):
         return None
 
 
-def send_to_waiting_room(timelimit, schedule, say):
+def send_to_waiting_room(timelimit, url, confname, gather=None, say=None):
     return render_to_response("twilioresponse.xml", { 'say' :say
-                                                    , 'confname' : schedule
+                                                    , 'gather' : gather
+                                                    , 'url' : url
+                                                    , 'confname' : confname
                                                     , 'timelimit' : timelimit
-                                                    , 'link' : True
                                                     , 'record' : False
-                                                    , 'beep' : False})
+                                                    , 'beep' : False })
 
 #@transaction.commit_on_success
 def match_or_send_to_waiting_room(profile, schedule):
@@ -132,7 +133,31 @@ def match_or_send_to_waiting_room(profile, schedule):
                                                             , 'beep' : True
                                                         })
     else:
-        return send_to_waiting_room(HOLD_LIMIT, schedule, "Please bare with us - we'll find the best match for you!")
+        return send_to_waiting_room(  HOLD_LIMIT
+                                    , schedule
+                                    , profile.user.username if profile.roomdesired else "waiting"
+                                    , False
+                                    , "Please bare with us - we'll find the best match for you!")
+
+@csrf_exempt
+def gatherRequest(request, schedule):
+    print "GATHER REQUEST!"
+    post = request.POST
+
+    # Refresh Database Changes
+    flush_transaction()
+    phone = post['To']
+    profile = UserProfile.objects.get(phone=phone)
+
+    profile.roomdesired = True
+
+    data = send_to_waiting_room(  HOLD_LIMIT
+                                , schedule
+                                , profile.user.username if profile.roomdesired else "waiting"
+                                , False
+                                , "We'll send you to a private room while we connect you with an awesome person!")
+
+    return HttpResponse(data, mimetype="application/xml")
 
 @csrf_exempt
 def wakeUpRequest(request, schedule):
@@ -168,8 +193,10 @@ def wakeUpRequest(request, schedule):
                 # The user has reached the limit of redials, so hang up
                 say = "We hope you enjoyed your conversation! Don't forget to rate your Wake Up Buddy at wakeuproulette.com! See you tomorrow!"
                 data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
+                profile.save()
             else:
                 profile.redials = profile.redials + 1
+                profile.save()
                 data = match_or_send_to_waiting_room(profile, schedule)
 
         # Else, person has just woken up
@@ -179,9 +206,13 @@ def wakeUpRequest(request, schedule):
             # Setting the redials to zero - we'll use this count to limit the waiting time
             profile.redials = 0
             profile.alarmon = False
+            profile.roomdesired = False
             profile.save()
 
-            data = send_to_waiting_room(WELCOME_LIMIT, schedule, "Welcome to Wake Up Roulette! We'll find you an awesome person! On the meantime, why don't you relax in the waiting room? Smiley Face. L O L")
+            data = send_to_waiting_room(  WELCOME_LIMIT
+                                        , schedule
+                                        , "waiting"
+                                        , "Welcome to Wake Up Roulette! We'll now send you to a waiting room with everyone - if you'd rather wait in a private room, press any number now.")
 
         print '\n'
 
@@ -247,7 +278,7 @@ def answerCallback(request, schedule):
             profile.redials = profile.redials + 1
             profile.save()
 
-    elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
+    elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human' and len(schedule.split('-')) > 1:
         print "Call has been completed!"
         print "Conference Room", schedule
         print '\n'
@@ -263,15 +294,16 @@ def answerCallback(request, schedule):
         if 'RecordingUrl' in post:
             conf = get_active_conference_for(profile, schedule)
 
-            rURL = post['RecordingUrl']
-            rDuration = post['RecordingDuration']
+            if conf:
+                rURL = post['RecordingUrl']
+                rDuration = post['RecordingDuration']
 
-            # If the conference is full, the call has been recorded, AND the new recording is less than the current
-            if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
-                conf.recordingurl = rURL
-                conf.recordingduration = rDuration
+                # If the conference is full, the call has been recorded, AND the new recording is less than the current
+                if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
+                    conf.recordingurl = rURL
+                    conf.recordingduration = rDuration
 
-            conf.save()
+                conf.save()
 
         data = render_to_response("twilioresponse.xml")
 

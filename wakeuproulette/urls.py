@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     # Serving Calls
     url(r'^wakeuprequest/(?P<schedule>.+)$', views.wakeUpRequest, name='wakeup'),
     url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer-callback'),
+    url(r'^gatherrequest/(?P<schedule>.+)$', views.gatherRequest, name='gather'),
 
 #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'beta/', views.beta, name='beta'),

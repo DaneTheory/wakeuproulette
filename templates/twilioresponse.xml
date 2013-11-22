@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
+    {% if gather %}
+        <Gather action="/gatherrequest/{{ url }}" numDigits="1">
+            <Say>{{ gather }}</Say>
+        </Gather>
+    {% endif %}
     {% if say %}
         <Say>{{ say }}</Say>
     {% endif %}
     {% if confname %}
         <Dial         {% if timelimit %}timeLimit="{{ timelimit }}"{% endif %}
                       {% if record %}record="true"{% endif %}
-                      {% if link %}action="/wakeuprequest/{{ confname }}" method="POST"{% endif %}>
+                      {% if url %}action="/wakeuprequest/{{ url }}" method="POST"{% endif %}>
         {% if confname %}
             <Conference beep="{{ beep }}">{{ confname }}</Conference>
         {% endif %}

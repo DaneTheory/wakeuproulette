@@ -16,6 +16,7 @@ class UserProfile(UserenaBaseProfile):
         verbose_name=_('user'),related_name='profile')
     alarm = models.TimeField(_("Alarm Time"), default=time(8))
     dob = models.DateField(_("Date of Birth"), null=True, blank=True)
+    roomdesired = models.BooleanField(_('Waiting Room Desired'), default=False)
 
     # alarmon - If the alarm is on, the user will be considered to be sleeping - if it's off, he is awake
     alarmon = models.BooleanField(_("Alarm On"), default=False)
