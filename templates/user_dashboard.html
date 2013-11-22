@@ -25,6 +25,9 @@
         <div id="dashboard">
             {% block dashboard %}
                 <img class="mugshot" src="{{ profile.get_mugshot_url }}" alt="{% trans "Your mugshot" %}" />
+                {% if deleted %}
+                    <div id="deleted">Recording has been deleted</div>
+                {% endif %}
                 <h1>All Your WakeUps</h1>
                 {% for conf in conferences %}
                     <div class="call">
@@ -35,6 +38,11 @@
                                 <source src="{{ conf.recordingurl }}" type="audio/x-wav">
                                 The recording cannot be displayed, please use Chrome or Firefox.
                             </audio>
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="recurl" value="{{ conf.recordingurl }}" />
+                                <input type="submit" value="Delete" />
+                            </form>
                         </div>
                     {% endif %}
                     </div>

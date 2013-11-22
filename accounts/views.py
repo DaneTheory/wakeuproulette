@@ -23,7 +23,9 @@ from userena.utils import signin_redirect, get_profile_model, get_user_model
 from userena import signals as userena_signals
 from userena import settings as userena_settings
 
-from datetime import datetime
+from datetime import date
+
+from twilio.rest import TwilioRestClient
 
 from wakeup.models import Conferences
 from accounts.models import UserProfile
@@ -731,11 +733,38 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 
 
 def call_dashboard(request, username):
-    print "Serving Dashboard"
+
+    deleted = False
+
+    # If post, there's a request to delete recording
+    if request.method == 'POST':
+        recurl = request.POST['recurl']
+        sid = recurl.split('/')[-1]
+
+        account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
+        token = "5a556d4a9acf96753850c39111646ca4"
+        client = TwilioRestClient(account, token)
+
+        # Delete recording
+        try:
+            client.recordings.delete(sid=sid)
+        except Exception:
+            print "Recording not found..."
+
+        try:
+            delrec = Conferences.objects.get(recordingurl=recurl)
+            delrec.recordingurl = None
+            delrec.recordingduration = None
+            delrec.save()
+        except Conferences.DoesNotExist:
+            print "Conference with such recording does not exist!!"
+
+        deleted = True
+
     profile = UserProfile.objects.get(user__username=username)
     conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
-    return render(request, 'user_dashboard.html', {'conferences' : conferences, 'profile' : profile})
+    return render(request, 'user_dashboard.html', {'conferences' : conferences, 'profile' : profile, 'deleted' : deleted})
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
@@ -758,7 +787,7 @@ class WakeUpSignupForm(SignupForm):
 
     def clean_date_of_birth(self):
         dob = self.cleaned_data['date_of_birth']
-        age = (datetime.now() - dob).days/365
+        age = (date.today() - dob).days/365
         if age < 18:
             raise forms.ValidationError('Must be at least 18 years old to register')
         return dob
