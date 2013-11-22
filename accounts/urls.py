@@ -95,7 +95,16 @@ urlpatterns = patterns('',
     url(r'^page/(?P<page>[0-9]+)/$',
         account_views.ProfileListView.as_view(),
         name='userena_profile_list_paginated'),
-    url(r'^$',
-        account_views.ProfileListView.as_view(),
-        name='userena_profile_list'),
+
+    # WAKEUPROULETTE
+
+    # View Profiles
+    url(r'^dashboard/(?P<username>[\.\w-]+)/$',
+        account_views.call_dashboard,
+        name='wakeup_call_dashboard'),
+
+    # Uncomment this if we want to see full profile list - however all users are currently private so there is no use
+#    url(r'^$',
+#        account_views.ProfileListView.as_view(),
+#        name='userena_profile_list'),
 )

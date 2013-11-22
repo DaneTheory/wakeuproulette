@@ -5,13 +5,15 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout as Signout
+from django.db.models import Q
+from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.template.context import RequestContext
 from django.views.generic.list import ListView
 from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
+from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect, HttpResponse
 from userena.forms import (SignupForm, SignupFormOnlyEmail, AuthenticationForm,
                            ChangeEmailForm, EditProfileForm)
 from userena.models import UserenaSignup
@@ -20,6 +22,11 @@ from userena.backends import UserenaAuthenticationBackend
 from userena.utils import signin_redirect, get_profile_model, get_user_model
 from userena import signals as userena_signals
 from userena import settings as userena_settings
+
+from datetime import datetime
+
+from wakeup.models import Conferences
+from accounts.models import UserProfile
 
 from guardian.decorators import permission_required_or_403
 
@@ -42,6 +49,10 @@ class SecureEditProfileForm(EditProfileForm):
         self.fields.pop('phone')
         self.fields.pop('gender')
         self.fields.pop('active')
+        self.fields.pop('redials')
+        self.fields.pop('booked')
+        self.fields.pop('privacy')
+        self.fields.pop('dob')
 
 class ExtraContextTemplateView(TemplateView):
     """ Add extra context to a simple template view """
@@ -719,6 +730,12 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         **kwargs)(request)
 
 
+def call_dashboard(request, username):
+    print "Serving Dashboard"
+    profile = UserProfile.objects.get(user__username=username)
+    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
+
+    return render(request, 'user_dashboard.html', {'conferences' : conferences, 'profile' : profile})
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
@@ -731,12 +748,20 @@ class WakeUpSignupForm(SignupForm):
                                 error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
 
     gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female')))
+    date_of_birth = forms.DateField(label=_('Date of Birth'))
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']
         without_trailing = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', cleaned)
         with_uk_extension = "+44" + without_trailing
         return with_uk_extension
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data['date_of_birth']
+        age = (datetime.now() - dob).days/365
+        if age < 18:
+            raise forms.ValidationError('Must be at least 18 years old to register')
+        return dob
 
     def save(self):
         """
@@ -751,6 +776,8 @@ class WakeUpSignupForm(SignupForm):
         user_profile.save()
 
         return user
+
+
 
 #def get_valid_gateway(phone):
 #    valid_gateway = ""

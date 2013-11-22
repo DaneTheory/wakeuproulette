@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
-from datetime import time
+from datetime import time, date
 
 
 GENDER_CHOICES = (
@@ -15,6 +15,8 @@ class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User,unique=True,
         verbose_name=_('user'),related_name='profile')
     alarm = models.TimeField(_("Alarm Time"), default=time(8))
+    dob = models.DateField(_("Date of Birth"), null=True, blank=True)
+
     # alarmon - If the alarm is on, the user will be considered to be sleeping - if it's off, he is awake
     alarmon = models.BooleanField(_("Alarm On"), default=False)
     # active - States whether the user is currently being waken up
@@ -22,8 +24,8 @@ class UserProfile(UserenaBaseProfile):
     # booked - If the user is booked, the user is currently active and has been assigned a conference room
     booked = models.BooleanField(_("Conference Room Assigned"), default=False)
 
-    snoozelimit = models.IntegerField(_("Snooze Limit"), default=0)
-    redials = models.IntegerField(_("Current Snooze"), default=0)
+    snoozelimit = models.IntegerField(_("Snooze Limit"), default=3)
+    redials = models.IntegerField(_("Re-Dials"), default=0)
 
     phone = models.CharField(_("Phone Number"), max_length=20, unique=True)
     reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
