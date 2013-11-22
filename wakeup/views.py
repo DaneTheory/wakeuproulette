@@ -65,7 +65,7 @@ def send_to_waiting_room(timelimit, schedule, say):
                                                     , 'record' : False
                                                     , 'beep' : False})
 
-@transaction.commit_on_success
+#@transaction.commit_on_success
 def match_or_send_to_waiting_room(profile, schedule):
 
 ##    Person has reached his waiting limit, hang up
