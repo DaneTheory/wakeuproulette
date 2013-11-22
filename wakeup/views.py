@@ -20,7 +20,10 @@ CALL_LIMIT = 60
 WELCOME_LIMIT = 20
 HOLD_LIMIT = 10
 TIMEOUT = 15
+
 RE_DIAL_LIMIT = 4
+REDIRECT_LIMIT = 4
+
 CONFERENCE_SCHEDULE_DELIMITER = ':'
 
 
@@ -156,22 +159,25 @@ def wakeUpRequest(request, schedule):
     if 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
         data = None
 
-        if 'RecordingUrl' in post:
-            print "CALL IS SUPPOSED TO BE TERMINATED - CHECK WHAT'S UP"
-            for var in post:
-                print var, post[var]
-            print '\n'
-
-
         # If user is currently waiting
         if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
             print "Person is still awake, and he's still waiting!"
-            data = match_or_send_to_waiting_room(profile, schedule)
+
+            #Check if we have exceeded the waiting redirect limits
+            if profile.redials > REDIRECT_LIMIT:
+                # The user has reached the limit of redials, so hang up
+                say = "We hope you enjoyed your conversation! Don't forget to rate your Wake Up Buddy at wakeuproulette.com! See you tomorrow!"
+                data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
+            else:
+                profile.redials = profile.redials + 1
+                data = match_or_send_to_waiting_room(profile, schedule)
 
         # Else, person has just woken up
         else:
             print "Person has just waken up and answered!"
 
+            # Setting the redials to zero - we'll use this count to limit the waiting time
+            profile.redials = 0
             profile.alarmon = False
             profile.save()
 
