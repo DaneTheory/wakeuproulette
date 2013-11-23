@@ -10,7 +10,7 @@
     {% endif %}
     {% if confname %}
         <Dial         {% if timelimit %}timeLimit="{{ timelimit }}"{% endif %}
-                      {% if record %}record="true"{% endif %}
+                      {% if record %}record="true" action="/recordingrequest/{{ record }}" method="POST"{% endif %}
                       {% if url %}action="/wakeuprequest/{{ url }}" method="POST"{% endif %}
                       {% if hanguponstar %} hangupOnStar="True" {% endif %}>
         {% if confname %}

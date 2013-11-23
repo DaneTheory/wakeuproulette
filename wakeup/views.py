@@ -59,7 +59,7 @@ def get_active_conference_for(profile, schedule):
     except Conferences.DoesNotExist:
         return None
 
-def send_to_conference_room(username, confname):
+def send_to_conference_room(username, confname, record):
     say = "We have found you a match! You are now connected with " + username + "! Press Star if you wish to end the conversation immediately and rate your wake up buddy."
     rating = "Please rate your Wake Up Buddy Now! Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy! . ! . !"
     rating += "We're sorry, we didn't quite get that. Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy"
@@ -71,7 +71,7 @@ def send_to_conference_room(username, confname):
                                                         , 'hangup' : True
                                                         , 'goodbye' : goodbye
                                                         , 'rating' : rating
-                                                        , 'record' : True
+                                                        , 'record' : record
                                                         , 'beep' : True
                                                     })
 
@@ -106,7 +106,7 @@ def match_or_send_to_waiting_room(profile, schedule):
 
             # Check if the other person hasn't hung up
             if other.active:
-                return send_to_conference_room(other.user.username, conf.conferencename)
+                return send_to_conference_room(other.user.username, conf.conferencename, profile.recording)
 
             # If we are here it's because the other person hung up - delete the conference room and send to waiting room
             conf.delete()
@@ -128,7 +128,7 @@ def match_or_send_to_waiting_room(profile, schedule):
         profile.save()
         match.save()
 
-        return send_to_conference_room(match.user.username, conf.conferencename)
+        return send_to_conference_room(match.user.username, conf.conferencename, profile.recording)
 
     else:
         return send_to_waiting_room(  HOLD_LIMIT
@@ -266,38 +266,28 @@ def answerCallback(request, schedule):
             profile.redials = profile.redials + 1
             profile.save()
 
+    # TODO INCREASE COUNTER OF CALLS
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
         print "Call has been completed!"
         print "Conference Room", schedule
         print '\n'
 
         # Resetting all wakeup flags
-        profile.alarmon = False
-        profile.active = False
-        profile.booked = False
-        profile.redials = 0
+        profile.reset_flags()
         profile.save()
 
-        # Check for recording
-        if 'RecordingUrl' in post:
-            conf = get_active_conference_for(profile, schedule)
+        conf = get_active_conference_for(profile, schedule)
 
-            if conf:
-                rURL = post['RecordingUrl']
-                rDuration = post['RecordingDuration']
+        if conf:
+            # TODO HANDLE WHEN USER GETS CONNECTED
+            print "Got a match between", conf.caller1.username, "and", conf.caller2.username
 
-                # If the conference is full, the call has been recorded, AND the new recording is less than the current
-                if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
-                    conf.recordingurl = rURL
-                    conf.recordingduration = rDuration
+        else:
+            # TODO HANDLE WHEN THE USER DOESNT GET CONNECTED - MAYBE TO GATHER STATS, AND MAYBE CREATE A LONELY CONFERENCE ROOM
+            # The user was not connected to anyone
 
-                conf.save()
-            else:
-                # TODO HANDLE WHEN THE USER DOESNT GET CONNECTED - MAYBE TO GATHER STATS, AND MAYBE CREATE A LONELY CONFERENCE ROOM
-                # The user was not connected to anyone
-
-                print "FOREVERALONE USER RECEIVED"
-                data = render_to_response("twilioresponse.xml")
+            print "FOREVERALONE USER RECEIVED"
+            data = render_to_response("twilioresponse.xml")
 
         data = render_to_response("twilioresponse.xml")
 
@@ -388,6 +378,44 @@ def ratingRequest(request, confname):
         data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                             , 'goodbye' : goodbye
                                                         })
+
+    return HttpResponse(data, mimetype="application/xml")
+
+def recordingRequest(request, confname):
+    print "RECORDING REQUEST"
+
+    post = request.POST
+
+    # Refresh Database Changes
+    flush_transaction()
+    phone = post['To']
+    profile = UserProfile.objects.get(phone=phone)
+
+    # If there is a RecordingURL, the conference terminated successfully and a recording was requested
+    if 'RecordingUrl' in post:
+        # Resetting flags for profile as conversation has ended
+
+        conf = get_active_conference_for(profile, confname)
+
+        if conf:
+        # Check for recording
+            rURL = post['RecordingUrl']
+            rDuration = post['RecordingDuration']
+
+            # If the conference is full, the call has been recorded, AND the new recording is less than the current
+            if (conf.caller1 and conf.caller2) and (not conf.recordingduration or rDuration < conf.recordingduration):
+                conf.recordingurl = rURL
+                conf.recordingduration = rDuration
+
+            conf.save()
+
+    rating = "Please rate your Wake Up Buddy Now! Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy! . ! . !"
+    rating += "We're sorry, we didn't quite get that. Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy"
+    goodbye = "We hope you had a great time! See you soon!"
+    data = render_to_response("twilioresponse.xml", {     'hangup' : True
+                                                        , 'goodbye' : goodbye
+                                                        , 'rating' : rating
+                                                    })
 
     return HttpResponse(data, mimetype="application/xml")
 
