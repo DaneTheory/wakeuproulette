@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     {% if gather %}
-        <Gather action="/gatherrequest/{{ url }}" numDigits="1">
+        <Gather action="/privaterequest/{{ url }}" numDigits="1">
             <Say>{{ gather }}</Say>
         </Gather>
     {% endif %}
@@ -11,14 +11,20 @@
     {% if confname %}
         <Dial         {% if timelimit %}timeLimit="{{ timelimit }}"{% endif %}
                       {% if record %}record="true"{% endif %}
-                      {% if url %}action="/wakeuprequest/{{ url }}" method="POST"{% endif %}>
+                      {% if url %}action="/wakeuprequest/{{ url }}" method="POST"{% endif %}
+                      {% if hanguponstar %} hangupOnStar="True" {% endif %}>
         {% if confname %}
             <Conference beep="{{ beep }}">{{ confname }}</Conference>
         {% endif %}
         </Dial>
     {% endif %}
-    {% if aftersay %}
-        <Say>{{ aftersay }}</Say>
+    {% if rating %}
+        <Gather action="/ratingrequest/{{ gatherurl }}" numDigits="1">
+            <Say>{{ rating }}</Say>
+        </Gather>
+    {% endif %}
+    {% if goodbye %}
+        <Say>{{ goodbye }}</Say>
     {% endif %}
     {% if hangup %}
         <Hangup/>

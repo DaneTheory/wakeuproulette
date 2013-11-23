@@ -13,9 +13,12 @@ urlpatterns = patterns('',
     # Serving Calls
     url(r'^wakeuprequest/(?P<schedule>.+)$', views.wakeUpRequest, name='wakeup'),
     url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer-callback'),
-    url(r'^gatherrequest/(?P<schedule>.+)$', views.gatherRequest, name='gather'),
+    url(r'^privaterequest/(?P<schedule>.+)$', views.sendToPrivateRoom, name='private-room'),
+    url(r'^ratingrequest/(?P<confname>.+)$', views.ratingRequest, name='rating'),
+    # Handling fallback errors
+    url(r'^fallback/(?P<confname>.+)$', views.fallbackRequest, name='fallback'),
 
-#    url(r'newsletter/', views.newsletter, name='newsletter'),
+    #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'beta/', views.beta, name='beta'),
 
     url(r'survey/', views.survey, name='survey'),

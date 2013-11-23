@@ -73,7 +73,7 @@ class Command(NoArgsCommand):
                     , to = p.phone
                     , from_ = fromnumber
                     , timeout = dialingtimeout
-                    , fallback_method = 'POST'
+                    , fallback_method = 'Post'
                     , fallback_url=fallbackurl
                     , if_machine = 'Hangup'
                     , status_callback = noanswerurl
@@ -86,3 +86,5 @@ class Command(NoArgsCommand):
 
             flush_transaction() # We flush so that the changes reflect in the database
             towakeup = UserProfile.objects.filter(alarmon=True, active=True)
+
+        # TODO Set anyone with active=true to active=false+alarmon=false
