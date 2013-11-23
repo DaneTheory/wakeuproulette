@@ -85,4 +85,4 @@ class Command(NoArgsCommand):
             raw_input('Press enter to continue')
 
             flush_transaction() # We flush so that the changes reflect in the database
-            towakeup = UserProfile.objects.filter(alarmon=True)
+            towakeup = UserProfile.objects.filter(alarmon=True, active=True)
