@@ -1,3 +1,8 @@
 wakeuproulette.iml
 .idea
 *.pyc
+accounts/migrations/
+accounts/migrations/*
+wakeup/migrations/
+wakeup/migrations/*
+
