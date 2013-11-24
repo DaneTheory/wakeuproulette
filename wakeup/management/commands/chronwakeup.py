@@ -15,13 +15,6 @@ maxTries = 1
 waitingtime = 20
 
 
-# Variables for testing
-#account = "AC8698b1cf15def42651825fc466513ef4"
-#token = "2d778c2946ebd9c7fcb96a985660c179"
-#client = TwilioRestClient(account, token)
-#fromnumber = "+15005550006"
-
-
 @transaction.commit_manually
 def flush_transaction():
     transaction.commit()
@@ -68,10 +61,12 @@ class Command(NoArgsCommand):
                 call_async(p.phone, confurl, fallbackurl, noanswerurl)
 
             print "\n\n"
-#            time.sleep(waitingtime)
-#            raw_input('Press enter to continue')
-#
-#            flush_transaction() # We flush so that the changes reflect in the database
-#            calls = UserProfile.objects.filter()
+            time.sleep(waitingtime)
+            raw_input('Press enter to continue')
 
-        # TODO Set anyone with active=true to active=false+alarmon=false
+            # Flush so that the changes reflect in the database
+            flush_transaction()
+            towakeup = UserProfile.objects.filter(user__call__datecreated=schedule, user__call__answered=False)
+
+        # To finish turn everyone's alarm off
+        UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False)

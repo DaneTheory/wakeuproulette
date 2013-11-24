@@ -22,12 +22,15 @@ WELCOME_LIMIT = 20
 HOLD_LIMIT = 10
 TIMEOUT = 15
 
-WAITING_ROOM_MAX = 8
+WAITING_ROOM_MAX = 5
 
 RE_DIAL_LIMIT = 6
 REDIRECT_LIMIT = 3
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
+
+# Rating given to users that are reported
+USER_REPORT_RATING = -5
 
 
 @transaction.commit_manually
@@ -68,7 +71,7 @@ def get_active_waiting_room(schedule):
     # Refreshing database
     flush_transaction()
     try:
-        allWaitingRooms = Conference.objects.filter(datecreated=dateSchedule, maxcapacity__gt=2)
+        allWaitingRooms = Conference.objects.filter(datecreated=dateSchedule, maxcapacity__gt=WAITING_ROOM_MAX)
         print "All waiting rooms: ", allWaitingRooms
 
         # Find free waiting room
@@ -118,6 +121,8 @@ def send_to_waiting_room(timelimit, schedule, confname, gather=None, say=None):
                                                     , 'record' : False
                                                     , 'beep' : False })
 
+# TODO Ensure mutually exclusive transactions - once there was a deadlock, idk why
+# This method needs to be atomic
 @transaction.commit_on_success
 def match_or_send_to_waiting_room(call, schedule):
 
@@ -224,15 +229,12 @@ def wakeUpRequest(request, schedule):
             call.user.profile.save()
 
             # TODO SEND AN ACTION URL WITH THIS INITIAL LINK TO MAKE IT FAIR FOR PEOPLE THAT GET PRIVATE ROOMS.
-            # TODO continued. Right now selecting private rooms gives the user the ability to be chosen much faster
+            # TODO ^ right now selecting private rooms gives the user the ability to be chosen much faster
 
             data = send_to_waiting_room(  WELCOME_LIMIT
                                         , schedule
                                         , waiting.pk
-                                        # TODO For this beta we won't have the option to select a private room
-#                                        , "Welcome to Wake Up Roulette! We'll now send you to a waiting room with everyone - if you'd rather wait in a private room, press any number now.")
-                                        , False
-                                        , "Welcome to Wake Up Roulette! We'll now send you to the group waiting room with everyone while we match you with an awesome person!")
+                                        , "Welcome to Wake Up Roulette! We'll now send you to a waiting room with everyone - if you'd rather wait in a private room, press any number now.")
 
         print '\n'
 
@@ -269,11 +271,10 @@ def answerCallback(request, schedule):
 
     if not call:
         # TODO As above, we need to log this somehow to report it
-        print "Call is not found - this error will be reported"
+        print "Call is not found - this error should be logged"
         data = render_to_response("twilioresponse.xml")
 
-    # TODO DEAL WITH CALLS ANSWERED BY MACHINE FOR NOW, WE'LL HANDLE THEM AS NO-ANSWERS
-    # If dude didn't answer or it was a voicemail (probably no signal or just bad handled call), then call him again
+    # Call has been completed
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
         print "Call has been completed!"
         print "Conference Room", schedule
@@ -300,20 +301,24 @@ def answerCallback(request, schedule):
             print "LIMIT REDIALS. HANGING UP..."
             data = render_to_response("twilioresponse.xml")
 
-            # Re-setting redial count
-            call.retries = 0
-            call.save()
-
             # Check the call status - if it says failed, it is most probably because the phone number doesn't exist or there is no signal
             if post['CallStatus'] == 'failed':
                 # TODO Report in log
+
+                call.errorcode = "cfail"
+
                 print "Call Failed! Reporting. Phone: ", phone
                 msg = "CallStatus: Failed\n"
                 msg += "Phone: " + phone + "\n"
                 msg += "Probably Number Doesn't Exist"
 
-                send_async_mail("WUR Fallback", msg, "wakeuproulette@gmail.com", ["447926925347@mmail.co.uk"], False)
+                send_async_mail("WUR Fallback", msg, "wakeuproulette@gmail.com", zip(*settings.ADMINS)[1], True)
                 data = render_to_response("twilioresponse.xml")
+
+            # Re-setting redial count
+            call.retries = 0
+            call.completed = True
+            call.save()
 
         elif not call.answered:
             print "REDIALING...."
@@ -395,26 +400,46 @@ def ratingRequest(request, schedule):
     gatherurl = ""
 
     try:
-        other = call.conference.call_set.exclude(pk=call.pk)[0].user.profile
+        othercall = call.conference.call_set.exclude(pk=call.pk)[0]
 
         digit = post['Digits']
 
         # Thumbs up:
         if digit == '1':
-            print "+1 reputation to", other.user.username
-            other.reputation = other.reputation + 1
-            other.save()
+            print "+1 reputation to", othercall.user.username
+            othercall.user.profile.reputation = othercall.user.profile.reputation + 1
+            othercall.user.profile.save()
+
+            othercall.rating = 1
+            othercall.save()
         # Thumbs down:
         elif digit == '2':
-            print "-1 reputation to", other.user.username
-            other.reputation = other.reputation - 1
-            other.save()
+            print "-1 reputation to", othercall.user.username
+            othercall.user.profile.reputation = othercall.user.profile.reputation - 1
+            othercall.user.profile.save()
+
+            othercall.rating = -1
+            othercall.save()
         # Reported
         elif digit == '0':
             # TODO HANDLE REPORTING
-            goodbye =  other.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact the Wake Up Roulette Team if you need anything! We'd love to hear from you!"
-            other.reputation = other.reputation - 10
-            other.save()
+            goodbye =  othercall.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact the Wake Up Roulette Team if you need anything! We'd love to hear from you!"
+            othercall.user.profile.reputation = othercall.user.profile.reputation + USER_REPORT_RATING
+            othercall.user.profile.save()
+
+            othercall.rating = USER_REPORT_RATING
+            othercall.save()
+
+            msg = "User: " + call.user.username + "\r\n"
+            msg += "Reported: " + othercall.user.username + "\r\n"
+            msg += "Schedule: " + schedule + "\r\n"
+            recordingurl = None
+
+            if call.recordingurl: msg += "RecordingURL: " + call.recordingurl
+            elif othercall.recordingurl: msg += "RecordingURL: " + call.recordingurl
+
+            # Reporting to admins
+            send_async_mail("USER REPORTED",msg, "hackasoton@gmail.com", zip(*settings.ADMINS)[1], True)
         else:
             # TODO HANDLE WRONG TYPING: SHOULD WE TRY AGAIN OR LEAVE IT?
             print "Incorrect number, user pressed" , digit
@@ -507,7 +532,7 @@ def fallbackRequest(request, schedule):
     if errorCode:
         print "ErrorCode:", errorCode
         msg += "ErrorCode: " + errorCode + "\n"
-    send_async_mail("WUR Fallback", msg, "", ["447926925347@mmail.co.uk"], False)
+    send_async_mail("WUR Fallback", msg, "", zip(*settings.ADMINS)[1], True)
 
     # Error Code means HTTP Failure, or no response - this could be due to a transaction deadlock, or just bad traffic - just try again
     if errorCode == '11205':

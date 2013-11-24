@@ -5,12 +5,6 @@ from django.utils.translation import ugettext as _
 import datetime
 from django.utils.timezone import utc
 
-RATING_CHOICES = (
-                    ('U', 'Up'),
-                    ('D', 'Down'),
-                    ('R', 'Reported')
-                )
-
 class Conference(models.Model):
     conferenceid = models.AutoField(primary_key=True)
     maxcapacity = models.IntegerField(_("Max Capacity"))
@@ -35,15 +29,15 @@ class Call(models.Model):
     callduration = models.IntegerField(_("Recording Duration"), default=0)
 
     # Call Flags
-    answered = models.BooleanField(_("Answered and Awake"), default=False)
-    matched = models.BooleanField(_("Has been matched"), default=False)
-    completed = models.BooleanField(_("Completed Successfully"), default=False)
+    answered = models.BooleanField(_("Answered"), default=False)
+    matched = models.BooleanField(_("Matched"), default=False)
+    completed = models.BooleanField(_("Completed"), default=False)
     errorcode = models.CharField(_("Error Code"), max_length=5, default="", blank=True)
 
-    rating =  models.CharField(max_length=1, choices=RATING_CHOICES, blank=True, default="")
+    rating =  models.IntegerField(_("Rating"), default=0)
 
     # This field keeps track of the retries to connect call, find a match or get rating
-    retries = models.IntegerField(_("Re-tries to connect call/match"), default=0)
+    retries = models.IntegerField(_("Re-tries"), default=0)
 
     datecreated = models.DateTimeField()
 

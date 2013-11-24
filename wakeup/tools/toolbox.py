@@ -34,6 +34,12 @@ token = "5a556d4a9acf96753850c39111646ca4"
 client = TwilioRestClient(account, token)
 fromnumber = "+441279702159"
 
+# Variables for testing [Only for testing fallback url - error codes]
+#account = "AC8698b1cf15def42651825fc466513ef4"
+#token = "2d778c2946ebd9c7fcb96a985660c179"
+#client = TwilioRestClient(account, token)
+#fromnumber = "+15005550006"
+
 # Make API calls asynchronously
 class CallThread(threading.Thread):
     def __init__(self, phone, confurl, fallbackurl, noanswerurl):

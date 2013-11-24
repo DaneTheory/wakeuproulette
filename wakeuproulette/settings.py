@@ -25,7 +25,8 @@ USERENA_DEFAULT_PRIVACY = 'closed'
 
 ADMINS = (
     ('Alejandro Saucedo', 'axsauze@gmail.com'),
-    # ToDo Andrew + Matt
+    ('Alejandro (Mobile)', '447926925347@mmail.co.uk'),
+    ('Anton Smyrnov', 'as8g10@soton.ac.uk'),
 )
 
 MANAGERS = ADMINS

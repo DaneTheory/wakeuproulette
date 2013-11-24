@@ -26,6 +26,9 @@ class UserProfile(UserenaBaseProfile):
 
     snoozelimit = models.IntegerField(_("Snooze Limit"), default=3)
 
+    # These are the number of times the user has been reported
+    warnings = models.IntegerField(_("Warnings"), default=0)
+
     phone = models.CharField(_("Phone Number"), max_length=20, unique=True)
     reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)

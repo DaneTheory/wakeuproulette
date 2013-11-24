@@ -34,13 +34,7 @@ from guardian.decorators import permission_required_or_403
 
 import warnings
 
-
-#Imports forr custom functions:
-from django.core.mail import send_mail
 import re
-import smtplib
-import dns.resolver
-from django.core.exceptions import ValidationError
 
 
 
