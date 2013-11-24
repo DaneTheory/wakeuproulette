@@ -17,14 +17,14 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 
 
 # Global Variables
-CALL_LIMIT = 20
+CALL_LIMIT = 60
 WELCOME_LIMIT = 20
 HOLD_LIMIT = 10
 TIMEOUT = 15
 
 WAITING_ROOM_MAX = 8
 
-RE_DIAL_LIMIT = 5
+RE_DIAL_LIMIT = 6
 REDIRECT_LIMIT = 3
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
@@ -155,7 +155,7 @@ def match_or_send_to_waiting_room(call, schedule):
                                     , schedule
                                     , call.user.username if call.user.profile.roomdesired else call.conference.pk
                                     , False
-                                    , "Please bare with us - we'll find the best match for you!" if call.user.profile.roomdesired else "")
+                                    , "Please bare with us - we'll find the best match for you!")
 
 @csrf_exempt
 def wakeUpRequest(request, schedule):
@@ -403,14 +403,18 @@ def ratingRequest(request, schedule):
         if digit == '1':
             print "+1 reputation to", other.user.username
             other.reputation = other.reputation + 1
+            other.save()
         # Thumbs down:
         elif digit == '2':
             print "-1 reputation to", other.user.username
             other.reputation = other.reputation - 1
+            other.save()
         # Reported
         elif digit == '0':
             # TODO HANDLE REPORTING
             goodbye =  other.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact the Wake Up Roulette Team if you need anything! We'd love to hear from you!"
+            other.reputation = other.reputation - 10
+            other.save()
         else:
             # TODO HANDLE WRONG TYPING: SHOULD WE TRY AGAIN OR LEAVE IT?
             print "Incorrect number, user pressed" , digit

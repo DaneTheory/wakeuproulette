@@ -11,7 +11,7 @@ import random
 
 
 # Settings Variables
-maxTries = 3
+maxTries = 1
 waitingtime = 20
 
 
@@ -69,9 +69,9 @@ class Command(NoArgsCommand):
 
             print "\n\n"
 #            time.sleep(waitingtime)
-            raw_input('Press enter to continue')
-
-            flush_transaction() # We flush so that the changes reflect in the database
-            calls = UserProfile.objects.filter()
+#            raw_input('Press enter to continue')
+#
+#            flush_transaction() # We flush so that the changes reflect in the database
+#            calls = UserProfile.objects.filter()
 
         # TODO Set anyone with active=true to active=false+alarmon=false

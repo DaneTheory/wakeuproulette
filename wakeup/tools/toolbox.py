@@ -26,7 +26,6 @@ def send_async_mail(subject, body, from_email, recipient_list, fail_silently=Fal
 
 # Call Settings Variables
 dialingtimeout = 15
-maxTries = 3
 waitingtime = 20
 
 # Twilio Settings
