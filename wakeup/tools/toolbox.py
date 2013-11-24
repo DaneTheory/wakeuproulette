@@ -1,6 +1,9 @@
 from django.core.mail import EmailMultiAlternatives
+from twilio.rest import TwilioRestClient
 import threading
 
+
+# Send emails asynchronously
 class EmailThread(threading.Thread):
     def __init__(self, subject, body, from_email, recipient_list, fail_silently, html):
         self.subject = subject
@@ -19,3 +22,42 @@ class EmailThread(threading.Thread):
 
 def send_async_mail(subject, body, from_email, recipient_list, fail_silently=False, html=None, *args, **kwargs):
     EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
+
+
+# Call Settings Variables
+dialingtimeout = 15
+maxTries = 3
+waitingtime = 20
+
+# Twilio Settings
+account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
+token = "5a556d4a9acf96753850c39111646ca4"
+client = TwilioRestClient(account, token)
+fromnumber = "+441279702159"
+
+# Make API calls asynchronously
+class CallThread(threading.Thread):
+    def __init__(self, phone, confurl, fallbackurl, noanswerurl):
+        self.phone = phone
+        self.confurl = confurl
+        self.fallbackurl = fallbackurl
+        self.noanswerurl = noanswerurl
+        threading.Thread.__init__(self)
+
+    def run (self):
+        call = client.calls.create(
+              url=self.confurl
+            , to = self.phone
+            , from_ = fromnumber
+            , timeout = dialingtimeout
+            , fallback_method = 'Post'
+            , fallback_url=self.fallbackurl
+            , if_machine = 'Hangup'
+            , status_callback = self.noanswerurl
+            , status_method = 'Post'
+            , record=True)
+        print "Called " + self.phone
+
+def call_async(phone, confurl, fallbackurl, noanswerurl):
+    CallThread(phone, confurl, fallbackurl, noanswerurl).start()
+

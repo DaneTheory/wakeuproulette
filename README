@@ -2,3 +2,7 @@ WakeUpRoulette Has Several Dependencies:
 
 South for Database Migrations.
 Very useful video: http://www.youtube.com/watch?v=7yCmAhthkMk
+
+Instructions to set up:
+1) Syncdb
+2) Add initial migrations for the apps specified with 'python manage.py migrate <app-name>'

@@ -6,20 +6,14 @@ from wakeup.models import Call
 import time
 from django.conf import settings
 from django.db import transaction
+from wakeup.tools.toolbox import call_async
 import random
 
 
 # Settings Variables
-dialingtimeout = 15
 maxTries = 3
 waitingtime = 20
 
-
-# Global Variables
-account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
-token = "5a556d4a9acf96753850c39111646ca4"
-client = TwilioRestClient(account, token)
-fromnumber = "+441279702159"
 
 # Variables for testing
 #account = "AC8698b1cf15def42651825fc466513ef4"
@@ -53,6 +47,7 @@ class Command(NoArgsCommand):
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
 
         towakeup = UserProfile.objects.filter(alarmon=True)
+        print towakeup
 
         # Creating all call objects
         for u in towakeup:
@@ -60,7 +55,6 @@ class Command(NoArgsCommand):
             c.user = u.user
             c.datecreated = schedule
             c.save()
-
 
         tries = 0
         # Iterate until we don't have any more people we need to wake up, or our tries have ran out
@@ -71,21 +65,10 @@ class Command(NoArgsCommand):
             print "STARTING TRY", tries
 
             for p in towakeup:
-                print "Calling", p
-                call1 = client.calls.create(
-                      url=confurl
-                    , to = p.phone
-                    , from_ = fromnumber
-                    , timeout = dialingtimeout
-                    , fallback_method = 'Post'
-                    , fallback_url=fallbackurl
-                    , if_machine = 'Hangup'
-                    , status_callback = noanswerurl
-                    , status_method = 'Post'
-                    , record=True)
+                call_async(p.phone, confurl, fallbackurl, noanswerurl)
 
             print "\n\n"
-            #            time.sleep(waitingtime)
+#            time.sleep(waitingtime)
             raw_input('Press enter to continue')
 
             flush_transaction() # We flush so that the changes reflect in the database

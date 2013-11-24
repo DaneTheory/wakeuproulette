@@ -8,7 +8,7 @@ from django.utils.timezone import utc
 RATING_CHOICES = (
                     ('U', 'Up'),
                     ('D', 'Down'),
-                    ('R', 'Report')
+                    ('R', 'Reported')
                 )
 
 class Conference(models.Model):
@@ -17,8 +17,16 @@ class Conference(models.Model):
 
     datecreated = models.DateTimeField()
 
+    # For displaying correctly in the admin panel
+    def related_calls(self):
+        return '%s'%(self.call_set.all())
+    related_calls.short_description = 'Call'
+
     def available(self):
         return self.call_set.count() < self.maxcapacity
+
+    def __unicode__(self):
+        return "Conference " + str(self.pk) + " MaxCapacity: " + str(self.maxcapacity) + " DateCreated " + str(self.datecreated)
 
 
 class Call(models.Model):
@@ -48,4 +56,4 @@ class Call(models.Model):
         self.__dict__.update(new_self.__dict__)
 
     def __unicode__(self):
-        return "Call - " + self.user.username + " matched: " + str(self.matched)
+        return "User " + self.user.username + " - Matched: " + str(self.matched)

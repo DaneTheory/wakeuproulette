@@ -50,9 +50,7 @@ class SecureEditProfileForm(EditProfileForm):
         self.fields.pop('reputation')
         self.fields.pop('phone')
         self.fields.pop('gender')
-        self.fields.pop('active')
         self.fields.pop('redials')
-        self.fields.pop('booked')
         self.fields.pop('privacy')
         self.fields.pop('dob')
 
@@ -801,6 +799,7 @@ class WakeUpSignupForm(SignupForm):
         user_profile = user.get_profile()
         user_profile.phone = self.cleaned_data['phone']
         user_profile.gender = self.cleaned_data['gender']
+        user_profile.dob = self.cleaned_data['date_of_birth']
 
         user_profile.save()
 
