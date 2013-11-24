@@ -2,7 +2,7 @@ from django.core.management.base import NoArgsCommand, make_option
 from accounts.models import UserProfile
 from datetime import datetime, timedelta
 from twilio.rest import TwilioRestClient
-from wakeup.models import Conferences
+from wakeup.models import Call
 import time
 from django.conf import settings
 from django.db import transaction
@@ -43,12 +43,9 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
 
-        now = datetime.now()
-        minute = now.minute + 2  # +2 to avoid errors due to chron executed milliseconds before
-        rounded = minute - (minute % 30)
-#        schedule = timedelta(hours=now.hour, minutes=rounded)
-        schedule = timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
-        confname = str(schedule)
+        schedule = datetime.now()
+        schedule.replace(microsecond=0)
+        confname = str(schedule.strftime("%d:%m:%y:%H:%M:%S"))
         confurl = settings.WEB_ROOT + "wakeuprequest/" + confname
         noanswerurl = settings.WEB_ROOT + 'answercallback/' + confname
         fallbackurl = settings.WEB_ROOT + 'fallback/' + confname
@@ -56,7 +53,14 @@ class Command(NoArgsCommand):
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
 
         towakeup = UserProfile.objects.filter(alarmon=True)
-        towakeup.update(active=True)
+
+        # Creating all call objects
+        for u in towakeup:
+            c = Call()
+            c.user = u.user
+            c.datecreated = schedule
+            c.save()
+
 
         tries = 0
         # Iterate until we don't have any more people we need to wake up, or our tries have ran out
@@ -85,6 +89,6 @@ class Command(NoArgsCommand):
             raw_input('Press enter to continue')
 
             flush_transaction() # We flush so that the changes reflect in the database
-            towakeup = UserProfile.objects.filter(alarmon=True, active=True)
+            calls = UserProfile.objects.filter()
 
         # TODO Set anyone with active=true to active=false+alarmon=false

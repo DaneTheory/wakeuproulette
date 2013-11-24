@@ -1,1 +1,4 @@
-This file was created by IntelliJ IDEA 12.0.1 for binding GitHub repository
+WakeUpRoulette Has Several Dependencies:
+
+South for Database Migrations.
+Very useful video: http://www.youtube.com/watch?v=7yCmAhthkMk

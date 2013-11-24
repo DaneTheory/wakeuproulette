@@ -27,7 +27,7 @@ from datetime import date
 
 from twilio.rest import TwilioRestClient
 
-from wakeup.models import Conferences
+from wakeup.models import Conference, Call
 from accounts.models import UserProfile
 
 from guardian.decorators import permission_required_or_403
@@ -751,18 +751,18 @@ def call_dashboard(request, username):
         except Exception:
             print "Recording not found..."
 
-        try:
-            delrec = Conferences.objects.get(recordingurl=recurl)
-            delrec.recordingurl = None
-            delrec.recordingduration = None
-            delrec.save()
-        except Conferences.DoesNotExist:
-            print "Conference with such recording does not exist!!"
-
-        deleted = True
-
-    profile = UserProfile.objects.get(user__username=username)
-    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
+#        try:
+#            delrec = Conferences.objects.get(recordingurl=recurl)
+#            delrec.recordingurl = None
+#            delrec.recordingduration = None
+#            delrec.save()
+#        except Conferences.DoesNotExist:
+#            print "Conference with such recording does not exist!!"
+#
+#        deleted = True
+#
+#    profile = UserProfile.objects.get(user__username=username)
+#    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
     return render(request, 'user_dashboard.html', {'conferences' : conferences, 'profile' : profile, 'deleted' : deleted})
 

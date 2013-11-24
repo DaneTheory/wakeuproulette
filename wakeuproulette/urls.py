@@ -12,10 +12,10 @@ urlpatterns = patterns('',
 
     # Serving Calls
     url(r'^wakeuprequest/(?P<schedule>.+)$', views.wakeUpRequest, name='wakeup'),
-    url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer-callback'),
-    url(r'^privaterequest/(?P<schedule>.+)$', views.sendToPrivateRoom, name='private-room'),
-    url(r'^ratingrequest/(?P<confname>.+)$', views.ratingRequest, name='rating-request'),
-    url(r'^recordingrequest/(?P<confname>.+)$', views.recordingRequest, name='recording-request'),
+    url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer'),
+    url(r'^privaterequest/(?P<schedule>.+)$', views.sendToPrivateRoom, name='private'),
+    url(r'^ratingrequest/(?P<schedule>.+)$', views.ratingRequest, name='rating'),
+    url(r'^finishrequest/(?P<schedule>.+)$', views.finishRequest, name='finish'),
     # Handling fallback errors
     url(r'^fallback/(?P<confname>.+)$', views.fallbackRequest, name='fallback'),
 

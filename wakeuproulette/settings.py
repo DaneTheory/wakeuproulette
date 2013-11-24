@@ -150,7 +150,7 @@ INSTALLED_APPS = (
     'accounts',
 
     #Databases
-    'django_evolution',
+    'south',
 
     #App
     'wakeup'
