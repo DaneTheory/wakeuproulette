@@ -228,9 +228,6 @@ def wakeUpRequest(request, schedule):
             call.user.profile.alarmon = False
             call.user.profile.save()
 
-            # TODO SEND AN ACTION URL WITH THIS INITIAL LINK TO MAKE IT FAIR FOR PEOPLE THAT GET PRIVATE ROOMS.
-            # TODO ^ right now selecting private rooms gives the user the ability to be chosen much faster
-
             data = send_to_waiting_room(  WELCOME_LIMIT
                                         , schedule
                                         , waiting.pk
@@ -362,13 +359,6 @@ def sendToPrivateRoom(request, schedule):
         say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
-    # TODO Delete dis
-    # User has been matched already and should proceed to his conference room
-    if call.matched:
-        other = call.conference.call_set.exclude(pk=call.pk)[0]
-        data = send_to_conference_room(call, schedule, other)
-
-    # User has not been matched already
     else:
         call.conference = None
         call.user.profile.roomdesired = True
