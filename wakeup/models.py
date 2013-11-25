@@ -34,6 +34,7 @@ class Call(models.Model):
     completed = models.BooleanField(_("Completed"), default=False)
     errorcode = models.CharField(_("Error Code"), max_length=5, default="", blank=True)
 
+    rated = models.BooleanField(_("Rated other?"), default=False)
     rating =  models.IntegerField(_("Rating"), default=0)
 
     # This field keeps track of the retries to connect call, find a match or get rating

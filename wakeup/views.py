@@ -362,6 +362,7 @@ def sendToPrivateRoom(request, schedule):
         say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
+    # TODO Delete dis
     # User has been matched already and should proceed to his conference room
     if call.matched:
         other = call.conference.call_set.exclude(pk=call.pk)[0]
@@ -410,6 +411,9 @@ def ratingRequest(request, schedule):
             othercall.user.profile.reputation = othercall.user.profile.reputation + 1
             othercall.user.profile.save()
 
+            call.rated = True
+            call.save()
+
             othercall.rating = 1
             othercall.save()
         # Thumbs down:
@@ -417,6 +421,9 @@ def ratingRequest(request, schedule):
             print "-1 reputation to", othercall.user.username
             othercall.user.profile.reputation = othercall.user.profile.reputation - 1
             othercall.user.profile.save()
+
+            call.rated = True
+            call.save()
 
             othercall.rating = -1
             othercall.save()
@@ -429,6 +436,9 @@ def ratingRequest(request, schedule):
 
             othercall.rating = USER_REPORT_RATING
             othercall.save()
+
+            call.rated = True
+            call.save()
 
             msg = "User: " + call.user.username + "\r\n"
             msg += "Reported: " + othercall.user.username + "\r\n"
