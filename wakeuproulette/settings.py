@@ -7,7 +7,7 @@ PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
 #WEB_ROOT = "http://127.0.0.1:8000/"
 #WEB_ROOT = "http://wakeuproulette.com/"
-WEB_ROOT = 'http://65038fc5.ngrok.com/'
+WEB_ROOT = "http://65038fc5.ngrok.com"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

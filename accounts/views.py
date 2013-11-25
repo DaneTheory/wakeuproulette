@@ -44,7 +44,6 @@ class SecureEditProfileForm(EditProfileForm):
         self.fields.pop('reputation')
         self.fields.pop('phone')
         self.fields.pop('gender')
-        self.fields.pop('redials')
         self.fields.pop('privacy')
         self.fields.pop('dob')
 
