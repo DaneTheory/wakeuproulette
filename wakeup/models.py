@@ -5,6 +5,13 @@ from django.utils.translation import ugettext as _
 import datetime
 from django.utils.timezone import utc
 
+PRIVACY_CHOICES = (
+                    ('U', 'Unpublished'),
+                    ('S', 'Secret'),
+                    ('P', 'Published'),
+                    ('D', 'Deleted'),
+                )
+
 class Conference(models.Model):
     conferenceid = models.AutoField(primary_key=True)
     maxcapacity = models.IntegerField(_("Max Capacity"))
@@ -42,9 +49,6 @@ class Call(models.Model):
 
     datecreated = models.DateTimeField()
 
-    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True, unique=True)
-    recordingduration = models.IntegerField(_("Recording Duration"), default=0)
-
     # Reload itself from database
     def reload(self):
         new_self = self.__class__.objects.get(pk=self.pk)
@@ -52,3 +56,56 @@ class Call(models.Model):
 
     def __unicode__(self):
         return "User " + self.user.username + " - Matched: " + str(self.matched)
+
+
+class Recording(models.Model):
+
+    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True, unique=True)
+    recordingduration = models.IntegerField(_("Recording Duration"), default=0)
+
+    call = models.OneToOneField(Call)
+
+    # Initial on creation, states whether the Recording is shared, or each Recording is individual
+    shared = models.BooleanField(_("Shared Recording"))
+    # States whether (If Recording is shared) this recording is the one chosen to be displayed and used
+    chosen = models.BooleanField(_("Selected (If Shared)"))
+    # Points to its other caller's Recording
+    other = models.OneToOneField('self', null=True)
+    # States the current privacy of the Recording
+    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES)
+
+    # Total number of times this recording has been played
+    plays = models.IntegerField(_("Times Played"), default=0)
+
+    # Rating of the recording for the call
+    rating = models.IntegerField(_("My Rating"), default=0)
+
+    # Number of times this call has been reported
+    warnings = models.IntegerField(_("warnings"), default=0)
+
+    datecreated = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        self.privacy = 'S' if self.shared else 'U'
+        super(Recording, self).save(*args, **kwargs)
+
+
+class RecordingRating(models.Model):
+
+    recording = models.ForeignKey(Recording)
+    user = models.ForeignKey(User)
+    rating = models.IntegerField(_("Rating"))
+    reported = models.BooleanField(_("Reported"))
+
+    datecreated = models.DateTimeField(auto_now_add=True)
+
+
+class RecordingComment(models.Model):
+
+    recording = models.ForeignKey(Recording)
+    user = models.ForeignKey(User)
+
+    comment = models.CharField(_("Comment"), max_length=300)
+
+
+

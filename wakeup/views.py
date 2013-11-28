@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from models import Conference, Call
+from models import Conference, Call, Recording
 from django.core.management import call_command
 from django.db import transaction
 from twilio.rest import TwilioRestClient
@@ -17,15 +17,15 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 
 
 # Global Variables
-CALL_LIMIT = 60
-WELCOME_LIMIT = 20
+CALL_LIMIT = 20
+WELCOME_LIMIT = 5
 HOLD_LIMIT = 10
 TIMEOUT = 15
 
 WAITING_ROOM_MAX = 5
 
 RE_DIAL_LIMIT = 6
-REDIRECT_LIMIT = 3
+REDIRECT_LIMIT = 1
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -50,13 +50,32 @@ def find_match(schedule, call):
     # Refresh Database Changes
     flush_transaction()
     # TODO Now we are only comparing opposite gender - we need to add functionality to match by anything
-    allmatches = Call.objects.filter(datecreated=as_date(schedule), answered=True, matched=False, completed=False).exclude(user__profile__gender=call.user.profile.gender).order_by('?')
+    allmatches = Call.objects.filter(datecreated=as_date(schedule), answered=True, matched=False, completed=False).exclude(user=call.user)
+
+    # Gender matching
+    any_match_q = Q(user__profile__any_match=True)
+    male_match_q = Q(user__profile__malematch=True)
+    female_match_q = Q(user__profile__femalematch=True)
+    if not call.user.profile.any_match:
+        if call.user.profile.malematch == True and call.user.profile.femalematch == False:
+            allmatches = allmatches.filter(user__profile__gender='M')
+        elif call.user.profile.malematch == False and call.user.profile.femalematch == True:
+            allmatches = allmatches.filter(user__profile__gender='F')
+    if call.user.profile.gender == 'M':
+        allmatches = allmatches.filter(any_match_q | male_match_q)
+    else:
+        allmatches = allmatches.filter(any_match_q | female_match_q)
+
+    # Ordering
+    allmatches = allmatches.order_by('?')
+
     print "Matches found are: ", allmatches
 
     if allmatches:
         return allmatches[0]
     else:
         return None
+
 
 def get_call_or_none(schedule, phone):
     try:
@@ -71,7 +90,7 @@ def get_active_waiting_room(schedule):
     # Refreshing database
     flush_transaction()
     try:
-        allWaitingRooms = Conference.objects.filter(datecreated=dateSchedule, maxcapacity__gt=WAITING_ROOM_MAX)
+        allWaitingRooms = Conference.objects.filter(datecreated=dateSchedule, maxcapacity=WAITING_ROOM_MAX)
         print "All waiting rooms: ", allWaitingRooms
 
         # Find free waiting room
@@ -155,6 +174,23 @@ def match_or_send_to_waiting_room(call, schedule):
         data = send_to_conference_room(call, schedule, matchcall)
         if data: return data
 
+    if call.user.profile.any_match:
+        call.user.profile.any_match = False
+        call.user.profile.save()
+
+        return render_to_response("twilioresponse.xml", { 'say' :"We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!",
+                                                          'hangup' : True })
+    #Check if we have exceeded the waiting redirect limits
+    elif call.retries > REDIRECT_LIMIT:
+        # The user has reached the limit of redials, so hang up
+        print "WAITING LIMIT DONE - TRY TO MATCH WITH ANY PERSON"
+        any_match = "We could not find any matches. If you'd like us to try to match you with Anyone please press any number now."
+        goodbye = "We wish you an Amazing day! Good bye!"
+        return render_to_response("twilioresponse.xml", { 'any_match' :any_match, 'schedule': schedule, 'hangup': True, 'goodbye' : goodbye })
+
+    call.retries = call.retries + 1
+    call.save()
+
     # Send user to private conference (Conferencename=Username) or send them to the waiting room they were at
     return send_to_waiting_room(  HOLD_LIMIT
                                     , schedule
@@ -199,17 +235,8 @@ def wakeUpRequest(request, schedule):
         if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
             print "Person is still awake, and he's still waiting!"
 
-            #Check if we have exceeded the waiting redirect limits
-            if call.retries > REDIRECT_LIMIT:
-                # The user has reached the limit of redials, so hang up
-                print "WAITING LIMIT DONE - HANGING UP NAO"
-                say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
-                data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
-            else:
-                print "FINDING MATCH"
-                call.retries = call.retries + 1
-                call.save()
-                data = match_or_send_to_waiting_room(call, schedule)
+            print "FINDING MATCH"
+            data = match_or_send_to_waiting_room(call, schedule)
 
         # Else, person has just woken up
         else:
@@ -341,6 +368,29 @@ def answerCallback(request, schedule):
     print '\n'
     return HttpResponse(data, mimetype="application/xml")
 
+
+@csrf_exempt
+def tryAnyMatch(request, schedule):
+    print "ANY MATCH REQUEST!"
+
+    schedule = schedule.replace("/", "")
+    post = request.POST
+    phone = post['To']
+    flush_transaction()
+    call = get_call_or_none(schedule, phone)
+    call.user.profile.any_match = True
+    call.user.profile.save()
+    call.retries = 0
+    call.save()
+    data = send_to_waiting_room(  HOLD_LIMIT
+                                , schedule
+                                , call.user.username if call.user.profile.roomdesired else call.conference.pk
+                                , False
+                                , "We'll try to find you an awesome person!")
+    return HttpResponse(data, mimetype="application/xml")
+
+
+
 @csrf_exempt
 def sendToPrivateRoom(request, schedule):
     print "PRIVATE ROOM REQUEST!"
@@ -352,12 +402,21 @@ def sendToPrivateRoom(request, schedule):
     flush_transaction()
     call = get_call_or_none(schedule, phone)
 
+
     if not call:
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
 
         say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
+
+    # Call has been matched, so just send him to the waiting room - when he comes back, he'll be set up with his other caller
+    if call.matched:
+        data = send_to_waiting_room(  HOLD_LIMIT
+            , schedule
+            , call.user.username
+            , False
+            , "We'll send you to a private room while we connect you with an awesome person!")
 
     else:
         call.conference = None
@@ -433,15 +492,11 @@ def ratingRequest(request, schedule):
             msg = "User: " + call.user.username + "\r\n"
             msg += "Reported: " + othercall.user.username + "\r\n"
             msg += "Schedule: " + schedule + "\r\n"
-            recordingurl = None
-
-            if call.recordingurl: msg += "RecordingURL: " + call.recordingurl
-            elif othercall.recordingurl: msg += "RecordingURL: " + call.recordingurl
 
             # Reporting to admins
             send_async_mail("USER REPORTED",msg, "hackasoton@gmail.com", zip(*settings.ADMINS)[1], True)
         else:
-            # TODO HANDLE WRONG TYPING: SHOULD WE TRY AGAIN OR LEAVE IT?
+            # TODO HANDLE WRONG TYPING - Use user retries for this
             print "Incorrect number, user pressed" , digit
             gatherurl = schedule
             rating = "We're sorry, we didn't get that! Please press ONE to give him a thumbs up. Press TWO to give him a thumbs down. Press ZERO to report your wake up buddy."
@@ -468,23 +523,75 @@ def finishRequest(request, schedule):
 
     # Refresh Database Changes
     flush_transaction()
-    phone = post['To']
+    phone = post.get('To')
+    rURL = post.get('RecordingUrl')
+    rDuration = post.get('RecordingDuration')
 
-    # If there is a RecordingURL, the conference terminated successfully and a recording was requested
-    if 'RecordingUrl' in post:
+    print "Phone:", phone
+    print "RecordingURL:",rURL
+    print "Duration:", rDuration
 
-        call = get_call_or_none(schedule, phone)
+    call = get_call_or_none(schedule, phone)
 
-        if not call:
-            print "There was an error in storing the recording..."
+    if not call:
+        # TODO: Report and Log
+        print "There was an error in storing the recording..."
+
+    else:
+        # TODO: Test this
+        # For info on how Recording privacy is handled check out https://docs.google.com/document/d/1LkKosw9-EMtIkx9Y5f0AxTAA418KHbJ2eTWbPOGrgoc/edit
+#            try:
+        # If other caller doesn't exist, throw Exeption and don't store Recording object
+        callOther = call.conference.call_set.exclude(pk=call.pk)[0]
+
+
+        # Check for recording
+        if not rURL or not rDuration:
+            # TODO Handle this error, as this it twilio error [Log]
+            print "No recording in Twilio POST!"
+
+
+        # Create the recording
+        recording = Recording()
+        recording.recordingurl = rURL
+        recording.recordingduration = rDuration
+        recording.datecreated = as_date(schedule)
+        recording.call = call
+        recording.save()
+
+        # Check if the callers are contacts and initialize the recording as shared as required
+        if call.user.profile.is_contact(callOther.user):
+            recording.shared = True
         else:
-            # Check for recording
-            rURL = post.get('RecordingUrl')
-            rDuration = post.get('RecordingDuration')
+            recording.shared = False
 
-            call.recordingurl = rURL
-            call.recordingduration = rDuration
-            call.save()
+        # If the other Recording has been created, then
+        try:
+            recording.other = callOther.recording
+
+            # Check if the other recording was created but wasn't initialized with a Recording (Twilio Error)
+            if not callOther.recording.recordingurl:
+                # TODO Handle this error, as this it twilio error [Log]
+                print "No recording in the other recording object!"
+                callOther.recording.recordingurl = rURL
+                callOther.recording.recordingduration = rDuration
+
+            # If Shared, select as chosen if the other recording does not have a recordingurl or if the duration is less
+            if recording.shared  and ( not callOther.recording.recordingurl or recording.recordingduration <= callOther.recording.recordingduration ):
+                callOther.recording.chosen = False
+                recording.chosen = True
+
+        except Recording.DoesNotExist:
+            if recording.shared:
+                recording.chosen = True
+
+
+        recording.save()
+
+#            except Exception:
+#                print "Other call does not exist yet"
+
+
 
     rating = "Please rate your Wake Up Buddy Now! Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy! . ! . !"
     rating += "We're sorry, we didn't quite get that. Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy"
@@ -532,25 +639,25 @@ def fallbackRequest(request, schedule):
     if errorCode:
         print "ErrorCode:", errorCode
         msg += "ErrorCode: " + errorCode + "\n"
-    send_async_mail("WUR Fallback", msg, "", zip(*settings.ADMINS)[1], True)
+#    send_async_mail("WUR Fallback", msg, "", zip(*settings.ADMINS)[1], True)
 
     # Error Code means HTTP Failure, or no response - this could be due to a transaction deadlock, or just bad traffic - just try again
-    if errorCode == '11205':
-        # TODO  This is repeated code, maybe create a function form the code that sends the person to the waiting room
-        #Check if we have exceeded the waiting redirect limits
-        if call.retries > REDIRECT_LIMIT:
-            # The user has reached the limit of redials, so hang up
-            print "WAITING LIMIT DONE - HANGING UP NAO"
-            say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
-            data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
-        else:
-            print "FINDING MATCH"
-            call.retries = call.retries + 1
-            call.save()
-            data = match_or_send_to_waiting_room(call, schedule)
-    else:
-        goodbye = "We are very sorry, something unexpected happened! This has been reported and will be handled immediately. Feel free to contact the Wake Up Roulette Team! We'd love to hear from you!"
-        data = render_to_response("twilioresponse.xml", {     'hangup' : True
+#    if errorCode == '11205':
+#        # TODO  This is repeated code, maybe create a function form the code that sends the person to the waiting room
+#        #Check if we have exceeded the waiting redirect limits
+#        if call.retries > REDIRECT_LIMIT:
+#            # The user has reached the limit of redials, so hang up
+#            print "WAITING LIMIT DONE - HANGING UP NAO"
+#            say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
+#            data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
+#        else:
+#            print "FINDING MATCH"
+#            call.retries = call.retries + 1
+#            call.save()
+#            data = match_or_send_to_waiting_room(call, schedule)
+#    else:
+    goodbye = "We are very sorry, something unexpected happened! This has been reported and will be handled immediately. Feel free to contact the Wake Up Roulette Team! We'd love to hear from you!"
+    data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                         , 'goodbye' : goodbye
                                                     })
     return HttpResponse(data, mimetype="application/xml")

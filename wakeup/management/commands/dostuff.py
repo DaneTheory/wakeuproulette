@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand, make_option
 from twilio.rest import TwilioRestClient
-from accounts.models import UserProfile
+from accounts.models import UserProfile, Contact
 
 
 from django.core.mail import send_mail as core_send_mail
@@ -19,7 +19,5 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
 
-        print "Ok, now its gonna start"
-        msg = "It works"
-        send_mail("WUR Fallback", msg, "", ["447926925347@mmail.co.uk"], False)
-        print "doesn't seem that async to me..."
+        root = UserProfile.objects.get(user__username="root")
+        alcatel = UserProfile.objects.get(user__username="alcatel")

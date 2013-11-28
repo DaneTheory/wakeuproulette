@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^answercallback/(?P<schedule>.+)$', views.answerCallback, name='answer'),
     url(r'^privaterequest/(?P<schedule>.+)$', views.sendToPrivateRoom, name='private'),
     url(r'^ratingrequest/(?P<schedule>.+)$', views.ratingRequest, name='rating'),
+    url(r'^anymatchrequest/(?P<schedule>.+)$', views.tryAnyMatch, name='anymatch'),
     url(r'^finishrequest/(?P<schedule>.+)$', views.finishRequest, name='finish'),
     # Handling fallback errors
     url(r'^fallback/(?P<schedule>.+)$', views.fallbackRequest, name='fallback'),

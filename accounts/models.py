@@ -11,13 +11,47 @@ GENDER_CHOICES = (
         ('F', 'Female'),
     )
 
+MEMBERSHIP_CHOICES = (
+        ('P', 'Premium'),
+        ('F', 'Fremium'),
+    )
+
+CONTACT_TYPE_CHOICES = (
+        ('F', 'Friend'),
+        ('A', 'Acquaintance'),
+        ('R', 'Relative'),
+    )
+CONTACT_STATUS_CHOICES = (
+        ('P', 'Pending'),
+        ('A', 'Accepted'),
+        ('D', 'Denied'),
+        ('B', 'Blocked'),
+    )
+
+
+# This table will have two entries per contact made
+class Contact(models.Model):
+    user = models.ForeignKey(User, related_name="related_self")
+    contact = models.ForeignKey(User, related_name="related_contact")
+
+    status = models.CharField(max_length=1, choices=CONTACT_STATUS_CHOICES, default='P')
+
+    # TODO: Maybe give the option to the users to specify their groups in their contacts
+    type = models.CharField(_("Contact Type"), max_length=1, choices=CONTACT_TYPE_CHOICES, default='A')
+
+    datecreated = models.DateField(_("Date Created"), auto_now_add=True)
+
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User,unique=True, verbose_name=_('user'),related_name='profile')
     alarm = models.TimeField(_("Alarm Time"), default=time(8))
     dob = models.DateField(_("Date of Birth"), null=True, blank=True)
 
+    # Current membership - could be premium or freemium
+    membership = models.CharField(_("Membership Type"), max_length=1, choices=MEMBERSHIP_CHOICES, default='F')
+
     # Whether user wants to wait in a private room or a waiting room
     roomdesired = models.BooleanField(_('Waiting Room Desired'), default=False)
+
     # Whether the user would like to store his recordings
     recording = models.BooleanField(_('Recording Desired'), default=True)
 
@@ -35,6 +69,51 @@ class UserProfile(UserenaBaseProfile):
 
     femalematch = models.BooleanField(_("Female Match"))
     malematch = models.BooleanField(_("Male Match"))
+    any_match = models.BooleanField(default=False)
+
+    def confirm_contact(self, user):
+        # Raise contact does not exist if this connection doesn't exist
+        contact = self.user.related_self.get(user=self, contact=user)
+        other = user.related_self.get(user=user, contact=self)
+
+        # Make sure that contact status is Pending
+        if contact.status != 'P' or other.status != 'P':
+            # TODO Report and Log error, as a confirm_request shouldn't be made if there isn't a pending request
+            print "Contact status is not Pending! Contact1", contact.user, contact.status, "Contact2", other.user, other.status
+            return False
+
+        contact.status = 'A'
+        other.status = 'A'
+
+        # TODO Create SIGNAL to notify users that their friend request has been accepteds
+        contact.save()
+        other.save()
+
+    # Contact between two persons is requested - an instance is created with status 'Pending'
+    def request_contact(self, user):
+        # Check if they are already contacts
+        if self.is_contact(user): return False
+
+        contact = Contact()
+        contact.user = self.user
+        contact.contact = user
+
+        reverseContact = Contact()
+        reverseContact.user = user
+        reverseContact.contact = self.user
+
+        contact.save()
+        reverseContact.save()
+
+        return True
+
+    def is_contact(self, user):
+        try:
+            return self.user.related_self.get(user=self, contact=user)
+        except Contact.DoesNotExist:
+            return False
+
+
 
 
 

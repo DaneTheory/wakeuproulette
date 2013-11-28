@@ -755,7 +755,7 @@ def call_dashboard(request, username):
 #    profile = UserProfile.objects.get(user__username=username)
 #    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
-    return render(request, 'user_dashboard.html', {'conferences' : conferences, 'profile' : profile, 'deleted' : deleted})
+    return render(request, 'user_dashboard.html')
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
