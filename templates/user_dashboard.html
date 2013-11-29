@@ -4,44 +4,24 @@
 
 {% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
 {% block content_title %}<h2>{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
-<link rel="stylesheet" type="text/css"
 
 {% block dashboard %}
+<link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
+
 <div id="dashboard">
-    <div id="dash-header">
-        <img class="mugshot" src="{{ profile.get_mugshot_url }}" alt="{% trans "Your mugshot" %}" />
-    </div>
-    <div id="dash-stats">
-
-    </div>
-    <div id="dash-body">
-        <div id="dash-contacts">
-
+    <div id="dash-profile">
+        <div id="profile-left">
+            <img id="profile-picture" class="wakeup-box-shadow" src="/media/images/profile.jpg" {# src="{{ profile.get_mugshot_url }}  #}"/>
+            <div id="time-now">17:21</div>
+            <div id="profile-alarm">Alarm: 06:45</div>
+            <div id="profile-quote">Welcome to my profile!</div>
+        <div id="profile-right">
+            <div id="profile-bio">
+                <div id="profile-name">
+                    Alejandro Saucedo
+                </div>
+            </div>
         </div>
-        <div id="dash-wakeups">
-
-        </div>
-    </div>
-
-{#                <h1>All Your WakeUps</h1>#}
-{#                {% for conf in conferences %}#}
-{#                    <div class="call">#}
-{#                    <h3>Call: {{ conf.conferencename }}</h3>#}
-{#                    {% if conf.recordingurl %}#}
-{#                        <div id="recording">#}
-{#                            <audio controls>#}
-{#                                <source src="{{ conf.recordingurl }}" type="audio/x-wav">#}
-{#                                The recording cannot be displayed, please use Chrome or Firefox.#}
-{#                            </audio>#}
-{#                            <form action="" method="post">#}
-{#                                {% csrf_token %}#}
-{#                                <input type="hidden" name="recurl" value="{{ conf.recordingurl }}" />#}
-{#                                <input type="submit" value="Delete" />#}
-{#                            </form>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    </div>#}
-{#                {% endfor %}#}
     </div>
 </div>
 {% endblock %}

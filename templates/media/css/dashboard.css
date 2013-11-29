@@ -1,4 +1,107 @@
 #dashboard {
-    height:1000px;
-    width: 1000px;
+    width: 100%
+}
+
+.wakeup-box-shadow {
+    border: 5px solid black;
+    box-shadow:
+        0 0 0 2px white,
+        0 0 0 5px black;
+}
+
+/*####################### Dash-Board Profile #######################*/
+
+#dash-profile {
+    width: 80%;
+    height: 500px;
+    text-align: center;
+
+    padding: 20px 20px 20px 20px;
+
+    margin: auto auto;
+
+    border-radius: 20px;
+    background: rgba(0, 0, 0, .5);
+}
+
+#dash-profile div {
+    border: solid;
+    margin: auto auto;
+    text-align: center;
+    padding: 20px 20px 20px 20px;
+}
+
+/*Dashboard Left*/
+
+#profile-picture {
+    height: 160px;
+    width: 160px;
+    border: 3px solid;
+    background-color: black;
+}
+
+#time-now {
+    font-size: 13em;
+    font-family: Ostrich;
+    color:white;
+}
+
+#profile-alarm {
+    font-size: 4em;
+    font-family: Ostrich;
+    color: white;
+}
+
+#profile-quote {
+    font-family: Franchise;
+    font-size: 3em;
+    color: white;
+
+}
+
+
+/*####################### Dash-Board Stats #######################*/
+
+#dash-stats {
+    width: 500px;
+    height: 500px;
+
+    right: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+
+
+
+/*####################### Dash-Board Stats #######################*/
+
+#dash-body {
+    padding: 15px 10px 0px 15px;
+    height: 600px;
+}
+
+#dash-body div {
+    float: left;
+}
+
+/*####################### Dash-Board Stats #######################*/
+
+#dash-contacts {
+    border: solid;
+    background-color: black;
+    width: 35%;
+    height: 600px;
+}
+
+
+/*####################### Dash-Board Stats #######################*/
+
+#dash-wakeups {
+    border: solid;
+    background-color: black;
+    width: 62%;
+    min-width: 700px;
+    height: 600px;
+    margin-left: 20px;
 }

@@ -722,8 +722,11 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         extra_context=extra_context,
         **kwargs)(request)
 
-
+@secure_required
+@permission_required_or_403('change_user', (get_user_model(), 'username', 'username'))
 def call_dashboard(request, username):
+
+    user = request.user
 
     deleted = False
 
@@ -755,7 +758,7 @@ def call_dashboard(request, username):
 #    profile = UserProfile.objects.get(user__username=username)
 #    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
-    return render(request, 'user_dashboard.html')
+    return render(request, 'user_dashboard.html', {'profile': user.profile})
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
