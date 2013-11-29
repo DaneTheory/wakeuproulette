@@ -3,23 +3,26 @@
 {% load url from future %}
 
 {% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
-{% block content_title %}<h2>{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
+{% block content_title %}<h2 xmlns="http://www.w3.org/1999/html">{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
 
 {% block dashboard %}
 <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
 
 <div id="dashboard">
-    <div id="dash-profile">
-        <div id="profile-left">
-            <img id="profile-picture" class="wakeup-box-shadow" src="/media/images/profile.jpg" {# src="{{ profile.get_mugshot_url }}  #}"/>
-            <div id="time-now">17:21</div>
-            <div id="profile-alarm">Alarm: 06:45</div>
-            <div id="profile-quote">Welcome to my profile!</div>
-        <div id="profile-right">
-            <div id="profile-bio">
-                <div id="profile-name">
-                    Alejandro Saucedo
-                </div>
+    <div id="dash-head" class="wakeup-box-shadow">
+        <div class="title">Alejandro Saucedo</div>
+        <img id="profile-picture" src="/media/images/profile.jpg"/>
+    </div>
+
+    <div id="dash-body">
+        <div id="contacts" class="dash-block wakeup-box-shadow">
+            <div class="title">Contacts</div>
+            <div id="contacts-box">
+            </div>
+        </div>
+        <div id="recordings" class="dash-block wakeup-box-shadow">
+            <div class="title">Wake Up History</div>
+            <div id="recordings-box">
             </div>
         </div>
     </div>
