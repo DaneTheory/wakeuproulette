@@ -47,23 +47,18 @@
     </div>
 
     <div id="dash-body">
-        <div id="contacts" class="dash-block wakeup-box-shadow">
+        <div id="contacts" class="dash-block wakeup-box-shadow" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
             <div class="title">Contacts</div>
             <div id="contacts-box">
-            	<button>All</button><button>Requests</button>
-            	<div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;">
+            	<button id="all_contacts_btn">All</button><button id="requests_btn">Requests</button>
+            	<div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
             		{% for contact in request.user.profile.get_contacts %}
-            			{% with contact_user=contact.contact %}
-	            			<div class="contact">
-	            				<div style="width:25%;float:left;">
-	            					<a href="#"><img style="width:50px;" src="{{ contact_user.profile.img_url }}"></a>
-	            				</div>
-	            				<div style="width:75%;float:left;text-align:left;">
-	            					<p>{{ contact_user.username }}</p>
-	            					<p>Alarm: {% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %}</p>
-	            				</div>
-	            			</div>
-            			{% endwith %}
+            			{% include 'layouts/contact.html' with contact=contact %}
+            		{% endfor %}
+            	</div>
+            	<div id="requests" style="display:none;height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
+            		{% for request in request.user.profile.get_requests %}
+            			{% include 'layouts/request.html' with request=request %}
             		{% endfor %}
             	</div>
             </div>

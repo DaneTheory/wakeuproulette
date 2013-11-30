@@ -1,0 +1,11 @@
+{% with contact_user=contact.contact %}
+	<div class="contact" data-contact_id="{{ contact.id }}">
+	<div style="width:25%;float:left;">
+			<a href="#"><img style="width:50px;" src="{{ contact_user.profile.img_url }}"></a>
+		</div>
+		<div style="width:75%;float:left;text-align:left;">
+			<p style="margin-top:0px;"><a href="#">{{ contact_user.username }}</a></p>
+			<p>Alarm: {{ contact_user.profile.alarm|date:"H:i" }}&nbsp;({% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %})</p>
+		</div>
+	</div>
+{% endwith %}

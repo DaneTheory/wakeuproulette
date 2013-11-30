@@ -110,7 +110,7 @@ class UserProfile(UserenaBaseProfile):
     def get_contacts(self):
         return Contact.objects.filter(user=self.user, status='A')
     
-    def get_contact_requests(self):
+    def get_requests(self):
         return Contact.objects.filter(contact=self.user, status='P')
     
     def img_url(self):
