@@ -57,19 +57,20 @@
             <div id="recordings-box">
                 {% for rec in recordings %}
                 <div id="recording">
-                    <div id="audio-section" class="inline">
+                    <div id="recording-info-section">
+                        <div id="recording-date" class="inline">{{ rec.datecreated | date:"d/m/y" }}</div>
+                        <div id="recording-rating" class="inline">Rating: {{ rec.rating }}</div>
+                        <div id="recording-privacy" class="inline">{{ rec.privacy }}</div>
+                    </div>
+                    <div id="recording-audio-section" class="inline">
                         <audio controls id="recording-audio"  class="inline">
                             <source src="{{ rec.recordingurl }}" type="audio/x-wav">
                             Please use a Chrome or Firefox to listen to your recordings
                         </audio>
                         <div id="recording-data">
-                            <div id="recording-date" class="inline">{{ rec.datecreated | date:"d/m/y" }}</div>
-        {#                    <div id="recording-privacy" class="inline">{{ rec.privacy }}</div>#}
-                            <div id="recording-plays" class="inline">Plays: {{ rec.plays }}</div>
-                            <div id="recording-rating" class="inline">Rating: {{ rec.rating }}</div>
-                            <button id="recording-like" class="inline">Like</button>
-                            <button id="recording-favourite" class="inline">Favourite</button>
-                            <button id="recording-delete" class="inline">Delete</button>
+                            <a href="#"><img width="30px" height="30px" src="/media/icons/favourite-white.png"/></a>
+                            <a href="#"><img width="30px" height="30px" src="/media/icons/like-white.png"/></a>
+                            <a href="#"><img width="30px" height="30px" src="/media/icons/trash-white.png"/></a>
                         </div>
                     </div>
                     <div id="comments-section" class="inline">
@@ -78,6 +79,9 @@
                 </div>
                 {% endfor %}
             </div>
+        </div>
+        <div id="badges" class="dash-block wakeup-box-shadow">
+            <div class="title">Badges</div>
         </div>
     </div>
 </div>

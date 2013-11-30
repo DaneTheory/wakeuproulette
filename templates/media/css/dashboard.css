@@ -155,8 +155,8 @@
 /* Recordings */
 
 #recordings {
-    width: 68%;
-    margin-left: 30px;
+    width: 42%;
+    margin-left: 20px;
 }
 
 #recordings-box {
@@ -169,12 +169,13 @@
     height: 100px;
 }
 
-#audio-section {
-    width: 50%;
+#recording-audio-section {
+    width: 100%;
 }
 
 #recording-audio {
     clear:both;
+    width: 100%;
 }
 
 #recording-data {
@@ -182,9 +183,17 @@
 }
 
 #comments-section {
-    width:40%;
+    width: 100%;
     margin: auto auto;
     border: solid;
+}
+
+
+/* Badges */
+
+#badges {
+    width: 25%;
+    margin-left: 20px;
 }
 
 
