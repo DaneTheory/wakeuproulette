@@ -24,7 +24,7 @@ TIMEOUT = 15
 
 WAITING_ROOM_MAX = 5
 
-RE_DIAL_LIMIT = 6
+RE_DIAL_LIMIT = 1
 REDIRECT_LIMIT = 1
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
@@ -454,8 +454,12 @@ def ratingRequest(request, schedule):
 
         digit = post['Digits']
 
-        # Thumbs up:
+        # Request contact
         if digit == '1':
+            print "CONTACT REQUEST!"
+            call.user.profile.request_contact(othercall.user)
+        # Thumbs up:
+        if digit == '1' or digit == '2':
             print "+1 reputation to", othercall.user.username
             othercall.user.profile.reputation = othercall.user.profile.reputation + 1
             othercall.user.profile.save()
@@ -466,7 +470,7 @@ def ratingRequest(request, schedule):
             othercall.rating = 1
             othercall.save()
         # Thumbs down:
-        elif digit == '2':
+        elif digit == '3':
             print "-1 reputation to", othercall.user.username
             othercall.user.profile.reputation = othercall.user.profile.reputation - 1
             othercall.user.profile.save()
@@ -592,9 +596,8 @@ def finishRequest(request, schedule):
 #                print "Other call does not exist yet"
 
 
-
-    rating = "Please rate your Wake Up Buddy Now! Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy! . ! . !"
-    rating += "We're sorry, we didn't quite get that. Press ONE to give your wake up buddy a thumbs up. Press TWO for a thumbs down. Press ZERO to report your wake up buddy"
+    rating = "Please rate your Wake Up Buddy Now! Press ONE to connect with and give your wake up buddy a thumbs up. Press TWO for just a thumbs up. Press THREE for thumbs down. Press ZERO to report your wake up buddy! . ! . !"
+    rating += "We're sorry, we didn't quite get that. Press ONE to connect with and give your wake up buddy a thumbs up. Press TWO for just a thumbs up. Press THREE for thumbs down. Press ZERO to report your wake up buddy"
     goodbye = "We hope you had a great time! See you soon!"
     data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                         , 'goodbye' : goodbye
