@@ -71,3 +71,6 @@ class Command(NoArgsCommand):
 
         # To finish turn everyone's alarm off
         UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False)
+
+
+        # TODO Set snoozes to false as
