@@ -165,13 +165,35 @@
 }
 
 #recording {
-    padding: 20px 20px 20px 20px;
-    height: 100px;
+    padding: 20px 20px 50px 20px;
+}
+
+#recording-img {
+    width: 50px;
+    border: 3px solid;
+    background-color: black;
+    color: black;
 }
 
 #recording-audio-section {
-    width: 100%;
+    width: 85%;
+
+    padding-left: 10px;
 }
+
+#recording-info {
+    padding: 10px 10px 30px 10px;
+}
+#recording-username {
+    float:left;
+}
+#recording-privacy {
+    float: right;
+}
+#recording-publish {
+    float: right;
+}
+
 
 #recording-audio {
     clear:both;
@@ -180,12 +202,22 @@
 
 #recording-data {
     clear: both;
+    width: 100%;
+    padding: 10px 0px 0px 5px;
+}
+#recording-data div {
+    width: 30%;
+    float: left;
+}
+#recording-data a img {
+    width: 30px;
 }
 
 #comments-section {
     width: 100%;
-    margin: auto auto;
     border: solid;
+    height: 50px;
+
 }
 
 
