@@ -7,11 +7,47 @@
 
 {% block dashboard %}
 <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
+<script type="text/javascript" src="/media/js/dashboard.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.js"></script>
+<script type="text/javascript" src="/media/js/charts.js"></script>
 
-<div id="dashboard">
+<div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">
-        <div class="title">Alejandro Saucedo</div>
-        <img id="profile-picture" src="/media/images/profile.jpg"/>
+        <div id="dash-profile" class="inline">
+            <div class="title">Alejandro Saucedo</div>
+            <img id="profile-picture" class="wakeup-box-shadow" src="/media/images/profile.jpg"/>
+            <div id="aura-points">Aura Points: 169</div>
+        </div>
+        <div id="dash-stats" class="inline">
+            <div id="dash-stats-title" class="title">WakeUp Stats</div>
+            <table id="global-stats">
+                <tr>
+                    <td>Total Calls:</td>
+                    <td>163</td>
+                </tr>
+                <tr>
+                    <td>Calls Matched:</td>
+                    <td>150</td>
+                </tr>
+                <tr>
+                    <td>Total Plays:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Recording Plays:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Recording Aura:</td>
+                    <td></td>
+                </tr>
+            </table>
+            <div id="chart"></div>
+        </div>
+        <div id="dash-settings" class="inline">
+            <div id="dash-time"></div>
+            <div id="dash-alarm">Alarm: 06:00</div>
+        </div>
     </div>
 
     <div id="dash-body">
@@ -21,10 +57,78 @@
             </div>
         </div>
         <div id="recordings" class="dash-block wakeup-box-shadow">
-            <div class="title">Wake Up History</div>
+            <div class="title">My WakeUp Diary</div>
             <div id="recordings-box">
             </div>
         </div>
     </div>
 </div>
+<script>
+    $(function() {
+        $("#chart").chart({
+            template: "pie_basic_1",
+            values: {
+                serie1: [66, 87, 10]
+            },
+            labels: ["1", "2", "3"],
+            legend: ["Woke Up", "Snoozed", "Over-slept"],
+            tooltips: {
+                serie1: ["Woke Up:<br><strong>66 times</strong>", "Snoozed:<br><strong>87 times</strong>", "Over-slept:<br><strong>10 times</strong>"]
+            },
+            defaultSeries: {
+                values: [{
+                    plotProps: {
+                        fill: "green"
+                    }
+                }, {
+                    plotProps: {
+                        fill: "blue"
+                    }
+                }, {
+                    plotProps: {
+                        fill: "black"
+                    }
+                }]
+            }
+        });
+
+    });
+
+    $.elycharts.templates['pie_basic_1'] = {
+        type: "pie",
+        defaultSeries: {
+            plotProps: {
+                stroke: "white",
+                "stroke-width": 2,
+                opacity: 0.8
+            },
+            highlight: {
+                move: 20
+            },
+            tooltip: {
+                frameProps: {
+                    opacity: 0.5
+                }
+            },
+            startAnimation: {
+                active: true,
+                type: "grow"
+            }
+        },
+        features: {
+            legend: {
+                horizontal: false,
+                width: 90,
+                height: 80,
+                x: 282,
+                y: 100,
+                borderProps: {
+                    "fill-opacity": 0.3
+                }
+            }
+        }
+    };
+
+
+</script>
 {% endblock %}

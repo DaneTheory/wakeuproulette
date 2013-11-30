@@ -16,7 +16,7 @@
         }
 	}
 
-	$(window).scroll(parallax); 
+	$(window).scroll(parallax);
 
 })();
 
@@ -68,5 +68,10 @@ $(document).ready(function() {
     }
     return [];
   }
+
+  //Time
  
 });
+
+
+
