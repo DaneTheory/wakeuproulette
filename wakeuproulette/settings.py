@@ -7,7 +7,7 @@ PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
 #WEB_ROOT = "http://127.0.0.1:8000/"
 #WEB_ROOT = "http://wakeuproulette.com/"
-WEB_ROOT = "http://65038fc5.ngrok.com/"
+WEB_ROOT = "http://7f0abe75.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -210,3 +210,6 @@ LOGGING = {
         },
     }
 }
+
+TEMPLATE_CONTEXT_PROCESSORS=("django.core.context_processors.request","django.contrib.auth.context_processors.auth")
+
