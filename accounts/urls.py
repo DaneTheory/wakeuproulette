@@ -12,7 +12,13 @@ from userena import settings as userena_settings
 urlpatterns = patterns('',
                        
     url(r'^accept_request/$', account_ajax.accept_request, name='accept_request'),
-    url(r'^ignore_request/$', account_ajax.ignore_request, name='ignore_request'),                  
+    url(r'^ignore_request/$', account_ajax.ignore_request, name='ignore_request'),
+    url(r'^increment_rec_aura/$', account_ajax.increment_rec_aura, name='increment_rec_aura'),
+    url(r'^increment_rec_rewake/$', account_ajax.increment_rec_rewake, name='increment_rec_rewake'),
+    url(r'^increment_rec_play/$', account_ajax.increment_rec_play, name='increment_rec_play'),
+    # View Profiles
+    url(r'^dashboard/(?P<username>[\.\w-]+)/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
+    url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),
                        
     # Signup, signin and signout
     url(r'^signup/$',
@@ -102,11 +108,6 @@ urlpatterns = patterns('',
         name='userena_profile_list_paginated'),
 
     # WAKEUPROULETTE
-
-    # View Profiles
-    url(r'^dashboard/(?P<username>[\.\w-]+)/$',
-        account_views.call_dashboard,
-        name='wakeup_call_dashboard'),
                               
 
     # Uncomment this if we want to see full profile list - however all users are currently private so there is no use

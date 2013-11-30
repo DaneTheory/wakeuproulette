@@ -1,7 +1,7 @@
 {% with requestor=request.user %}
 	<div class="request" data-request_id="{{ request.id }}">
 		<div style="width:25%;float:left;">
-			<a href="#"><img style="width:50px;" src="{{ requestor.profile.img_url }}"></a>
+			<a href="#"><img src="{{ requestor.profile.img_url }}"></a>
 		</div>
 		<div style="width:75%;float:left;text-align:left;">
 			<p style="margin-top:0px;"><a href="#">{{ requestor.username }}</a></p>

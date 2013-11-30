@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 import datetime
-from django.utils.timezone import utc
+from django.utils.timezone import utc, now as timezonenow
 
 PRIVACY_CHOICES = (
                     ('U', 'Unpublished'),
@@ -61,7 +61,7 @@ class Call(models.Model):
 
 class Recording(models.Model):
 
-    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True)
+    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True, unique=True)
     recordingduration = models.IntegerField(_("Recording Duration"), default=0)
 
     call = models.OneToOneField(Call)
@@ -73,7 +73,7 @@ class Recording(models.Model):
     # Points to its other caller's Recording
     other = models.OneToOneField('self', null=True)
     # States the current privacy of the Recording
-    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES)
+    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES, )
 
     # Total number of times this recording has been played
     plays = models.IntegerField(_("Times Played"), default=0)
@@ -95,10 +95,14 @@ class RecordingRating(models.Model):
 
     recording = models.ForeignKey(Recording)
     user = models.ForeignKey(User)
-    rating = models.IntegerField(_("Rating"))
-    reported = models.BooleanField(_("Reported"))
+    rated = models.BooleanField(_("Rating"), default=False)
+    lastplayed = models.DateTimeField(_("Last time user played"), auto_now_add=True)
+    reported = models.BooleanField(_("Reported"), default=False)
 
     datecreated = models.DateTimeField(auto_now_add=True)
+
+    def last_viewed_one_hour(self):
+        return self.lastplayed > timezonenow() - datetime.timedelta(hour=1)
 
 
 class RecordingComment(models.Model):

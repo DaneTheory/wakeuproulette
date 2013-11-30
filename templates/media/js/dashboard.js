@@ -25,7 +25,28 @@ window.onload=startTime;
 
 var dashboard = {
 	init: function() {
-		
+
+
+
+        //Extend textarea as needed
+        $('.comment-textarea').keydown( function(e){
+            console.log("nao");
+            var that = $(this);
+            if (that.scrollTop()) {
+                $(this).height(function(i,h){
+                    return h + 20;
+                });
+                $(this).parent().height(function(i,h){
+                    return h + 20;
+                });
+            }
+        });
+
+
+
+        /*################### AJAX REQUESTS #################### */
+        /*################### AJAX REQUESTS #################### */
+        /*################### AJAX REQUESTS #################### */
 		function getCookie(name) {
 		    var cookieValue = null;
 		    if (document.cookie && document.cookie != '') {
@@ -57,6 +78,7 @@ var dashboard = {
 		});
 		
 		var contacts = $("#contacts");
+        var recordings = $("#recordings");
 		
 		$("#all_contacts_btn").bind("click", function() {
 			$("#all_contacts").show();
@@ -67,6 +89,71 @@ var dashboard = {
 			$("#all_contacts").hide();
 			$("#requests").show();
 		});
+
+        function get_recording_id(elem) {
+            while(!$(elem).attr('idx')){
+                elem = $(elem).parent();
+            }
+            return elem.attr('idx');
+        }
+
+        $('.aura-button').bind("click", function() {
+            var curr = $(this).children('span');
+            idx = get_recording_id(this);
+            console.log(recordings.attr("data-increment_rec_rewake_url"));
+
+            $.ajax({
+                url: recordings.attr("data-increment_rec_aura_url"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    rec_id: idx
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        curr.text(+ parseInt(curr.text(), 10) + 1);
+                    }
+                }
+            });
+        });
+
+        $('.rewakes-button').bind("click", function() {
+            var curr = $(this).children('span');
+            idx = get_recording_id(this);
+
+            $.ajax({
+                url: recordings.attr("data-increment_rec_rewake_url"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    rec_id: idx
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        curr.text(+ parseInt(curr.text(), 10) + 1);
+                    }
+                }
+            });
+        });
+
+        $('.recording-audio').bind("ended", function() {
+            var curr = $(this).parent().parent().find('.play-count span');
+            idx = get_recording_id(this);
+
+            $.ajax({
+                url: recordings.attr("data-increment_rec_play_url"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    rec_id: idx
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        curr.text(+ parseInt(curr.text(), 10) + 1);
+                    }
+                }
+            });
+        });
 		
 		$(".accept_request").bind("click", function() {
 			var btn = $(this);
@@ -75,7 +162,7 @@ var dashboard = {
 				dataType: "json",
 				type: "POST",
 				data: {
-					contact_id: btn.closest(".request").attr("data-request_id"),
+					contact_id: btn.closest(".request").attr("data-request_id")
 				},
 				success: function(res) {
 					if (!res.error) {
@@ -106,6 +193,8 @@ var dashboard = {
 	}
 }
 
+
 $(function() {
 	dashboard.init();
 });
+

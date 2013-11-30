@@ -725,13 +725,13 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 
 @secure_required
 @permission_required_or_403('change_user', (get_user_model(), 'username', 'username'))
-def call_dashboard(request, username):
+def wakeup_dashboard(request, username):
 
     user = request.user
 
     deleted = False
 
-    # If post, there's a request to delete recording
+#    If post, there's a request to delete recording
     if request.method == 'POST':
         recurl = request.POST['recurl']
         sid = recurl.split('/')[-1]
@@ -772,8 +772,6 @@ def call_dashboard(request, username):
     recordingaura = recordings.aggregate(Sum('recording__rating'))['recording__rating__sum']
     recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
 
-    print aura
-
     wokeup = call_set.filter(snoozed=False).count()
     snoozed = totalcalls - wokeup
     overslept = call_set.filter(answered=False).count()
@@ -791,6 +789,10 @@ def call_dashboard(request, username):
                                                     , 'recordingduration': recordingduration
                                                     , 'aura': aura})
 
+def wakeup_public(request, username):
+    return render(request, 'user_public.html', {
+
+    })
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
 PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'

@@ -7,9 +7,6 @@
     font-family: NexaBold;
 }
 
-#dashboard div {
-
-}
 
 .wakeup-box-shadow {
     box-shadow:
@@ -150,6 +147,20 @@
     margin-left: 30px;
 }
 
+/* Contacts */
+.contact {
+    height: 80px;
+}
+.contact-img {
+    width:25%;
+    float:left;
+}
+.contact-img img {
+    width:40px;
+
+    border: solid black;
+}
+
 
 
 /* Recordings */
@@ -164,61 +175,64 @@
     overflow: scroll;
 }
 
-#recording {
+.recording {
     padding: 20px 20px 50px 20px;
 }
 
-#recording-img {
-    width: 50px;
+.recording-img {
+    width: 55px;
     border: 3px solid;
     background-color: black;
     color: black;
 }
 
-#recording-audio-section {
+.recording-audio-section {
     width: 85%;
 
     padding-left: 10px;
 }
 
-#recording-info {
+.recording-info {
     padding: 10px 10px 30px 10px;
 }
-#recording-username {
+.recording-username {
     float:left;
 }
-#recording-privacy {
+.recording-privacy {
     float: right;
 }
-#recording-publish {
+.recording-publish {
     float: right;
 }
 
 
-#recording-audio {
+.recording-audio {
     clear:both;
     width: 100%;
 }
 
-#recording-data {
+.recording-data {
     clear: both;
     width: 100%;
     padding: 10px 0px 0px 5px;
 }
-#recording-data div {
+.recording-data div {
     width: 30%;
     float: left;
 }
-#recording-data a img {
+.recording-data img {
     width: 30px;
 }
 
-#comments-section {
+.comments-section {
     width: 100%;
-    border: solid;
     height: 50px;
-
 }
+
+.comment-textarea {
+    width: 100%;
+}
+
 
 
 /* Badges */
