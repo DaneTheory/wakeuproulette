@@ -106,3 +106,12 @@ class UserProfile(UserenaBaseProfile):
             return self.user.contacts.get(user=self.user, contact=user)    
         except Contact.DoesNotExist:
             return False
+        
+    def get_contacts(self):
+        return Contact.objects.filter(user=self.user, status='A')
+    
+    def get_contact_requests(self):
+        return Contact.objects.filter(contact=self.user, status='P')
+    
+    def img_url(self):
+        return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
