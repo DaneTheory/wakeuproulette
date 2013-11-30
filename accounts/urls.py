@@ -6,9 +6,14 @@ from accounts.views import WakeUpSignupForm
 from django.views.generic.base import RedirectView
 
 from accounts import views as account_views
+from accounts import ajax as account_ajax
 from userena import settings as userena_settings
 
 urlpatterns = patterns('',
+                       
+    url(r'^accept_request/$', account_ajax.accept_request, name='accept_request'),
+    url(r'^ignore_request/$', account_ajax.ignore_request, name='ignore_request'),                  
+                       
     # Signup, signin and signout
     url(r'^signup/$',
         account_views.signup,
@@ -102,6 +107,7 @@ urlpatterns = patterns('',
     url(r'^dashboard/(?P<username>[\.\w-]+)/$',
         account_views.call_dashboard,
         name='wakeup_call_dashboard'),
+                              
 
     # Uncomment this if we want to see full profile list - however all users are currently private so there is no use
 #    url(r'^$',
