@@ -36,6 +36,7 @@ class Call(models.Model):
     callduration = models.IntegerField(_("Recording Duration"), default=0)
 
     # Call Flags
+    snoozed = models.BooleanField(_("Snoozed"), default=False)
     answered = models.BooleanField(_("Answered"), default=False)
     matched = models.BooleanField(_("Matched"), default=False)
     completed = models.BooleanField(_("Completed"), default=False)

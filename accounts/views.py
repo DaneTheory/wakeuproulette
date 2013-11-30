@@ -22,12 +22,13 @@ from userena.backends import UserenaAuthenticationBackend
 from userena.utils import signin_redirect, get_profile_model, get_user_model
 from userena import signals as userena_signals
 from userena import settings as userena_settings
+from django.db.models import Sum
 
 from datetime import date
 
 from twilio.rest import TwilioRestClient
 
-from wakeup.models import Conference, Call
+from wakeup.models import Conference, Call, Recording
 from accounts.models import UserProfile
 
 from guardian.decorators import permission_required_or_403
@@ -758,7 +759,37 @@ def call_dashboard(request, username):
 #    profile = UserProfile.objects.get(user__username=username)
 #    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
-    return render(request, 'user_dashboard.html', {'profile': user.profile})
+    profile = user.get_profile()
+
+    name = user.get_full_name()
+    if not name: name = username
+    profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
+    call_set = user.call_set.all()
+    totalcalls = call_set.count()
+    aura = profile.reputation
+    recordings = Recording.objects.filter(call__user=user)
+    recordingplays = recordings.aggregate(Sum('recording__plays'))['recording__plays__sum']
+    recordingaura = recordings.aggregate(Sum('recording__rating'))['recording__rating__sum']
+    recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
+
+    print aura
+
+    wokeup = call_set.filter(snoozed=False).count()
+    snoozed = totalcalls - wokeup
+    overslept = call_set.filter(answered=False).count()
+
+
+    return render(request, 'user_dashboard.html', {   'name': name
+                                                    , 'profileurl':profileurl
+                                                    , 'totalcalls': totalcalls
+                                                    , 'recordingplays' : recordingplays
+                                                    , 'recordingaura' : recordingaura
+                                                    , 'wokeup' : wokeup
+                                                    , 'snoozed' : snoozed
+                                                    , 'overslept' : overslept
+                                                    , 'recordings': recordings
+                                                    , 'recordingduration': recordingduration
+                                                    , 'aura': aura})
 
 
 # CUSTOM FORM FOR WAKE UP SIGN UP

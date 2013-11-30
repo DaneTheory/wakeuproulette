@@ -67,6 +67,7 @@ class Command(NoArgsCommand):
             # Flush so that the changes reflect in the database
             flush_transaction()
             towakeup = UserProfile.objects.filter(user__call__datecreated=schedule, user__call__answered=False)
+            # TODO Set Call's Snoozed boolean to true if they didn't answer by the time we arrive here
 
         # To finish turn everyone's alarm off
         UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False)
