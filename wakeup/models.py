@@ -61,7 +61,7 @@ class Call(models.Model):
 
 class Recording(models.Model):
 
-    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True, unique=True)
+    recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True)
     recordingduration = models.IntegerField(_("Recording Duration"), default=0)
 
     call = models.OneToOneField(Call)

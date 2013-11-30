@@ -3,7 +3,7 @@
 {% load url from future %}
 
 {% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
-{% block content_title %}<h2 xmlns="http://www.w3.org/1999/html">{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
+{% block content_title %}<h2 xmlns="http://www.w3.org/1999/html">{{ profile.get_full_name_or_username |title }})</h2>{% endblock %}
 
 {% block dashboard %}
 <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
@@ -58,6 +58,8 @@
                 {% for rec in recordings %}
                 <div id="recording">
                     <div id="recording-info-section">
+                        <img src="{{  }}">
+                        <a class="inline">{{ rec.other.call.user.profile.get_full_name_or_username |title }}</a>
                         <div id="recording-date" class="inline">{{ rec.datecreated | date:"d/m/y" }}</div>
                         <div id="recording-rating" class="inline">Rating: {{ rec.rating }}</div>
                         <div id="recording-privacy" class="inline">{{ rec.privacy }}</div>

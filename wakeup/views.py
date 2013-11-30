@@ -18,14 +18,14 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 
 # Global Variables
 CALL_LIMIT = 20
-WELCOME_LIMIT = 5
+WELCOME_LIMIT = 10
 HOLD_LIMIT = 10
 TIMEOUT = 15
 
 WAITING_ROOM_MAX = 5
 
-RE_DIAL_LIMIT = 1
-REDIRECT_LIMIT = 1
+RE_DIAL_LIMIT = 6
+REDIRECT_LIMIT = 2
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -519,6 +519,7 @@ def ratingRequest(request, schedule):
 
     return HttpResponse(data, mimetype="application/xml")
 
+# TODO Make sure that there are no bugs due to not locking this function for transactions
 @csrf_exempt
 def finishRequest(request, schedule):
     print "FINISH REQUEST"
@@ -555,8 +556,15 @@ def finishRequest(request, schedule):
             print "No recording in Twilio POST!"
 
 
-        # Create the recording
-        recording = Recording()
+        # Create the recording if it doesn't exists, otherwise, update the recording values
+        # If there are no recordings created for the other user we proceed to create a new recording with this values just in case that
+        # the other user experiences an error when getting and storing the recordings from the post request
+        recording = None
+        try:
+            recording = call.recording
+        except Recording.DoesNotExist:
+            recording = Recording()
+
         recording.recordingurl = rURL
         recording.recordingduration = rDuration
         recording.datecreated = as_date(schedule)
@@ -588,6 +596,17 @@ def finishRequest(request, schedule):
         except Recording.DoesNotExist:
             if recording.shared:
                 recording.chosen = True
+
+            # Create the other recording just in case (it will be modified when the other person finishes the call
+            otherRecording = Recording()
+            otherRecording.recordingurl = rURL
+            otherRecording.recordingduration = rDuration
+            otherRecording.datecreated = as_date(schedule)
+            otherRecording.call = callOther
+            otherRecording.other = recording
+            otherRecording.save()
+
+            recording.other = otherRecording
 
 
         recording.save()
