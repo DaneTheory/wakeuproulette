@@ -50,6 +50,22 @@
         <div id="contacts" class="dash-block wakeup-box-shadow">
             <div class="title">Contacts</div>
             <div id="contacts-box">
+            	<button>All</button><button>Requests</button>
+            	<div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;">
+            		{% for contact in request.user.profile.get_contacts %}
+            			{% with contact_user=contact.contact %}
+	            			<div class="contact">
+	            				<div style="width:25%;float:left;">
+	            					<a href="#"><img style="width:50px;" src="{{ contact_user.profile.img_url }}"></a>
+	            				</div>
+	            				<div style="width:75%;float:left;text-align:left;">
+	            					<p>{{ contact_user.username }}</p>
+	            					<p>Alarm: {% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %}</p>
+	            				</div>
+	            			</div>
+            			{% endwith %}
+            		{% endfor %}
+            	</div>
             </div>
         </div>
         <div id="recordings" class="dash-block wakeup-box-shadow">
