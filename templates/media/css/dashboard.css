@@ -118,9 +118,28 @@
 
 #dash-alarm {
     font-family: Ostrich;
-    font-size: 4.3em;
+    font-size: 3.3em;
 
-    padding-top: 20px;
+    padding: 10px 5px 0px 10px;
+}
+
+#dash-alarm-time {
+    font-family: Ostrich;
+    font-size: 3.3em;
+    width: 80px;
+    height: 40px;
+
+    margin-top: 10px;
+}
+
+#switch {
+    border: solid black;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.unactive {
+    color: #696969;
 }
 
 
@@ -180,14 +199,14 @@
 }
 
 .recording-img {
-    width: 55px;
+    width: 60px;
     border: 3px solid;
     background-color: black;
     color: black;
 }
 
 .recording-audio-section {
-    width: 85%;
+    width: 83%;
 
     padding-left: 10px;
 }
@@ -224,13 +243,40 @@
     width: 30px;
 }
 
-.comments-section {
+
+/*####################### Comments Section #######################*/
+.comments {
     width: 100%;
+
+    padding-top: 20px;
+
+    clear: both;
+    color: white;
+}
+.comment {
     height: 50px;
+
+    text-align: left;
+    padding-left: 30px;
+
+    margin-bottom: 10px;
+}
+
+.comment-img {
+    width: 30px;
+    border: black solid;
+}
+
+.comment-section {
+    padding-left: 50px;
 }
 
 .comment-textarea {
-    width: 100%;
+    width: 90%;
+}
+
+.comment-content {
+    padding: 5px 5px 5px 5px;
 }
 
 

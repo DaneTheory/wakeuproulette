@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'^increment_rec_aura/$', account_ajax.increment_rec_aura, name='increment_rec_aura'),
     url(r'^increment_rec_rewake/$', account_ajax.increment_rec_rewake, name='increment_rec_rewake'),
     url(r'^increment_rec_play/$', account_ajax.increment_rec_play, name='increment_rec_play'),
+    url(r'^insert_comment/$', account_ajax.insert_comment, name='insert_comment'),
+    url(r'^set_alarm/$', account_ajax.set_alarm, name='set_alarm'),
     # View Profiles
     url(r'^dashboard/(?P<username>[\.\w-]+)/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),

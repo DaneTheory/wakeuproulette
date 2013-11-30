@@ -28,19 +28,6 @@ var dashboard = {
 
 
 
-        //Extend textarea as needed
-        $('.comment-textarea').keydown( function(e){
-            console.log("nao");
-            var that = $(this);
-            if (that.scrollTop()) {
-                $(this).height(function(i,h){
-                    return h + 20;
-                });
-                $(this).parent().height(function(i,h){
-                    return h + 20;
-                });
-            }
-        });
 
 
 
@@ -79,6 +66,7 @@ var dashboard = {
 		
 		var contacts = $("#contacts");
         var recordings = $("#recordings");
+        var comments = $(".comments");
 		
 		$("#all_contacts_btn").bind("click", function() {
 			$("#all_contacts").show();
@@ -97,10 +85,120 @@ var dashboard = {
             return elem.attr('idx');
         }
 
+
+        /*###### ALARM ######## */
+        function divClicked() {
+            var divHtml = $(this).html();
+            var editableText = $("<input id='dash-alarm-time' class='inline' type='text' />");
+            editableText.val(divHtml);
+            $(this).replaceWith(editableText);
+            editableText.focus();
+            // setup the blur event for this new textarea
+            editableText.blur(editableTextBlurred);
+            $('#dash-alarm-time').timeEntry({show24Hours: true, minTime: '07:00AM', maxTime: '10:00AM'});
+        }
+
+        function editableTextBlurred() {
+            var html = $(this).val();
+            var viewableText = $("<div id='dash-alarm-time' class='inline'>");
+            viewableText.html(html);
+            $(this).replaceWith(viewableText);
+            // setup the click event for this new div
+            viewableText.click(divClicked);
+        }
+
+        $('#dash-alarm-time').bind('click', divClicked)
+
+        $('#switch').bind('click', function() {
+            var checked = $('#myonoffswitch').is(':checked')
+
+            console.log()
+            if(checked) {
+                $('#dash-alarm-time').removeClass('unactive');
+                $('#dash-alarm').removeClass('unactive');
+            }
+            else {
+                $('#dash-alarm-time').addClass('unactive');
+                $('#dash-alarm').addClass('unactive');
+            }
+
+            $.ajax({
+                url: comments.attr("data-set_alarm"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    comment: comment,
+                    idx : idx
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        console.log(that.closest('div').children('.comments-section'));
+                        $(that.closest('div').children()[0]).append(res.html);
+                        that.val('')
+                    }
+                    that.attr('disabled', 'false');
+                },
+                failure: function(res) {
+                    that.attr('disabled', 'false');
+                }
+
+            });
+        });
+
+
+
+
+        /*###### COMMENTS ####### */
+
+        $('.comment-textarea').keydown(function(event) {
+            // This extends textarea as required
+            var that = $(this);
+            if (that.scrollTop()) {
+                $(this).height(function(i,h){
+                    return h + 20;
+                });
+                $(this).parent().height(function(i,h){
+                    return h + 20;
+                });
+            }
+
+            //This submits the form if the user pressed enter
+            if (event.keyCode == 13) {
+                comment = $(this).val();
+                idx = get_recording_id(this);
+                $(this).attr('disabled', 'true');
+                var that = $(this);
+
+                $.ajax({
+                    url: comments.attr("data-insert_comment"),
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        comment: comment,
+                        idx : idx
+                    },
+                    success: function(res) {
+                        if (!res.error) {
+                            console.log(that.closest('div').children('.comments-section'));
+                            $(that.closest('div').children()[0]).append(res.html);
+                            that.val('')
+                        }
+                        that.attr('disabled', 'false');
+                    },
+                    failure: function(res) {
+                        that.attr('disabled', 'false');
+                    }
+
+                });
+            }
+        });
+
+
+        /*###### RECORDINGS ####### */
+
         $('.aura-button').bind("click", function() {
             var curr = $(this).children('span');
             idx = get_recording_id(this);
-            console.log(recordings.attr("data-increment_rec_rewake_url"));
 
             $.ajax({
                 url: recordings.attr("data-increment_rec_aura_url"),
@@ -136,7 +234,7 @@ var dashboard = {
             });
         });
 
-        $('.recording-audio').bind("ended", function() {
+        $('.recording-audio').bind("play", function() {
             var curr = $(this).parent().parent().find('.play-count span');
             idx = get_recording_id(this);
 
@@ -154,8 +252,10 @@ var dashboard = {
                 }
             });
         });
-		
-		$(".accept_request").bind("click", function() {
+
+        /*###### CONTACTS ####### */
+
+        $(".accept_request").bind("click", function() {
 			var btn = $(this);
 			$.ajax({
 				url: contacts.attr("data-accept_request_url"),

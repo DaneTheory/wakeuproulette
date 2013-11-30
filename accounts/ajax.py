@@ -1,5 +1,5 @@
 from accounts.models import UserProfile, Contact
-from wakeup.models import Recording, RecordingRating
+from wakeup.models import Recording, RecordingRating, RecordingComment
 import json
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from datetime import datetime
 
+#########################################
+############### CONTACTS ################
+#########################################
 @require_POST
 @login_required
 def accept_request(request):
@@ -34,6 +37,61 @@ def ignore_request(request):
         response['error'] = True
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+
+
+
+
+#########################################
+############### COMMENTS ################
+#########################################
+@require_POST
+@login_required
+def insert_comment(request):
+
+    txt = request.POST.get("comment", "")
+    idx = request.POST.get("idx", "")
+    response = {}
+    try:
+        recording = Recording.objects.get(pk=idx)
+        comment = RecordingComment()
+        comment.user = request.user
+        comment.recording = recording
+        comment.comment = txt
+        comment.save()
+
+        response = { 'html': render_to_string('layouts/comment.html', { 'comment': comment }) }
+
+    except Recording.DoesNotExist:
+        response['error'] = True
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+
+#########################################
+################# ALARM #################
+#########################################
+@require_POST
+@login_required
+def set_alarm(request):
+    onoff = request.POST.get("onoff", "")
+    alarm_time = request.POST.get("alarm_time", "")
+    response = {};
+
+    request.user.profile.alarmon = onoff
+    request.user.profile.alarm = alarm_time
+    request.user.profile.save()
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+
+
+
+
+#########################################
+############## RECORDINGS ###############
+#########################################
 @require_POST
 @login_required
 def increment_rec_aura(request):

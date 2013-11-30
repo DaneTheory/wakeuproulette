@@ -102,7 +102,7 @@ class RecordingRating(models.Model):
     datecreated = models.DateTimeField(auto_now_add=True)
 
     def last_viewed_one_hour(self):
-        return self.lastplayed > timezonenow() - datetime.timedelta(hour=1)
+        return self.lastplayed > timezonenow() - datetime.timedelta(hours=1)
 
 
 class RecordingComment(models.Model):

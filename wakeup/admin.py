@@ -1,5 +1,5 @@
 from django.contrib import admin
-from wakeup.models import Call, Conference, Recording
+from wakeup.models import Call, Conference, Recording, RecordingComment, RecordingRating
 from accounts.models import UserProfile, Contact
 
 class ConferenceAdmin(admin.ModelAdmin):
@@ -19,3 +19,5 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 admin.site.register(Recording)
 admin.site.register(Contact)
+admin.site.register(RecordingComment)
+admin.site.register(RecordingRating)

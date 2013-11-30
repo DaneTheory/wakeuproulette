@@ -766,11 +766,12 @@ def wakeup_dashboard(request, username):
     profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
     call_set = user.call_set.all()
     totalcalls = call_set.count()
-    aura = profile.reputation
     recordings = Recording.objects.filter(call__user=user)
-    recordingplays = recordings.aggregate(Sum('recording__plays'))['recording__plays__sum']
-    recordingaura = recordings.aggregate(Sum('recording__rating'))['recording__rating__sum']
+    recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
+    recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
     recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
+
+    aura = profile.reputation*10 + recordingaura
 
     wokeup = call_set.filter(snoozed=False).count()
     snoozed = totalcalls - wokeup
