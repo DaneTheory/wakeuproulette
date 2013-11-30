@@ -24,15 +24,15 @@ CONTACT_TYPE_CHOICES = (
 CONTACT_STATUS_CHOICES = (
         ('P', 'Pending'),
         ('A', 'Accepted'),
-        ('D', 'Denied'),
+        #('D', 'Denied'),
         ('B', 'Blocked'),
     )
 
 
 # This table will have two entries per contact made
 class Contact(models.Model):
-    user = models.ForeignKey(User, related_name="related_self")
-    contact = models.ForeignKey(User, related_name="related_contact")
+    user = models.ForeignKey(User, related_name="contacts")
+    contact = models.ForeignKey(User, related_name="to_contacts")
 
     status = models.CharField(max_length=1, choices=CONTACT_STATUS_CHOICES, default='P')
 
@@ -92,29 +92,17 @@ class UserProfile(UserenaBaseProfile):
     # Contact between two persons is requested - an instance is created with status 'Pending'
     def request_contact(self, user):
         # Check if they are already contacts
-        if self.is_contact(user): return False
-
-        contact = Contact()
-        contact.user = self.user
-        contact.contact = user
-
-        reverseContact = Contact()
-        reverseContact.user = user
-        reverseContact.contact = self.user
-
-        contact.save()
-        reverseContact.save()
-
-        return True
+        if not self.is_contact(user):
+            try:
+                other_contact = user.contacts.get(user=user, contact=self.user)
+                other_contact.status = 'A'
+                other_contact.save()
+                Contact.objects.create(user=self.user, contact=user, status='A')
+            except Contact.DoesNotExist:
+                Contact.objects.create(user=self.user, contact=user, status='P')
 
     def is_contact(self, user):
         try:
-            return self.user.related_self.get(user=self, contact=user)
+            return self.user.contacts.get(user=self.user, contact=user)    
         except Contact.DoesNotExist:
             return False
-
-
-
-
-
-
