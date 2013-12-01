@@ -22,7 +22,9 @@
                 <img src="/media/icons/settings-white.png"/>
             </a>
             <div class="title">{{ name }}</div>
-            <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
+            <a href="/accounts/{{ request.user.username }}/edit/">
+                <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
+            </a>
             <div id="aura-points">Aura Points: {{ aura }}</div>
         </div>
         <div id="dash-stats" class="inline">

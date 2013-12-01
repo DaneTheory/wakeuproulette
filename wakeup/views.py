@@ -20,7 +20,7 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 CALL_LIMIT = 60
 WELCOME_LIMIT = 20
 HOLD_LIMIT = 10
-TIMEOUT = 15
+TIMEOUT = 20
 
 WAITING_ROOM_MAX = 4
 
@@ -225,9 +225,6 @@ def wakeUpRequest(request, schedule):
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
 
-        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!"
-        data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
-
     elif 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
         data = None
 
@@ -406,9 +403,6 @@ def sendToPrivateRoom(request, schedule):
     if not call:
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
-
-        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
-        data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
     # Call has been matched, so just send him to the waiting room - when he comes back, he'll be set up with his other caller
     if call.matched:
