@@ -7,8 +7,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', views.home, name='home'),
-    url(r'^alarm/', views.setAlarm, name='alarm'),
-    url(r'start/', views.startRoulette, name='start'),
 
     # Serving Calls
     url(r'^wakeuprequest/(?P<schedule>.+)$', views.wakeUpRequest, name='wakeup'),
@@ -24,10 +22,6 @@ urlpatterns = patterns('',
     url(r'beta/', views.beta, name='beta'),
 
     url(r'survey/', views.survey, name='survey'),
-
-    #    Handling responses
-    url(r'callfeedback/(?P<conf>.+)$', views.processCallFeedback, name='callfeedback'),
-    url(r'sms/', views.processSMS, name='sms'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls')),

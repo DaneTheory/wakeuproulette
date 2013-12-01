@@ -11,8 +11,7 @@ import random
 
 
 # Settings Variables
-maxTries = 2
-round = 60
+maxTries = 1
 waitingtime = 60*5
 
 
@@ -32,15 +31,7 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
 
         schedule = datetime.now()
-
-        # Round to the nearest X minutes
-        discard = timedelta(   minutes=schedule.minute % round,
-                                        seconds=schedule.second,
-                                        microseconds=schedule.microsecond)
-        schedule -= discard
-        if discard >= timedelta(minutes=round/2):
-            schedule += timedelta(minutes=round)
-
+        schedule.replace(microsecond=0)
         confname = str(schedule.strftime("%d:%m:%y:%H:%M:%S"))
         confurl = settings.WEB_ROOT + "wakeuprequest/" + confname
         noanswerurl = settings.WEB_ROOT + 'answercallback/' + confname
@@ -48,7 +39,7 @@ class Command(NoArgsCommand):
 
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
 
-        towakeup = UserProfile.objects.filter(alarm=schedule).filter(alarmon=True, activated=True)
+        towakeup = UserProfile.objects.filter(alarmon=True, activated=True)
         print towakeup
 
         # Creating all call objects
@@ -69,13 +60,17 @@ class Command(NoArgsCommand):
             for p in towakeup:
                 call_async(p.phone, confurl, fallbackurl, noanswerurl)
 
-#            time.sleep(waitingtime)
-            raw_input('Press enter to continue')
-
+            time.sleep(waitingtime)
+            #            raw_input('Press enter to continue')
+            #
             # Flush so that the changes reflect in the database
             flush_transaction()
-            towakeup = UserProfile.objects.filter(alarmon=True).filter(user__call__datecreated=schedule, user__call__answered=False)
+            towakeup = UserProfile.objects.filter(user__call__datecreated=schedule, user__call__answered=False)
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
+            # TODO Set Call's Snoozed boolean to true if they didn't answer by the time we arrive here
 
         # To finish turn everyone's alarm off
-        UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, any_match=False)
+        UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, anymatch=False)
+
+
+        # TODO Set snoozes to false as

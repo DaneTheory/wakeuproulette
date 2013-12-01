@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
+from wakeup.tools.toolbox import sms_async
 from datetime import time, date
 
 
@@ -120,6 +121,14 @@ class UserProfile(UserenaBaseProfile):
     
     def img_url(self):
         return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
+
+    def activate_account(self):
+        self.activated = True
+        self.save()
+        sms_async(self.user.profile.phone, "Your WakeUpRoulette account has been activated! You can now access your dashboard!")
+
+    def g(self,him, her):
+        return him if self.gender == 'M' else her
     
 class MessageVerification(models.Model):
     user = models.OneToOneField(User)
