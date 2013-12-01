@@ -907,7 +907,7 @@ class WakeUpSignupForm(SignupForm):
                                 error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
 
     gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female')))
-    date_of_birth = forms.DateField(label=_('Date of Birth'))
+    date_of_birth = forms.DateField(label=_('Date of Birth'), input_formats=('%d/%m/%Y',))
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']
