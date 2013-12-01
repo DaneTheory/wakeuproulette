@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from accounts.views import WakeUpSignupForm
 from django.views.generic.base import RedirectView
+from django.core.urlresolvers import reverse
 
 from accounts import views as account_views
 from accounts import ajax as account_ajax
@@ -23,11 +24,12 @@ urlpatterns = patterns('',
     # View Profiles
     url(r'^dashboard/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),
-                       
+    url(r'^sms_verify/$', account_views.sms_verify, name='sms_verify'),
+                
     # Signup, signin and signout
     url(r'^signup/$',
         account_views.signup,
-        {'signup_form': WakeUpSignupForm}),
+        {'signup_form': WakeUpSignupForm }),
 #    url(r'^signup/$', RedirectView.as_view(url='/beta', permanent=False), name='beta'),
     url(r'^signin/$',
         account_views.signin,

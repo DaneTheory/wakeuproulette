@@ -70,6 +70,8 @@ class UserProfile(UserenaBaseProfile):
     femalematch = models.BooleanField(_("Female Match"))
     malematch = models.BooleanField(_("Male Match"))
     any_match = models.BooleanField(default=False)
+    
+    activated = models.BooleanField(default=False)
 
     def confirm_contact(self, user):
         # Raise contact does not exist if this connection doesn't exist
@@ -118,3 +120,11 @@ class UserProfile(UserenaBaseProfile):
     
     def img_url(self):
         return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
+    
+class MessageVerification(models.Model):
+    user = models.OneToOneField(User)
+    code = models.CharField(_("Code"), max_length=4)
+    verified = models.BooleanField(default=False)
+    time_sent = models.DateTimeField(auto_now_add=True)
+    time_verified = models.DateTimeField(null=True, blank=True)
+    

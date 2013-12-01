@@ -39,7 +39,7 @@ class Command(NoArgsCommand):
 
         self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
 
-        towakeup = UserProfile.objects.filter(alarmon=True)
+        towakeup = UserProfile.objects.filter(alarmon=True, activated=True)
         print towakeup
 
         # Creating all call objects

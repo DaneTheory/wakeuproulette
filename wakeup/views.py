@@ -50,7 +50,7 @@ def find_match(schedule, call):
     # Refresh Database Changes
     flush_transaction()
     # TODO Now we are only comparing opposite gender - we need to add functionality to match by anything
-    allmatches = Call.objects.filter(datecreated=as_date(schedule), answered=True, matched=False, completed=False).exclude(user=call.user)
+    allmatches = Call.objects.filter(datecreated=as_date(schedule), answered=True, matched=False, completed=False, user__profile__activated=True).exclude(user=call.user)
 
     # Gender matching
     any_match_q = Q(user__profile__any_match=True)

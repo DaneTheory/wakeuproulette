@@ -65,4 +65,19 @@ class CallThread(threading.Thread):
 
 def call_async(phone, confurl, fallbackurl, noanswerurl):
     CallThread(phone, confurl, fallbackurl, noanswerurl).start()
+    
+class SmsThread(threading.Thread):
+    def __init__(self, phone, message):
+        self.phone = phone
+        self.message = message
+        threading.Thread.__init__(self)
+
+    def run (self):
+        sms = client.sms.messages.create(body=self.message,
+                                         to=self.phone,
+                                         from_=fromnumber)
+        print "Messaged verification code " + self.phone
+    
+def sms_async(phone, message):
+    SmsThread(phone, message).start()
 

@@ -1,0 +1,29 @@
+{% extends 'userena/base_userena.html' %}
+
+{% block content_title %}
+	Hi
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.js"></script>
+<script type="text/javascript" src="/media/js/sms_verify.js"></script>
+
+<form action="" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>Please, insert 4-digit verificaton code we have sent you on your phone number.</legend>
+    <p>
+    <label for="id_code">Code</label> 
+    <input class="required" id="id_code" maxlength="4" name="code" type="text" />
+    </p>
+    <input type="hidden" name="resend" id="resend_code_hidden"/>
+    {% if error %}
+	    <ul class="errorlist">
+	    	<li>{{ error }}</li>
+	    </ul>
+	 {% endif %}
+   </fieldset>
+   <button id="resend_code">Resend</button>
+   <input type="submit" value="Verify">
+  </form>
+{% endblock %}
