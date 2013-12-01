@@ -120,16 +120,8 @@
     font-family: Ostrich;
     font-size: 3.3em;
 
-    padding: 10px 5px 0px 10px;
-}
-
-#dash-alarm-time {
-    font-family: Ostrich;
-    font-size: 3.3em;
-    width: 80px;
-    height: 40px;
-
-    margin-top: 10px;
+    text-align: center;
+    width: 100%;
 }
 
 #switch {
@@ -256,7 +248,7 @@
       position:relative;
       border: none;
       outline:none;
-       outline:0 none !important;
+      outline:0 none !important;
       border: 0;
       top:1px;
   }

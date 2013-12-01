@@ -23,6 +23,7 @@ from userena.utils import signin_redirect, get_profile_model, get_user_model
 from userena import signals as userena_signals
 from userena import settings as userena_settings
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
 from datetime import date
 
@@ -790,10 +791,54 @@ def wakeup_dashboard(request, username):
                                                     , 'recordingduration': recordingduration
                                                     , 'aura': aura})
 
+@secure_required
 def wakeup_public(request, username):
-    return render(request, 'user_public.html', {
 
-    })
+    user = request.user
+    other = None
+    try:
+        other = User.objects.get(username=username)
+
+    except User.DoesNotExist:
+        raise Http404
+
+    is_contact = user.get_profile().is_contact(other)
+
+    profile = other.get_profile()
+
+    name = other.get_full_name()
+    if not name: name = username
+    profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
+    call_set = other.call_set.all()
+    totalcalls = call_set.count()
+    recordings = Recording.objects.filter(call__user=other)
+    public_recordings = recordings.filter(privacy='P')
+    recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
+    recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
+    recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
+
+    aura = profile.reputation*10 + recordingaura
+
+    print recordings
+    print public_recordings
+
+    wokeup = call_set.filter(snoozed=False).count()
+    snoozed = totalcalls - wokeup
+    overslept = call_set.filter(answered=False).count()
+
+    return render(request, 'user_public.html', {      'name': name
+                                                    , 'profileurl':profileurl
+                                                    , 'totalcalls': totalcalls
+                                                    , 'recordingplays' : recordingplays
+                                                    , 'recordingaura' : recordingaura
+                                                    , 'wokeup' : wokeup
+                                                    , 'snoozed' : snoozed
+                                                    , 'overslept' : overslept
+                                                    , 'recordings': public_recordings
+                                                    , 'recordingduration': recordingduration
+                                                    , 'aura': aura
+                                                    , 'other': other
+                                                    , "is_contact": is_contact})
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
 PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'

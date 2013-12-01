@@ -4,7 +4,7 @@
 			<a href="#"><img class="wakeup-box-shadow" src="{{ contact_user.profile.img_url }}"></a>
 		</div>
 		<div style="width:75%;float:left;text-align:left;">
-			<p style="margin-top:0px;"><a href="#">{{ contact_user.username }}</a></p>
+			<p style="margin-top:0px;"><a href="#">{{ contact_user.profile.get_full_name_or_username }}</a></p>
 			<p>Alarm: {{ contact_user.profile.alarm|date:"H:i" }}&nbsp;({% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %})</p>
 		</div>
 	</div>

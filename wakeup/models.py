@@ -73,7 +73,7 @@ class Recording(models.Model):
     # Points to its other caller's Recording
     other = models.OneToOneField('self', null=True)
     # States the current privacy of the Recording
-    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES, )
+    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES)
 
     # Total number of times this recording has been played
     plays = models.IntegerField(_("Times Played"), default=0)
@@ -87,7 +87,9 @@ class Recording(models.Model):
     datecreated = models.DateTimeField()
 
     def save(self, *args, **kwargs):
-        self.privacy = 'S' if self.shared else 'U'
+        if not self.privacy:
+            self.privacy = 'S' if self.shared else 'U'
+
         super(Recording, self).save(*args, **kwargs)
 
 

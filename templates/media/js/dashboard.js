@@ -67,6 +67,7 @@ var dashboard = {
 		var contacts = $("#contacts");
         var recordings = $("#recordings");
         var comments = $(".comments");
+        var alarm = $('#dash-alarm');
 		
 		$("#all_contacts_btn").bind("click", function() {
 			$("#all_contacts").show();
@@ -111,8 +112,8 @@ var dashboard = {
 
         $('#switch').bind('click', function() {
             var checked = $('#myonoffswitch').is(':checked')
+            var alarm_time = $('#dash-alarm-time').text()
 
-            console.log()
             if(checked) {
                 $('#dash-alarm-time').removeClass('unactive');
                 $('#dash-alarm').removeClass('unactive');
@@ -123,23 +124,20 @@ var dashboard = {
             }
 
             $.ajax({
-                url: comments.attr("data-set_alarm"),
+                url: alarm.attr("data-set_alarm"),
                 dataType: "json",
                 type: "POST",
                 data: {
-                    comment: comment,
-                    idx : idx
+                    onoff: checked,
+                    alarm_time : alarm_time
                 },
                 success: function(res) {
                     if (!res.error) {
-                        console.log(that.closest('div').children('.comments-section'));
-                        $(that.closest('div').children()[0]).append(res.html);
-                        that.val('')
+
                     }
-                    that.attr('disabled', 'false');
                 },
                 failure: function(res) {
-                    that.attr('disabled', 'false');
+
                 }
 
             });
@@ -167,6 +165,13 @@ var dashboard = {
                 comment = $(this).val();
                 idx = get_recording_id(this);
                 $(this).attr('disabled', 'true');
+
+                setTimeout(function(){
+                    console.log("here")
+                    $('.comment-textarea').removeAttr('disabled', 'false');
+                }, 5000);
+
+
                 var that = $(this);
 
                 $.ajax({
@@ -183,10 +188,6 @@ var dashboard = {
                             $(that.closest('div').children()[0]).append(res.html);
                             that.val('')
                         }
-                        that.attr('disabled', 'false');
-                    },
-                    failure: function(res) {
-                        that.attr('disabled', 'false');
                     }
 
                 });
@@ -252,6 +253,27 @@ var dashboard = {
                 }
             });
         });
+
+        $('.recording-publish').bind('click', function() {
+            idx = get_recording_id(this);
+            var that = $(this);
+
+            $.ajax({
+                url: recordings.attr("data-publish_recording_url"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    rec_id: idx
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        that.replaceWith('<span class="recording-privacy">[Public]</span>');
+                    }
+                }
+            });
+        });
+
+
 
         /*###### CONTACTS ####### */
 
