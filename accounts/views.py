@@ -729,27 +729,33 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         extra_context=extra_context,
         **kwargs)(request)
 
+@login_required
 @secure_required
 def wakeup_dashboard(request):
 
     user = request.user
 
+    print user.profile.activated
+
+    if not user.profile.activated:
+        return redirect(reverse(sms_verify))
+
     deleted = False
 
 #    If post, there's a request to delete recording
-    if request.method == 'POST':
-        recurl = request.POST['recurl']
-        sid = recurl.split('/')[-1]
-
-        account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
-        token = "5a556d4a9acf96753850c39111646ca4"
-        client = TwilioRestClient(account, token)
-
-        # Delete recording
-        try:
-            client.recordings.delete(sid=sid)
-        except Exception:
-            print "Recording not found..."
+#    if request.method == 'POST':
+#        recurl = request.POST['recurl']
+#        sid = recurl.split('/')[-1]
+#
+#        account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
+#        token = "5a556d4a9acf96753850c39111646ca4"
+#        client = TwilioRestClient(account, token)
+#
+#        # Delete recording
+#        try:
+#            client.recordings.delete(sid=sid)
+#        except Exception:
+#            print "Recording not found..."
 
 #        try:
 #            delrec = Conferences.objects.get(recordingurl=recurl)
