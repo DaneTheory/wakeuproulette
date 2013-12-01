@@ -209,6 +209,15 @@
 
     border: solid black;
 }
+#vactrack-buttons {
+    height: 50px;
+}
+#vactrack-buttons a{
+    font-size: 1em;
+    height: 10px;
+    border: solid white;
+    color: white;
+}
 
 
 

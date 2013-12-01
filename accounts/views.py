@@ -735,11 +735,6 @@ def wakeup_dashboard(request):
 
     user = request.user
 
-    print user.profile.activated
-
-    if not user.profile.activated:
-        return redirect(reverse(sms_verify))
-
     deleted = False
 
 #    If post, there's a request to delete recording
