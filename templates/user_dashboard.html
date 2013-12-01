@@ -48,7 +48,7 @@
             </table>
             <div id="chart"></div>
         </div>
-        <div id="dash-settings" class="inline">
+        <div id="dash-settings" class="inline tooltip alarm-tooltip" title="Click alarm time">
             <div id="dash-time"></div>
             <div class="title">Alarm Setup:</div>
             <div id="switch" class="inline wakeup-box-shadow" >
@@ -61,15 +61,6 @@
                 </label>
             </div>
             <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
-
-{#            <section class="main">#}
-{##}
-{#                <div class="switch demo4">#}
-{#                    <input type="checkbox">#}
-{#                    <label><i class='icon-off'></i></label>#}
-{#                </div>#}
-{##}
-{#            </section>#}
         </div>
     </div>
 

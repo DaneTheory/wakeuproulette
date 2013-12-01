@@ -799,6 +799,7 @@ def wakeup_dashboard(request):
 def wakeup_public(request, username):
 
     user = request.user
+    print user
     other = None
     try:
         other = User.objects.get(username=username)
@@ -806,26 +807,28 @@ def wakeup_public(request, username):
     except User.DoesNotExist:
         raise Http404
 
-
     profile = other.get_profile()
 
-    is_contact = user.get_profile().is_contact(other).status == 'A'
+    is_contact = False
     is_pending = False
     is_waiting = False
     reqid = None
-    try:
-        pending = user.contacts.get(user=user, contact=other)
-        is_pending = pending.status == 'P'
-        reqid = pending.id
-    except Contact.DoesNotExist:
+
+    if user.is_authenticated():
+        is_contact = user.get_profile().is_contact(other).status == 'A'
+
         try:
-            pending = other.contacts.get(user=other, contact=user)
-            is_waiting = pending.status == 'P'
+            pending = user.contacts.get(user=user, contact=other)
+            is_pending = pending.status == 'P'
             reqid = pending.id
         except Contact.DoesNotExist:
-            pass
+            try:
+                pending = other.contacts.get(user=other, contact=user)
+                is_waiting = pending.status == 'P'
+                reqid = pending.id
+            except Contact.DoesNotExist:
+                pass
 
-    print  is_contact, is_pending, is_waiting,
 
     name = other.get_full_name()
     if not name: name = username

@@ -106,10 +106,10 @@
 }
 
 #dash-time {
-    width:100%;
 
-    padding: 30px 10px 10px 25px;
+    padding: 30px 10px 10px 40px;
     text-align: left;
+    height: 80px;
 
 
     font-family: Ostrich;
@@ -150,6 +150,14 @@
     color: #696969;
 }
 
+
+.alarm-tooltip:hover:after{
+    bottom: -25px;
+    margin-left: 100px;
+    width: 120px;
+    background-color: white;
+    color: black;
+}
 
 
 
