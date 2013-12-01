@@ -97,6 +97,7 @@ var dashboard = {
             // setup the blur event for this new textarea
             editableText.blur(editableTextBlurred);
             $('#dash-alarm-time').timeEntry({show24Hours: true, minTime: '07:00AM', maxTime: '10:00AM'});
+            $('.alarm-tooltip').attr("title", "Beta available times: 7, 8, 9 and 10 only")
         }
 
         function editableTextBlurred() {
@@ -106,13 +107,22 @@ var dashboard = {
             $(this).replaceWith(viewableText);
             // setup the click event for this new div
             viewableText.click(divClicked);
+            $('.alarm-tooltip').removeClass("alarm-tooltip tooltip");
+
+            var alarm_time = $('#dash-alarm-time').text()
+            set_alarm(alarm_time);
         }
 
         $('#dash-alarm-time').bind('click', divClicked)
 
         $('#switch').bind('click', function() {
-            var checked = $('#myonoffswitch').is(':checked')
             var alarm_time = $('#dash-alarm-time').text()
+
+            set_alarm(alarm_time);
+        });
+
+        function set_alarm(alarm_time) {
+            var checked = $('#myonoffswitch').is(':checked');
 
             if(checked) {
                 $('#dash-alarm-time').removeClass('unactive');
@@ -141,7 +151,7 @@ var dashboard = {
                 }
 
             });
-        });
+        }
 
 
 

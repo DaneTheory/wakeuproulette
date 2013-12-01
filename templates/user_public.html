@@ -53,7 +53,9 @@
                 <div class="title">Alarm:</div>
                 <div id="public-dash-alarm" class="inline">Alarm: {{ other.profile.get_alarm_time }}</div>
 
-                {% if is_waiting %}
+                {% if not request.user.is_authenticated %}
+
+                {% elif is_waiting %}
                     <div id="contacts" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" ></div>
                     <div class="request" data-request_id="{{ reqid }}">
                         <div style="width:75%;float:left;text-align:left;">
