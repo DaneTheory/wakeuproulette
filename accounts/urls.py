@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),
     url(r'^sms_verify/$', account_views.sms_verify, name='sms_verify'),
+    url(r'^not_activated/$', account_views.not_activated, name='not_activated'),
                 
     # Signup, signin and signout
     url(r'^signup/$',

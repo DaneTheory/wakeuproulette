@@ -42,6 +42,8 @@ import re
 import random
 from wakeup.tools.toolbox import sms_async
 
+from accounts.decorators import active_required
+
 class SecureEditProfileForm(EditProfileForm):
     def __init__(self, *args, **kwargs):
         super (SecureEditProfileForm, self).__init__(*args,**kwargs)
@@ -731,6 +733,7 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 
 @login_required
 @secure_required
+@active_required
 def wakeup_dashboard(request):
 
     user = request.user
@@ -870,6 +873,17 @@ def wakeup_public(request, username):
 
 @login_required
 @secure_required
+def not_activated(request):
+    if request.user.profile.activated == True: 
+        return redirect(reverse("wakeup_dashboard"))
+    else:
+        mv = MessageVerification.objects.get(user=request.user)
+        if not mv.verified:
+            return redirect(reverse("sms_verify"))
+        return render(request, 'not_activated.html')
+
+@login_required
+@secure_required
 def sms_verify(request):
     mv = MessageVerification.objects.get(user=request.user)
     if mv.verified == True:
@@ -887,8 +901,6 @@ def sms_verify(request):
                 mv.verified = True
                 mv.time_verified = datetime.datetime.now()
                 mv.save()
-                mv.user.profile.activated = True
-                mv.user.profile.save()
                 return redirect(reverse('userena_signup_complete', kwargs={'username': request.user.username}))
             else:
                 error = "The code is incorrect. Please, try again"
