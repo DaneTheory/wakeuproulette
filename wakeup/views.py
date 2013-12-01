@@ -17,8 +17,8 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 
 
 # Global Variables
-CALL_LIMIT = 20
-WELCOME_LIMIT = 10
+CALL_LIMIT = 60
+WELCOME_LIMIT = 20
 HOLD_LIMIT = 10
 TIMEOUT = 15
 

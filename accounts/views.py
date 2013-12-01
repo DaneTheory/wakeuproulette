@@ -628,6 +628,7 @@ def profile_edit(request, username, edit_profile_form=SecureEditProfileForm,
     extra_context['profile'] = profile
     return ExtraContextTemplateView.as_view(template_name=template_name,
         extra_context=extra_context)(request)
+
 def profile_detail(request, username,
                    template_name=userena_settings.USERENA_PROFILE_DETAIL_TEMPLATE,
                    extra_context=None, **kwargs):

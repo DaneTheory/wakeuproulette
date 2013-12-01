@@ -531,7 +531,7 @@ article h1 {
 }
 #content-wrapper form p {
     position: relative;
-    height: 30px;
+    min-height: 30px;
 }
 #content-wrapper form label {
     margin-top: 10px;
