@@ -61,6 +61,8 @@ def find_match(schedule, call):
             allmatches = allmatches.filter(user__profile__gender='M')
         elif call.user.profile.malematch == False and call.user.profile.femalematch == True:
             allmatches = allmatches.filter(user__profile__gender='F')
+        elif call.user.profile.malematch == False and call.user.profile.femalematch == False:
+            allmatches = allmatches.empty()
     if call.user.profile.gender == 'M':
         allmatches = allmatches.filter(any_match_q | male_match_q)
     else:
@@ -224,6 +226,9 @@ def wakeUpRequest(request, schedule):
     if not call:
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
+
+        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!"
+        data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
     elif 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
         data = None
@@ -403,6 +408,9 @@ def sendToPrivateRoom(request, schedule):
     if not call:
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
+
+        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
+        data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
     # Call has been matched, so just send him to the waiting room - when he comes back, he'll be set up with his other caller
     if call.matched:
