@@ -725,8 +725,7 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         **kwargs)(request)
 
 @secure_required
-@permission_required_or_403('change_user', (get_user_model(), 'username', 'username'))
-def wakeup_dashboard(request, username):
+def wakeup_dashboard(request):
 
     user = request.user
 
@@ -763,7 +762,7 @@ def wakeup_dashboard(request, username):
     profile = user.get_profile()
 
     name = user.get_full_name()
-    if not name: name = username
+    if not name: name = user.username
     profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
     call_set = user.call_set.all()
     totalcalls = call_set.count()
@@ -772,7 +771,7 @@ def wakeup_dashboard(request, username):
     recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
     recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
 
-    aura = profile.reputation*10 + recordingaura
+    aura = profile.reputation*10 + (recordingaura if recordings else 0)
 
     wokeup = call_set.filter(snoozed=False).count()
     snoozed = totalcalls - wokeup
@@ -817,10 +816,7 @@ def wakeup_public(request, username):
     recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
     recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
 
-    aura = profile.reputation*10 + recordingaura
-
-    print recordings
-    print public_recordings
+    aura = profile.reputation*10 + (recordingaura if recordings else 0)
 
     wokeup = call_set.filter(snoozed=False).count()
     snoozed = totalcalls - wokeup

@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^set_alarm/$', account_ajax.set_alarm, name='set_alarm'),
     url(r'^publish_recording/$', account_ajax.publish_recording, name='publish_recording'),
     # View Profiles
-    url(r'^dashboard/(?P<username>[\.\w-]+)/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
+    url(r'^dashboard/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),
                        
     # Signup, signin and signout
