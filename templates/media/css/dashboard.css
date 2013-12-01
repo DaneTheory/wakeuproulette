@@ -389,6 +389,8 @@
 
 #contacts-box {
     height: 400px;
+}
+#all-contacts {
     overflow: scroll;
 }
 
