@@ -25,19 +25,20 @@ from userena import settings as userena_settings
 from django.db.models import Sum
 
 from datetime import date
+import datetime
 
 from twilio.rest import TwilioRestClient
 
 from wakeup.models import Conference, Call, Recording
-from accounts.models import UserProfile
+from accounts.models import UserProfile, MessageVerification
 
 from guardian.decorators import permission_required_or_403
 
 import warnings
 
 import re
-
-
+import random
+from wakeup.tools.toolbox import sms_async
 
 class SecureEditProfileForm(EditProfileForm):
     def __init__(self, *args, **kwargs):
@@ -155,8 +156,11 @@ def signup(request, signup_form=SignupForm,
 
 
             if success_url: redirect_to = success_url
-            else: redirect_to = reverse('userena_signup_complete',
-                kwargs={'username': user.username})
+            # Redirect to code verification page
+            else: redirect_to = reverse('sms_verify')
+                                        
+            #else: redirect_to = reverse('userena_signup_complete',
+            #    kwargs={'username': user.username})
 
             # A new signed user should logout the old one.
             if request.user.is_authenticated():
@@ -795,6 +799,42 @@ def wakeup_public(request, username):
 
     })
 
+@login_required
+@secure_required
+def sms_verify(request):
+    mv = MessageVerification.objects.get(user=request.user)
+    if mv.verified == True:
+        return redirect(reverse('userena_signup_complete', kwargs={'username': request.user.username}))
+    error = None
+    if request.method == 'POST':
+        resend_code = request.POST.get("resend", "")
+        if resend_code == "1":
+            mv.code = rand_x_digit_num(4)
+            mv.save()
+            sms_async(request.user.profile.phone, "Your WakeUpRoulette verification code is " + mv.code)
+        else:
+            code = request.POST.get("code", "")
+            if mv.code == code:
+                mv.verified = True
+                mv.time_verified = datetime.datetime.now()
+                mv.save()
+                mv.user.profile.activated = True
+                mv.user.profile.save()
+                return redirect(reverse('userena_signup_complete', kwargs={'username': request.user.username}))
+            else:
+                error = "The code is incorrect. Please, try again"
+    return render(request, 'sms_verify.html', {'error': error})
+                                                
+
+def rand_x_digit_num(x, leading_zeroes=True):
+    if not leading_zeroes:
+        return random.randint(10**(x-1), 10**x-1)
+    else:
+        if x > 6000:
+            return ''.join([str(random.randint(0, 9)) for i in xrange(x)])
+        else:
+            return str("%0." + str(x) + "d") % random.randint(0, 10**x-1)
+
 # CUSTOM FORM FOR WAKE UP SIGN UP
 PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'
 class WakeUpSignupForm(SignupForm):
@@ -811,7 +851,11 @@ class WakeUpSignupForm(SignupForm):
         cleaned = self.cleaned_data['phone']
         without_trailing = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', cleaned)
         with_uk_extension = "+44" + without_trailing
-        return with_uk_extension
+        try:
+            UserProfile.objects.get(phone=with_uk_extension)
+            raise forms.ValidationError('This phone number is already registered')
+        except UserProfile.DoesNotExist: 
+            return with_uk_extension
 
     def clean_date_of_birth(self):
         dob = self.cleaned_data['date_of_birth']
@@ -832,6 +876,9 @@ class WakeUpSignupForm(SignupForm):
         user_profile.dob = self.cleaned_data['date_of_birth']
 
         user_profile.save()
+        
+        mv = MessageVerification.objects.create(user=user, code=rand_x_digit_num(4))
+        sms_async(user_profile.phone, "Your WakeUpRoulette verification code is " + mv.code)
 
         return user
 
