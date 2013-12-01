@@ -389,6 +389,7 @@
 
 #contacts-box {
     height: 400px;
+    overflow: scroll;
 }
 
 /*Profile Left*/
