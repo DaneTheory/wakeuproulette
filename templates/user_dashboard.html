@@ -86,8 +86,10 @@
         <div id="contacts" class="dash-block wakeup-box-shadow" data-connect_gender_url="{% url 'accounts.ajax.connect_gender' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
             <div class="title">Contacts</div>
             <div id="contacts-box">
-            	<button id="all_contacts_btn">All</button><button id="requests_btn">Requests</button>
-            	<div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
+                <div id="vactrack-buttons">
+            	    <a id="all_contacts_btn">All</a><a id="requests_btn">Requests ({{ request.user.profile.get_requests.count }})</a>
+                </div>
+                <div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
             		{% for contact in request.user.profile.get_contacts %}
             			{% include 'layouts/contact.html' with contact=contact %}
             		{% endfor %}
