@@ -357,12 +357,22 @@ var dashboard = {
 			});
 		}
 		
-		$("#connect_men").bind("click", function() {
-			connect_gender(true, false);
+		$("#connect_men").bind("click", function(e) {
+			if ($("#connect_women").prop('checked')) {
+				connect_gender(true, false);
+			}
+			else {
+				e.preventDefault();
+			}
 		});
 		
-		$("#connect_women").bind("click", function() {
-			connect_gender(false, true);
+		$("#connect_women").bind("click", function(e) {
+			if ($("#connect_men").prop('checked')) {
+				connect_gender(false, true);
+			}
+			else {
+				e.preventDefault();
+			}
 		});
 		
 	}

@@ -876,11 +876,11 @@ def wakeup_public(request, username):
 @secure_required
 def not_activated(request):
     if request.user.profile.activated == True: 
-        return redirect(reverse("wakeup_dashboard"))
+        return redirect(reverse(wakeup_dashboard))
     else:
         mv = MessageVerification.objects.get(user=request.user)
         if not mv.verified:
-            return redirect(reverse("sms_verify"))
+            return redirect(reverse(sms_verify))
         return render(request, 'not_activated.html')
 
 @login_required

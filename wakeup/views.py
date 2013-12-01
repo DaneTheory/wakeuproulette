@@ -61,8 +61,6 @@ def find_match(schedule, call):
             allmatches = allmatches.filter(user__profile__gender='M')
         elif call.user.profile.malematch == False and call.user.profile.femalematch == True:
             allmatches = allmatches.filter(user__profile__gender='F')
-        elif call.user.profile.malematch == False and call.user.profile.femalematch == False:
-            allmatches = allmatches.empty()
     if call.user.profile.gender == 'M':
         allmatches = allmatches.filter(any_match_q | male_match_q)
     else:
