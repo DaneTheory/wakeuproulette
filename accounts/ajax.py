@@ -205,9 +205,9 @@ def publish_recording(request):
 def connect_gender(request):
     change_men = request.POST.get("men", "false")
     change_women = request.POST.get("women", "false")
-    if change_men == "true":
+    if change_men == "true" and request.user.profile.femalematch == True:
         request.user.profile.malematch = not request.user.profile.malematch
-    if change_women == "true":
+    if change_women == "true" and request.user.profile.malematch == True:
         request.user.profile.femalematch = not request.user.profile.femalematch
     request.user.profile.save()
     response = {}
