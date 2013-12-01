@@ -14,6 +14,7 @@ urlpatterns = patterns('',
                        
     url(r'^accept_request/$', account_ajax.accept_request, name='accept_request'),
     url(r'^ignore_request/$', account_ajax.ignore_request, name='ignore_request'),
+    url(r'^connect_gender/$', account_ajax.connect_gender, name='connect_gender'),
     url(r'^increment_rec_aura/$', account_ajax.increment_rec_aura, name='increment_rec_aura'),
     url(r'^increment_rec_rewake/$', account_ajax.increment_rec_rewake, name='increment_rec_rewake'),
     url(r'^increment_rec_play/$', account_ajax.increment_rec_play, name='increment_rec_play'),

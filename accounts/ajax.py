@@ -199,3 +199,17 @@ def publish_recording(request):
         response['error'] = True
 
     return HttpResponse(json.dumps(response), content_type="application/json")
+
+@require_POST
+@login_required
+def connect_gender(request):
+    change_men = request.POST.get("men", "false")
+    change_women = request.POST.get("women", "false")
+    if change_men == "true":
+        request.user.profile.malematch = not request.user.profile.malematch
+    if change_women == "true":
+        request.user.profile.femalematch = not request.user.profile.femalematch
+    request.user.profile.save()
+    response = {}
+    return HttpResponse(json.dumps(response), content_type="application/json")
+    

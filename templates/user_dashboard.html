@@ -61,11 +61,29 @@
                 </label>
             </div>
             <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
+			<div><h4 style="margin-bottom:5px;">Connect with:</h4>
+				<div style="margin-top:10px;margin-left:50px;">
+					<span class="inline">Men:</span>
+					<div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
+			  			<input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
+			  			<label for="connect_men"></label>
+			  		</div>
+			  		<span class="inline">Women:</span>
+			  		<div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
+			  			<input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
+			  			<label for="connect_women"></label>
+			  		</div>
+				</div>
+
+		
+       	  </div> 
+        	
+
         </div>
     </div>
 
     <div id="dash-body">
-        <div id="contacts" class="dash-block wakeup-box-shadow" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
+        <div id="contacts" class="dash-block wakeup-box-shadow" data-connect_gender_url="{% url 'accounts.ajax.connect_gender' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
             <div class="title">Contacts</div>
             <div id="contacts-box">
             	<button id="all_contacts_btn">All</button><button id="requests_btn">Requests</button>

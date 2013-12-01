@@ -342,6 +342,29 @@ var dashboard = {
 			});
 		});
 		
+		function connect_gender(men, women) {
+			$.ajax({
+				url: contacts.attr("data-connect_gender_url"),
+				dataType: "json",
+				type: "POST",
+				data: {
+					men: men,
+					women: women
+				},
+				success: function(res) {
+					
+				}
+			});
+		}
+		
+		$("#connect_men").bind("click", function() {
+			connect_gender(true, false);
+		});
+		
+		$("#connect_women").bind("click", function() {
+			connect_gender(false, true);
+		});
+		
 	}
 }
 
