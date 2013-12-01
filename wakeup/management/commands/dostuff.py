@@ -19,5 +19,13 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
 
-        root = UserProfile.objects.get(user__username="root")
-        alcatel = UserProfile.objects.get(user__username="alcatel")
+        print "doing stuff..."
+
+        for u in UserProfile.objects.all():
+            if u.gender == 'F':
+                u.malematch = True
+            else:
+                u.femalematch = True
+            u.save()
+
+        print "Done doing stuff."
