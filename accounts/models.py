@@ -91,6 +91,9 @@ class UserProfile(UserenaBaseProfile):
         contact.save()
         other.save()
 
+    def get_alarm_time(self):
+        return self.alarm.strftime("%H:%M")
+
     # Contact between two persons is requested - an instance is created with status 'Pending'
     def request_contact(self, user):
         # Check if they are already contacts

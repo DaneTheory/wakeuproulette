@@ -60,7 +60,7 @@
                     </div>
                 </label>
             </div>
-            <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">06:00</div>
+            <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
 
 {#            <section class="main">#}
 {##}
@@ -90,37 +90,11 @@
             	</div>
             </div>
         </div>
-        <div id="recordings" class="dash-block wakeup-box-shadow" data-increment_rec_aura_url="{% url 'accounts.ajax.increment_rec_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+        <div id="recordings" class="dash-block wakeup-box-shadow" data-publish_recording_url="{% url 'accounts.ajax.publish_recording' %}" data-increment_rec_aura_url="{% url 'accounts.ajax.increment_rec_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
             <div class="title">My WakeUp Diary</div>
             <div id="recordings-box">
-                {% for rec in recordings %}
-                <div idx="{{ rec.pk }}" class="recording">
-                    <img class="inline wakeup-box-shadow recording-img" src="{{ rec.other.call.user.profile.img_url }}">
-                    <div class="inline recording-audio-section">
-                        <div class="recording-info">
-                            <span class="recording-username"><a href="#">{{ rec.other.call.user.profile.get_full_name_or_username |title }}</a></span>
-                            <span class="recording-publish"><a href="#">[Publish]</a></span>
-                            <span class="recording-privacy">[{{ rec.get_privacy_display }}]</span>
-                        </div>
-                        <audio controls class="recording-audio"  class="inline">
-                            <source src="{{ rec.recordingurl }}" type="audio/x-wav">
-                            Please use a Chrome or Firefox to listen to your recordings
-                        </audio>
-                    </div>
-                    <div class="recording-data">
-                            <div title="Aura" class="tooltip aura-button"><img src="/media/icons/like-white.png"/><span>{{ rec.rating }}</span></div>
-                            <div title="Re-wakes" class="tooltip rewakes-button"><img src="/media/icons/rewakeup-white.png"/><span>0</span></div>
-                            <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ rec.plays }}</span></div>
-                    </div>
-                    <div class="comments" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}">
-                        <div id="comments-section">
-                            {% for comment in rec.recordingcomment_set.all %}
-                                {% include 'layouts/comment.html' with comment=comment %}
-                            {% endfor %}
-                        </div>
-                        <textarea placeholder="Write a comment..." class="comment-textarea"></textarea>
-                    </div>
-                </div>
+                {% for recording in recordings %}
+                    {% include 'layouts/recording.html' with rec=recording %}
                 {% endfor %}
             </div>
         </div>
@@ -139,7 +113,7 @@
             labels: ["1", "2", "3"],
             legend: ["Woke Up", "Snoozed", "Over-slept"],
             tooltips: {
-                serie1: ["Woke Up:<br><strong>66 times</strong>", "Snoozed:<br><strong>87 times</strong>", "Over-slept:<br><strong>10 times</strong>"]
+                serie1: ["Woke Up:<br><strong>{{ wokeup }} times</strong>", "Snoozed:<br><strong>{{ snoozed }} times</strong>", "Over-slept:<br><strong>{{ overslept }} times</strong>"]
             },
             defaultSeries: {
                 values: [{

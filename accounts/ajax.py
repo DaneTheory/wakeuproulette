@@ -78,13 +78,12 @@ def set_alarm(request):
     alarm_time = request.POST.get("alarm_time", "")
     response = {};
 
-    request.user.profile.alarmon = onoff
+    request.user.profile.alarmon = onoff == "true"
     request.user.profile.alarm = alarm_time
     request.user.profile.save()
+    request.user.save()
 
     return HttpResponse(json.dumps(response), content_type="application/json")
-
-
 
 
 
@@ -163,4 +162,21 @@ def increment_rec_rewake(request):
 #        # TODO Implement rewakes
 #    except Contact.DoesNotExist:
 #        response['error'] = True
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+@require_POST
+@login_required
+def publish_recording(request):
+    rec_id = request.POST.get("rec_id", "")
+    response = {}
+
+    try:
+        recording = Recording.objects.get(id=rec_id, call__user=request.user)
+        recording.privacy = 'P'
+        recording.save()
+
+    except Recording.DoesNotExist:
+        response['error'] = True
+
     return HttpResponse(json.dumps(response), content_type="application/json")
