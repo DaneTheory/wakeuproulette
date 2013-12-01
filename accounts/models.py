@@ -110,7 +110,7 @@ class UserProfile(UserenaBaseProfile):
         try:
             return self.user.contacts.get(user=self.user, contact=user)    
         except Contact.DoesNotExist:
-            return False
+            return None
         
     def get_contacts(self):
         return Contact.objects.filter(user=self.user, status='A')

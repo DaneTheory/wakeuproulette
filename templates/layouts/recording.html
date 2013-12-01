@@ -2,7 +2,7 @@
     <img class="inline wakeup-box-shadow recording-img" src="{{ rec.other.call.user.profile.img_url }}">
     <div class="inline recording-audio-section">
         <div class="recording-info">
-            <span class="recording-username"><a href="#">{{ rec.other.call.user.profile.get_full_name_or_username |title }}</a></span>
+            <span class="recording-username"><a href="/accounts/public/{{ rec.other.call.user.username }}/">{{ rec.other.call.user.profile.get_full_name_or_username |title }}</a></span>
             {% if rec.privacy != 'P' %}
                 <button class="recording-publish btn_publish">Publish</button>
             {% else %}

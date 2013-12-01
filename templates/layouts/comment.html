@@ -1,7 +1,7 @@
 <div idx="{{ comment.id }}" class="comment">
     <img class="inline wakeup-box-shadow comment-img" src="{{ comment.user.profile.img_url }}"/>
     <div class="comment-section">
-        <a class="comment-username" href="#">{{ comment.user.profile.get_full_name_or_username | title }}</a>
+        <a class="comment-username" href="/accounts/public/{{ comment.user }}/">{{ comment.user.profile.get_full_name_or_username | title }}</a>
         <div class="comment-content">{{ comment.comment }}</div>
     </div>
 </div>

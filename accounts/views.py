@@ -808,6 +808,8 @@ def wakeup_public(request, username):
     except User.DoesNotExist:
         raise Http404
 
+    if request.user == other: return redirect(reverse(wakeup_dashboard))
+
     profile = other.get_profile()
 
     is_contact = False
@@ -816,7 +818,8 @@ def wakeup_public(request, username):
     reqid = None
 
     if user.is_authenticated():
-        is_contact = user.get_profile().is_contact(other).status == 'A'
+        contact = user.get_profile().is_contact(other)
+        if contact: is_contact = contact.status == 'A'
 
         try:
             pending = user.contacts.get(user=user, contact=other)
