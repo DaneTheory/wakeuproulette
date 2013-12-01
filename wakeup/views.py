@@ -180,7 +180,7 @@ def match_or_send_to_waiting_room(call, schedule):
         call.user.profile.any_match = False
         call.user.profile.save()
 
-        return render_to_response("twilioresponse.xml", { 'say' :"We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!",
+        return render_to_response("twilioresponse.xml", { 'say' :"We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!",
                                                           'hangup' : True })
     #Check if we have exceeded the waiting redirect limits
     elif call.retries > REDIRECT_LIMIT:
@@ -227,7 +227,7 @@ def wakeUpRequest(request, schedule):
         # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
         print "Call Should exist"
 
-        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
+        say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
 
     elif 'AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress':
@@ -485,7 +485,7 @@ def ratingRequest(request, schedule):
         # Reported
         elif digit == '0':
             # TODO HANDLE REPORTING
-            goodbye =  othercall.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact the Wake Up Roulette Team if you need anything! We'd love to hear from you!"
+            goodbye =  othercall.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact us if you need anything! Wish you a great day!"
             othercall.user.profile.reputation = othercall.user.profile.reputation + USER_REPORT_RATING
             othercall.user.profile.save()
 
@@ -505,7 +505,7 @@ def ratingRequest(request, schedule):
             # TODO HANDLE WRONG TYPING - Use user retries for this
             print "Incorrect number, user pressed" , digit
             gatherurl = schedule
-            rating = "We're sorry, we didn't get that! Please press ONE to give him a thumbs up. Press TWO to give him a thumbs down. Press ZERO to report your wake up buddy."
+            rating = "We're sorry, we didn't get that! If you enjoyed your conversation press ONE to connect with " + othercall.user.username +", or TWO to give just a thumbs up. Otherwise, press Three to give "+othercall.user.username+" a thumbs down, or ZERO to report your wake up buddy."
 
         data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                             , 'rating' : rating
@@ -617,8 +617,8 @@ def finishRequest(request, schedule):
 #                print "Other call does not exist yet"
 
 
-    rating = "Please rate your Wake Up Buddy Now! Press ONE to connect with and give your wake up buddy a thumbs up. Press TWO for just a thumbs up. Press THREE for thumbs down. Press ZERO to report your wake up buddy! . ! . !"
-    rating += "We're sorry, we didn't quite get that. Press ONE to connect with and give your wake up buddy a thumbs up. Press TWO for just a thumbs up. Press THREE for thumbs down. Press ZERO to report your wake up buddy"
+    rating = "Please rate your Wake Up Buddy Now! If you enjoyed your conversation press ONE to connect with " + callOther.user.username +", or TWO to give just a thumbs up. Otherwise, press Three to give "+callOther.user.username+" a thumbs down, or ZERO to report your wake up buddy.! . ! . !"
+    rating += "We're sorry, we didn't quite get that. If you enjoyed your conversation press ONE to connect with " + callOther.user.username +" or TWO to give just a thumbs up. Otherwise, press Three to give "+callOther.user.username+" a thumbs down, or ZERO to report your wake up buddy"
     goodbye = "We hope you had a great time! See you soon!"
     data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                         , 'goodbye' : goodbye
