@@ -30,6 +30,15 @@
     float:left;
 }
 
+#settings {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+#settings img {
+    width: 30px;
+}
 
 /*####################### Dash-Board HEAD #######################*/
 
@@ -160,7 +169,7 @@
 
 
 .alarm-tooltip:hover:after{
-    bottom: -25px;
+    bottom: 80px;
     margin-left: 100px;
     width: 120px;
     background-color: white;

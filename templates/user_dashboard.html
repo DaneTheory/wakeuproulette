@@ -18,6 +18,9 @@
 <div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">
         <div id="dash-profile" class="inline">
+            <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/{{ request.user.username }}/edit/">
+                <img src="/media/icons/settings-white.png"/>
+            </a>
             <div class="title">{{ name }}</div>
             <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
             <div id="aura-points">Aura Points: {{ aura }}</div>
