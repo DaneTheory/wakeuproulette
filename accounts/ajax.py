@@ -10,6 +10,25 @@ from datetime import datetime
 #########################################
 ############### CONTACTS ################
 #########################################
+
+
+@require_POST
+@login_required
+def add_contact(request):
+    user = request.user
+    othername = request.POST.get("username", "")
+
+    response = {}
+    try:
+        contact = UserProfile.objects.get(user__username=othername)
+        user.profile.request_contact(contact.user)
+
+    except Exception:
+        response['error'] = True
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
 @require_POST
 @login_required
 def accept_request(request):

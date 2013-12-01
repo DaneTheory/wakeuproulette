@@ -7,7 +7,7 @@
 
 {% block dashboard %}
 
-    <link rel="stylesheet" type="text/css" href="/media/css/public.css">
+    <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
     <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
 
     <script type="text/javascript" src="/media/js/dashboard.js"></script>
@@ -51,7 +51,25 @@
             <div id="dash-settings" class="inline">
                 <div id="dash-time"></div>
                 <div class="title">Alarm:</div>
-                <div id="dash-alarm" class="inline">Alarm: {{ other.profile.get_alarm_time }}</div>
+                <div id="public-dash-alarm" class="inline">Alarm: {{ other.profile.get_alarm_time }}</div>
+
+                {% if is_waiting %}
+                    <div id="contacts" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" ></div>
+                    <div class="request" data-request_id="{{ reqid }}">
+                        <div style="width:75%;float:left;text-align:left;">
+                            <p><button class="accept_request btn_publish">Accept</button>
+                                <button class="ignore_request btn_publish">Ignore</button></p>
+                        </div>
+                    </div>
+                {% elif is_pending %}
+                    <div id="add-contact">
+                        <div id="contact-pending">Contact Pending</div>
+                    </div>
+                {% elif not is_contact %}
+                <div id="add-contact">
+                    <button id="add-contact-button" class="btn_publish" data-other_username="{{ other.username }}" data-add_contact_url="{% url 'accounts.ajax.add_contact' %}">Add Contact</button>
+                </div>
+                {% endif %}
             </div>
         </div>
 

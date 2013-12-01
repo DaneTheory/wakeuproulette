@@ -277,8 +277,28 @@ var dashboard = {
 
         /*###### CONTACTS ####### */
 
+        $("#add-contact-button").bind("click", function() {
+            var btn = $(this);
+
+            $.ajax({
+                url: btn.attr("data-add_contact_url"),
+                dataType: "json",
+                type: "POST",
+                data: {
+                    username: btn.attr('data-other_username')
+                },
+                success: function(res) {
+                    if (!res.error) {
+                        btn.replaceWith("");
+                    }
+                }
+            });
+        });
+
         $(".accept_request").bind("click", function() {
 			var btn = $(this);
+            console.log(contacts.attr("data-accept_request_url"));
+
 			$.ajax({
 				url: contacts.attr("data-accept_request_url"),
 				dataType: "json",

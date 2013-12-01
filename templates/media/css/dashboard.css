@@ -123,6 +123,14 @@
     padding: 10px 5px 0px 10px;
 }
 
+#public-dash-alarm {
+    font-family: Ostrich;
+    font-size: 3.3em;
+
+    text-align: center;
+    width: 100%;
+}
+
 #dash-alarm-time {
     font-family: Ostrich;
     font-size: 3.3em;
@@ -143,6 +151,20 @@
 }
 
 
+
+
+/*####################### PUBLIC #######################*/
+#add-contact {
+    clear: both;
+    padding-top:20px;
+}
+#add-contact-button {
+    font-size: 1.2em;
+}
+#contact-pending {
+    font-size: 1.3em;
+    color: gray;
+}
 
 
 

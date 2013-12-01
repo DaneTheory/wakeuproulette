@@ -30,7 +30,7 @@ from datetime import date
 from twilio.rest import TwilioRestClient
 
 from wakeup.models import Conference, Call, Recording
-from accounts.models import UserProfile
+from accounts.models import UserProfile, Contact
 
 from guardian.decorators import permission_required_or_403
 
@@ -801,9 +801,24 @@ def wakeup_public(request, username):
     except User.DoesNotExist:
         raise Http404
 
-    is_contact = user.get_profile().is_contact(other)
 
     profile = other.get_profile()
+
+    is_contact = user.get_profile().is_contact(other)
+    is_pending = False
+    is_waiting = False
+    reqid = None
+    try:
+        pending = user.contacts.get(user=user, contact=other)
+        is_pending = pending.status == 'P'
+        reqid = pending.id
+    except Contact.DoesNotExist:
+        try:
+            pending = other.contacts.get(user=other, contact=user)
+            is_waiting = pending.status == 'P'
+            reqid = pending.id
+        except Contact.DoesNotExist:
+            pass
 
     name = other.get_full_name()
     if not name: name = username
@@ -834,7 +849,10 @@ def wakeup_public(request, username):
                                                     , 'recordingduration': recordingduration
                                                     , 'aura': aura
                                                     , 'other': other
-                                                    , "is_contact": is_contact})
+                                                    , "is_contact": is_contact
+                                                    , "is_pending": is_pending
+                                                    , "is_waiting": is_waiting
+                                                    , "reqid": reqid})
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
 PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'
