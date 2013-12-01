@@ -67,8 +67,8 @@ class UserProfile(UserenaBaseProfile):
     reputation = models.IntegerField(_("Reputation"), default=0, null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
-    femalematch = models.BooleanField(_("Female Match"))
-    malematch = models.BooleanField(_("Male Match"))
+    femalematch = models.BooleanField(_("Female Match"), default=True)
+    malematch = models.BooleanField(_("Male Match"), default=True)
     any_match = models.BooleanField(default=False)
     
     activated = models.BooleanField(default=False)
