@@ -55,7 +55,7 @@
         <div id="dash-settings" class="inline tooltip alarm-tooltip" title="Click alarm time">
             <div id="dash-time"></div>
             <div id="switch" class="inline wakeup-box-shadow" >
-                <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" checked>
+                <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" {% if request.user.profile.alarmon %}checked{% endif %}>
                 <label class="onoffswitch-label" for="myonoffswitch">
                     <div class="onoffswitch-inner">
                         <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>

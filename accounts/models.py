@@ -126,6 +126,9 @@ class UserProfile(UserenaBaseProfile):
         return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
 
     def activate_account(self):
+        if not self.is_verified():
+            print "Could not activate as user is not verified."
+            return
         self.activated = True
         self.save()
         sms_async(self.user.profile.phone, "Your WakeUpRoulette account has been activated! You can now access your dashboard!")
