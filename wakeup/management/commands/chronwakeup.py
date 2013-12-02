@@ -11,7 +11,7 @@ import random
 
 
 # Settings Variables
-maxTries = 0
+maxTries = 1
 round = 60
 waitingtime = 60*5
 
@@ -70,7 +70,7 @@ class Command(NoArgsCommand):
                 call_async(p.phone, confurl, fallbackurl, noanswerurl, silent=True)
 
             print "Waiting",waitingtime,"seconds..."
-            if maxTries: time.sleep(waitingtime)
+#             time.sleep(waitingtime)
 #            raw_input('Press enter to continue')
 
             # Flush so that the changes reflect in the database
