@@ -45,7 +45,7 @@ class Contact(models.Model):
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User,unique=True, verbose_name=_('user'),related_name='profile')
     alarm = models.TimeField(_("Alarm Time"), default=time(8))
-    dob = models.DateField(_("Date of Birth"), null=True, blank=True)
+    dob = models.DateField(_("Date of Birth [DD/MM/YYYY]"), null=True, blank=True)
 
     # Current membership - could be premium or freemium
     membership = models.CharField(_("Membership Type"), max_length=1, choices=MEMBERSHIP_CHOICES, default='F')
@@ -94,6 +94,9 @@ class UserProfile(UserenaBaseProfile):
 
     def get_alarm_time(self):
         return self.alarm.strftime("%H:%M")
+
+    def is_verified(self):
+        return self.user.messageverification.verified
 
     # Contact between two persons is requested - an instance is created with status 'Pending'
     def request_contact(self, user):

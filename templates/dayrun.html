@@ -240,32 +240,39 @@
         <div id="daytime-container" class="inline">
 
             {% if request.user.is_authenticated %}
-            <div class="sub-title">Are you up for it?</div>
-            <div id="daytime-switch" class="inline wakeup-box-shadow" >
-                <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" checked>
-                <label class="onoffswitch-label" for="myonoffswitch">
-                    <div class="onoffswitch-inner">
-                        <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
-                        <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
-                    </div>
-                </label>
-            </div>
-            <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
-            <div id="dash-interests" data-connect_gender_url="{% url 'accounts.ajax.connect_gender' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
-                <div class="sub-title">Connect me with:</div>
-                <div id="daytime-connect" style="margin-top:10px;margin-left:50px; ">
-                    <span class="inline">Men:</span>
-                    <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
-                        <input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
-                        <label for="connect_men"></label>
-                    </div>
-                    <span class="inline">Women:</span>
-                    <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
-                        <input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
-                        <label for="connect_women"></label>
+                {% if request.user.messageverification.verified %}
+                <div class="sub-title">Are you up for it?</div>
+                <div id="daytime-switch" class="inline wakeup-box-shadow" >
+                    <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" checked>
+                    <label class="onoffswitch-label" for="myonoffswitch">
+                        <div class="onoffswitch-inner">
+                            <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+                            <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+                        </div>
+                    </label>
+                </div>
+                <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
+                <div id="dash-interests" data-connect_gender_url="{% url 'accounts.ajax.connect_gender' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
+                    <div class="sub-title">Connect me with:</div>
+                    <div id="daytime-connect" style="margin-top:10px;margin-left:50px; ">
+                        <span class="inline">Men:</span>
+                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
+                            <input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
+                            <label for="connect_men"></label>
+                        </div>
+                        <span class="inline">Women:</span>
+                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
+                            <input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
+                            <label for="connect_women"></label>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% else %}
+                <div style="margin-top:30px;" class="sub-title">Please verify your phone.</div>
+                <div style="margin-bottom: 100px; width: 250px;" id="vactrack-buttons">
+                    <a style="width: 200px; height: 23px;" class="daytime-btn" href="/accounts/sms_verify/">Verify now</a>
+                </div>
+                {% endif %}
             {% else %}
             <div style="margin-top:30px;" class="sub-title">Are you up for it?</div>
             <div style="margin-bottom: 100px;" id="vactrack-buttons">
