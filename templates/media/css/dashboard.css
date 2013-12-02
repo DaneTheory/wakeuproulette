@@ -155,6 +155,7 @@
     border: solid black;
     margin-top: 0px;
     margin-left: 20px;
+    width: 60px;
 }
 
 #dash-interests {
@@ -198,6 +199,9 @@
 
 #dash-body {
     margin-top: 30px;
+    width: 1220px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .dash-block {
@@ -211,7 +215,6 @@
 #contacts {
     width: 25%;
     min-width: 320px;
-    margin-left: 30px;
 }
 
 /* Contacts */
@@ -390,7 +393,7 @@
 #contacts-box {
     height: 400px;
 }
-#all-contacts {
+#all_contacts {
     height:350px;
     overflow: scroll;
     padding-top:10px;

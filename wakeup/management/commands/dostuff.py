@@ -1,6 +1,7 @@
 from django.core.management.base import NoArgsCommand, make_option
 from twilio.rest import TwilioRestClient
-from accounts.models import UserProfile, Contact
+from accounts.models import UserProfile, Contact, MessageVerification
+from datetime import datetime
 
 
 from django.core.mail import send_mail as core_send_mail
@@ -22,10 +23,15 @@ class Command(NoArgsCommand):
         print "doing stuff..."
 
         for u in UserProfile.objects.all():
-            if u.gender == 'F':
-                u.malematch = True
-            else:
-                u.femalematch = True
-            u.save()
+            try:
+                u.user.messageverification
+            except MessageVerification.DoesNotExist:
+                m = MessageVerification()
+                m.user = u.user
+                m.code = "1234"
+                m.verified = True
+                m.time_verified = datetime.now()
+                m.save()
+
 
         print "Done doing stuff."

@@ -22,9 +22,8 @@
                 <img src="/media/icons/settings-white.png"/>
             </a>
             <div class="title">{{ name }}</div>
-            <a href="/accounts/{{ request.user.username }}/edit/">
-                <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
-            </a>
+            <a href="/accounts/{{ request.user.username }}/edit/"></a>
+            <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
             <div id="aura-points">Aura Points: {{ aura }}</div>
         </div>
         <div id="dash-stats" class="inline">
@@ -80,8 +79,8 @@
 			  		</div>
 				</div>
 
-		
-       	  </div> 
+
+       	  </div>
         	
 
         </div>
@@ -94,7 +93,7 @@
                 <div id="vactrack-buttons">
             	    <a id="all_contacts_btn">All</a><a id="requests_btn">Requests ({{ request.user.profile.get_requests.count }})</a>
                 </div>
-                <div id="all-contacts">
+                <div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
             		{% for contact in request.user.profile.get_contacts reversed %}
             			{% include 'layouts/contact.html' with contact=contact %}
             		{% endfor %}

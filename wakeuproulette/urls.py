@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 
     #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'beta/', views.beta, name='beta'),
+    url(r'dayrun/', views.dayrun, name='dayrun' ),
 
     url(r'survey/', views.survey, name='survey'),
 

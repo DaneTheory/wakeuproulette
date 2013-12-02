@@ -93,9 +93,13 @@ def insert_comment(request):
 @require_POST
 @login_required
 def set_alarm(request):
+    print "here!!"
     onoff = request.POST.get("onoff", "")
     alarm_time = request.POST.get("alarm_time", "")
     response = {};
+
+    print "onoff:",onoff
+    print alarm_time
 
     request.user.profile.alarmon = onoff == "true"
     request.user.profile.alarm = alarm_time

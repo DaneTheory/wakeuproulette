@@ -1,14 +1,15 @@
 .onoffswitch {
-    position: relative; width: 70px;
+    position: relative; width: 100px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
 }
 .onoffswitch-checkbox {
     display: none;
 }
 .onoffswitch-label {
-    width: 60px;
     display: block; overflow: hidden; cursor: pointer;
     border: 0px solid #999999; border-radius: 0px;
+    width: 60px;
+
 }
 .onoffswitch-inner {
     width: 200%; margin-left: -100%;

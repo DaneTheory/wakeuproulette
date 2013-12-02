@@ -31,7 +31,8 @@ urlpatterns = patterns('',
     # Signup, signin and signout
     url(r'^signup/$',
         account_views.signup,
-        {'signup_form': WakeUpSignupForm }),
+        {'signup_form': WakeUpSignupForm }
+        , name='userena_signup'),
 #    url(r'^signup/$', RedirectView.as_view(url='/beta', permanent=False), name='beta'),
     url(r'^signin/$',
         account_views.signin,

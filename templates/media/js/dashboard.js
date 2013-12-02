@@ -50,7 +50,7 @@ var dashboard = {
 		    return cookieValue;
 		}
 		var csrftoken = getCookie('csrftoken');
-		
+
 		function csrfSafeMethod(method) {
 		    // these HTTP methods do not require CSRF protection
 		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -115,10 +115,12 @@ var dashboard = {
 
         $('#dash-alarm-time').bind('click', divClicked)
 
-        $('#switch').bind('click', function() {
-            var alarm_time = $('#dash-alarm-time').text()
+        $('#switch').bind('click', function(e) {
+            if (e.target.innerHTML == "") {
+                var alarm_time = $('#dash-alarm-time').text()
 
-            set_alarm(alarm_time);
+                set_alarm(alarm_time);
+            }
         });
 
         function set_alarm(alarm_time) {
