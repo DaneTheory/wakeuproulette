@@ -42,11 +42,12 @@ fromnumber = "+441279702159"
 
 # Make API calls asynchronously
 class CallThread(threading.Thread):
-    def __init__(self, phone, confurl, fallbackurl, noanswerurl):
+    def __init__(self, phone, confurl, fallbackurl, noanswerurl, silent=False):
         self.phone = phone
         self.confurl = confurl
         self.fallbackurl = fallbackurl
         self.noanswerurl = noanswerurl
+        self.silent = silent
         threading.Thread.__init__(self)
 
     def run (self):
@@ -61,9 +62,11 @@ class CallThread(threading.Thread):
             , status_callback = self.noanswerurl
             , status_method = 'Post'
             , record=True)
-        print "Called " + self.phone
 
-def call_async(phone, confurl, fallbackurl, noanswerurl):
+        if not self.silent:
+            print "Called " + self.phone
+
+def call_async(phone, confurl, fallbackurl, noanswerurl, silent=False):
     CallThread(phone, confurl, fallbackurl, noanswerurl).start()
     
 class SmsThread(threading.Thread):

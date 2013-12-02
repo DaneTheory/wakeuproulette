@@ -67,15 +67,18 @@ class Command(NoArgsCommand):
             print "STARTING TRY", tries
 
             for p in towakeup:
-                call_async(p.phone, confurl, fallbackurl, noanswerurl)
+                call_async(p.phone, confurl, fallbackurl, noanswerurl, silent=True)
 
-#            time.sleep(waitingtime)
-            raw_input('Press enter to continue')
+            print "Waiting",waitingtime,"seconds..."
+            time.sleep(waitingtime)
+#            raw_input('Press enter to continue')
 
             # Flush so that the changes reflect in the database
             flush_transaction()
             towakeup = UserProfile.objects.filter(alarmon=True).filter(user__call__datecreated=schedule, user__call__answered=False)
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
 
+
+        print "Finished..."
         # To finish turn everyone's alarm off
         UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, any_match=False)
