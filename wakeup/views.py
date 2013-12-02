@@ -19,13 +19,13 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 # Global Variables
 CALL_LIMIT = 60
 WELCOME_LIMIT = 20
-HOLD_LIMIT = 10
+HOLD_LIMIT = 15
 TIMEOUT = 20
 
 WAITING_ROOM_MAX = 4
 
 RE_DIAL_LIMIT = 5
-REDIRECT_LIMIT = 2
+REDIRECT_LIMIT = 1
 
 CONFERENCE_SCHEDULE_DELIMITER = ':'
 
