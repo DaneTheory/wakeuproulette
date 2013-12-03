@@ -93,7 +93,7 @@
                 <div id="vactrack-buttons">
             	    <a id="all_contacts_btn">All</a><a id="requests_btn">Requests ({{ request.user.profile.get_requests.count }})</a>
                 </div>
-                <div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
+                <div id="all_contacts">
             		{% for contact in request.user.profile.get_contacts reversed %}
             			{% include 'layouts/contact.html' with contact=contact %}
             		{% endfor %}

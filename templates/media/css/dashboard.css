@@ -394,9 +394,10 @@
     height: 400px;
 }
 #all_contacts {
-    height:350px;
     overflow: scroll;
+    position:relative;
     padding-top:10px;
+    height:350px;
 }
 
 /*Profile Left*/

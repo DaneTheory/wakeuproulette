@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
 from wakeup.tools.toolbox import sms_async
 from datetime import time, date
+from wakeup.models import RecordingRating, Recording
 
 
 GENDER_CHOICES = (
@@ -74,6 +75,10 @@ class UserProfile(UserenaBaseProfile):
     
     activated = models.BooleanField(default=False)
 
+
+
+    ######## CONTACTS ########
+
     def confirm_contact(self, user):
         # Raise contact does not exist if this connection doesn't exist
         contact = self.user.related_self.get(user=self, contact=user)
@@ -92,12 +97,6 @@ class UserProfile(UserenaBaseProfile):
         contact.save()
         other.save()
 
-    def get_alarm_time(self):
-        return self.alarm.strftime("%H:%M")
-
-    def is_verified(self):
-        return self.user.messageverification.verified
-
     # Contact between two persons is requested - an instance is created with status 'Pending'
     def request_contact(self, user):
         # Check if they are already contacts
@@ -110,20 +109,31 @@ class UserProfile(UserenaBaseProfile):
             except Contact.DoesNotExist:
                 Contact.objects.create(user=self.user, contact=user, status='P')
 
+#            # Check if self recording is valid and other is valid
+#            if self.recording and self.recording.recordingurl and self.recordin.recordingduration:
+#                if user.profile.recording and user.profile.recording.recordingurl and user.profile.recording.recordingduration:
+#                    if user.profile.recording
+
     def is_contact(self, user):
         try:
-            return self.user.contacts.get(user=self.user, contact=user)    
+            return self.user.contacts.get(user=self.user, contact=user)
         except Contact.DoesNotExist:
             return None
-        
+
     def get_contacts(self):
         return Contact.objects.filter(user=self.user, status='A')
-    
+
     def get_requests(self):
         return Contact.objects.filter(contact=self.user, status='P')
-    
-    def img_url(self):
-        return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
+
+    def get_alarm_time(self):
+        return self.alarm.strftime("%H:%M")
+
+
+    ######## VERIFICATION ########
+
+    def is_verified(self):
+        return self.user.messageverification.verified
 
     def activate_account(self):
         if not self.is_verified():
@@ -132,6 +142,16 @@ class UserProfile(UserenaBaseProfile):
         self.activated = True
         self.save()
         sms_async(self.user.profile.phone, "Your WakeUpRoulette account has been activated! You can now access your dashboard!")
+
+
+    ######## RECORDINGS ########
+
+    def rated(self, recording):
+        return RecordingRating.objects.get(user=self.user)
+
+    def img_url(self):
+        return self.mugshot.url if self.mugshot else ('/media/images/man-placeholder.jpg' if self.gender == 'M' else '/media/images/woman-placeholder.jpg')
+
 
     def g(self,him, her):
         return him if self.gender == 'M' else her

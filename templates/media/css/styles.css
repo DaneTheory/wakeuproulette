@@ -65,6 +65,46 @@ a:target {
     color: #000000;
 }
 
+
+.wur-btn {
+    float: left;
+    padding: 10px 5px;
+    font-family: 'Ostrich';
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    text-align:center;
+    background: rgba(0, 0, 0, 0.55);
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+}
+
+.wur-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    color: #000000;
+}
+
+#nav-evening-roulette-btn {
+    margin-top: -8px;
+    margin-left: 10px;
+    padding-top: 0px;
+    font-size: 25px;
+    height: 23px;
+    background: rgba(0, 0, 0, 0);
+    font-family: geosans;
+}
+#nav-evening-roulette-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+
 #ui-widget {
     height: 200px;
 }
@@ -253,6 +293,9 @@ a:target {
     position: absolute;
     top: 10px;
     left: 5px; }
+.share a{
+    float: left;
+}
 
 a.twitter {
     background-color: #f8f8f8;

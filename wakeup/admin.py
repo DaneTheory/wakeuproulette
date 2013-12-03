@@ -9,7 +9,7 @@ class CallAdmin(admin.ModelAdmin):
     list_display = ['pk', 'user', 'callduration', 'answered', 'matched', 'completed', 'rated', 'errorcode', 'rating', 'datecreated', 'retries']
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'alarmon', 'reputation', 'phone', 'gender', 'warnings', 'femalematch', 'malematch', 'any_match', 'is_verified', 'activated']
+    list_display = ['user', 'alarmon', 'alarm', 'reputation', 'phone', 'gender', 'warnings', 'femalematch', 'malematch', 'any_match', 'is_verified', 'activated']
 
 class MessageVerificationAdmin(admin.ModelAdmin):
     list_display = ['user', 'code', 'verified', 'time_sent', 'time_verified']

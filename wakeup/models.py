@@ -33,7 +33,7 @@ class Conference(models.Model):
 class Call(models.Model):
     conference = models.ForeignKey(Conference, null=True)
     user = models.ForeignKey(User)
-    callduration = models.IntegerField(_("Recording Duration"), default=0)
+    callduration = models.IntegerField(_("Call Duration"), default=0)
 
     # Call Flags
     snoozed = models.BooleanField(_("Snoozed"), default=False)
@@ -85,6 +85,18 @@ class Recording(models.Model):
     warnings = models.IntegerField(_("warnings"), default=0)
 
     datecreated = models.DateTimeField()
+
+    def get_recording(self):
+        # Check if its shared and if it is, that it's the chosen recording
+        if self.shared and not self.chosen:
+            if not self.other.chosen:
+                print "Error, please report"
+                # TODO This should not happen - log this error
+            if self.other.recordingurl and self.other.recordingduration:
+                return self.other
+
+        return self
+
 
     def save(self, *args, **kwargs):
         if not self.privacy:
