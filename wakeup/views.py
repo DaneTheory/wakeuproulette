@@ -18,7 +18,7 @@ from wakeup.tools.toolbox import send_async_mail, call_async
 
 # Global Variables
 CALL_LIMIT = 60
-WELCOME_LIMIT = 20
+WELCOME_LIMIT = 30
 HOLD_LIMIT = 15
 TIMEOUT = 20
 
@@ -132,14 +132,15 @@ def send_to_conference_room(call, schedule, match):
                                                         , 'beep' : True
                                                     })
 
-def send_to_waiting_room(timelimit, schedule, confname, gather=None, say=None):
-    print "Sending to conference room", confname, "with schedule", schedule
+def send_to_waiting_room(timelimit, schedule, username, gather=None, say=None, song=None):
+    print "Sending to conference room", username, "with schedule", schedule
     return render_to_response("twilioresponse.xml", { 'say' :say
                                                     , 'gather' : gather
                                                     , 'wakeuprequest' : schedule
-                                                    , 'confname' : confname
+                                                    , 'confname' : username
                                                     , 'timelimit' : timelimit
                                                     , 'record' : False
+                                                    , 'waiturl' : '/waitingrequest/' + username
                                                     , 'beep' : False })
 
 # TODO Ensure mutually exclusive transactions - once there was a deadlock, idk why
@@ -196,7 +197,7 @@ def match_or_send_to_waiting_room(call, schedule):
     # Send user to private conference (Conferencename=Username) or send them to the waiting room they were at
     return send_to_waiting_room(  HOLD_LIMIT
                                     , schedule
-                                    , call.user.username if call.user.profile.roomdesired else call.conference.pk
+                                    , call.user.username
                                     , False
                                     , "Please bare with us - we'll find the best match for you!")
 
@@ -244,12 +245,13 @@ def wakeUpRequest(request, schedule):
         else:
             print "Person has just waken up and answered!"
 
-            waiting = get_active_waiting_room(schedule)
+            # TODO Evaluate this: Right now we're avoiding waiting rooms as people found them confusing, but we might implement them again later
+#            waiting = get_active_waiting_room(schedule)
+#            call.conference = waiting
 
             # Setting the redials to zero - we'll use this count to limit the waiting time
             call.retries = 0
             call.matched = False
-            call.conference = waiting
             call.answered = True
             call.save()
 
@@ -259,8 +261,8 @@ def wakeUpRequest(request, schedule):
 
             data = send_to_waiting_room(  WELCOME_LIMIT
                                         , schedule
-                                        , waiting.pk
-                                        , "Welcome to Wake Up Roulette! We'll now send you to a waiting room with everyone - if you'd rather wait in a private room, press any number now.")
+                                        , call.user.username
+                                        , "Welcome to Wake Up Roulette! We'll connect you with an awesome Person!")
 
         print '\n'
 
@@ -386,7 +388,7 @@ def tryAnyMatch(request, schedule):
     call.save()
     data = send_to_waiting_room(  HOLD_LIMIT
                                 , schedule
-                                , call.user.username if call.user.profile.roomdesired else call.conference.pk
+                                , call.user.username
                                 , False
                                 , "We'll try to find you an awesome person!")
     return HttpResponse(data, mimetype="application/xml")
@@ -415,10 +417,10 @@ def sendToPrivateRoom(request, schedule):
     # Call has been matched, so just send him to the waiting room - when he comes back, he'll be set up with his other caller
     if call.matched:
         data = send_to_waiting_room(  HOLD_LIMIT
-            , schedule
-            , call.user.username
-            , False
-            , "We'll send you to a private room while we connect you with an awesome person!")
+                                    , schedule
+                                    , call.user.username
+                                    , False
+                                    , "We'll send you to a private room while we connect you with an awesome person!")
 
     else:
         call.conference = None
@@ -686,8 +688,14 @@ def fallbackRequest(request, schedule):
                                                     })
     return HttpResponse(data, mimetype="application/xml")
 
-def dayrun(request):
+@csrf_exempt
+def waitingRequest(request, username):
+    data = render_to_response("waitingresponse.xml",
+        { 'song': '/media/mp3/evenings-babe.mp3'  })
+    return HttpResponse(data, mimetype="application/xml")
 
+
+def dayrun(request):
     return render(request, 'dayrun.html')
 
 

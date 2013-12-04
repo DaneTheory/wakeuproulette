@@ -57,6 +57,7 @@ class Command(NoArgsCommand):
             c.user = u.user
             c.datecreated = schedule
             c.save()
+            print "Call for "+ str(u) + " has been created"
 
         tries = 0
         # Iterate until we don't have any more people we need to wake up, or our tries have ran out

@@ -20,7 +20,11 @@
                       {% if wakeuprequest %}action="/wakeuprequest/{{ wakeuprequest }}" method="POST"{% endif %}
                       {% if hanguponstar %} hangupOnStar="True" {% endif %}>
         {% if confname %}
-            <Conference beep="{{ beep }}">{{ confname }}</Conference>
+            <Conference
+                    beep="{{ beep }}"
+                    waitUrl="{{ waiturl }}">
+                {{ confname }}
+            </Conference>
         {% endif %}
         </Dial>
     {% endif %}
