@@ -135,13 +135,14 @@ class UserProfile(UserenaBaseProfile):
     def is_verified(self):
         return self.user.messageverification.verified
 
-    def activate_account(self):
+    def activate_account(self, message=None):
         if not self.is_verified():
             print "Could not activate as user is not verified."
             return
         self.activated = True
         self.save()
-        sms_async(self.user.profile.phone, "Your WakeUpRoulette account has been activated! You can now access your dashboard!")
+        if not message: message = "Your WakeUpRoulette account has been activated! You can now access your dashboard!"
+        sms_async(self.user.profile.phone, message)
 
 
     ######## RECORDINGS ########
