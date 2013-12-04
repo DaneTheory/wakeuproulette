@@ -222,6 +222,7 @@ a:target {
     padding-top: 737px;
     background-color: black;
     color: white;
+    min-width: 850px;
 }
 
 #home {

@@ -1,52 +1,22 @@
-
-/*IMAGES*/
-#setupman {
-    background: url('/media/images/about/setupman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
+#about {
+    padding: 0px 0px 0px 0px;
+    background-color: black;
 }
-#setupwoman {
-    background: url('/media/images/about/setupwoman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
-}
-#wakeupman {
-    background: url('/media/images/about/wakeupman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
-}
-#wakeupwoman {
-    background: url('/media/images/about/wakeupwoman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
-}
-#rateman {
-    background: url('/media/images/about/rateman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
-}
-#ratewoman {
-    background: url('/media/images/about/ratewoman.jpg');
-    background-size: cover;
-    -o-background-size: cover;
-    background-repeat: no-repeat;
-}
-
 
 .about-sub {
     text-align: center;
     width: 100%;
     font-family: Ostrich;
     font-size: 5em;
-    padding: 20px 0px 20px 0px;
     border-top: solid;
     border-bottom: solid;
     color: white;
+    background-color: black;
+}
+
+
+#about-head-title {
+    padding: 80px 0px 80px 0px;
     background-color: black;
 }
 
@@ -74,10 +44,38 @@
 
 .img-box div {
     float: left;
-    width:50%;
     height: 400px;
 }
 
+.col-2 {
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+}
+.col-2 img {
+    width: 100%;
+    left: -300px;
+}
+.col-3 {
+    width: 33.3%;
+    position: relative;
+    overflow: hidden;
+}
+.col-3 img {
+    height: 100%;
+    position: absolute;
+    right:-20%;
+}
+.col-4 {
+    width: 25%;
+    position: relative;
+    overflow: hidden;
+}
+.col-4 img {
+    position: absolute;
+    height: 100%;
+    right: -30%;
+}
 
 .section {
     width: 100%; /* fix for Firefox */
@@ -99,3 +97,48 @@
 
 
 
+
+
+#about-try-it-header {
+    padding: 40px 0px 40px 0px;
+    background-color: white;
+    border-top: white solid;
+    border-bottom: white solid;
+    color: black;
+}
+#about-wakeup-explanation {
+    padding-top: 3.5%;
+    position: relative;
+    background-color: black;
+    height: 22em;
+}
+#about-wakeup-explanation p {
+    padding: 20px 80px 20px 80px;
+    font-family: Geosans;
+    font-size: 2em;
+    line-height: .7em;
+}
+.about-sub-title {
+    font-size: 3em;
+}
+
+
+
+#about-try-it {
+    height: 50px;
+    background-color: white;
+}
+#about-try-it a {
+    height: 50px;
+    width: 33.3%;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 0px;
+    text-align: center;
+    padding: 50px 0px 30px 0px;
+}
+#about-try-it a:hover {
+    background-color: black;
+    color: white;
+}
