@@ -55,6 +55,14 @@ class Call(models.Model):
         new_self = self.__class__.objects.get(pk=self.pk)
         self.__dict__.update(new_self.__dict__)
 
+    def get_match(self):
+        try:
+            return self.conference.call_set.exclude(pk=self.pk)[0].user.profile.get_full_name_or_username()
+        except Exception:
+            return ""
+
+
+
     def __unicode__(self):
         return "User " + self.user.username + " - Matched: " + str(self.matched)
 

@@ -6,7 +6,7 @@ class ConferenceAdmin(admin.ModelAdmin):
     list_display = ['conferenceid', 'maxcapacity', 'datecreated', 'related_calls']
 
 class CallAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'user', 'callduration', 'answered', 'matched', 'completed', 'rated', 'errorcode', 'rating', 'datecreated', 'retries']
+    list_display = ['pk', 'user', 'callduration', 'answered', 'matched', 'get_match', 'completed', 'rated', 'errorcode', 'rating', 'datecreated', 'retries']
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'alarmon', 'alarm', 'reputation', 'phone', 'gender', 'warnings', 'femalematch', 'malematch', 'any_match', 'is_verified', 'activated']
