@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    {% if gather %}
+        <Gather action="{{ gatherurl }}" method="POST" numDigits="1">
+            <Say>{{ gather }}</Say>
+        </Gather>
+    {% endif %}
+    <Redirect/>
+</Response>

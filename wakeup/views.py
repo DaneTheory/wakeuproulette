@@ -16,21 +16,44 @@ from accounts.models import UserProfile
 from wakeup.tools.toolbox import send_async_mail, call_async
 
 
-# Global Variables
-CALL_LIMIT = 60
-WELCOME_LIMIT = 30
-HOLD_LIMIT = 15
-TIMEOUT = 20
+############# PROD - DO NOT MODIFY #################
+if settings.PROD:
+    # These are the settings that will be used in PROD
+    # For testing please modify the variables below
+    CALL_LIMIT = 60
+    WELCOME_LIMIT = 30
+    HOLD_LIMIT = 30
+    TIMEOUT = 20
 
-WAITING_ROOM_MAX = 4
+    WAITING_ROOM_MAX = 4
 
-RE_DIAL_LIMIT = 5
-REDIRECT_LIMIT = 1
+    RE_DIAL_LIMIT = 5
+    REDIRECT_LIMIT = 1
 
-CONFERENCE_SCHEDULE_DELIMITER = ':'
+    CONFERENCE_SCHEDULE_DELIMITER = ':'
 
-# Rating given to users that are reported
-USER_REPORT_RATING = -5
+    # Rating given to users that are reported
+    USER_REPORT_RATING = -5
+
+############# DEV - Feel free to make changes #################
+else:
+# These are the settings that will be used in PROD
+    # For testing please modify the variables below
+    CALL_LIMIT = 60
+    WELCOME_LIMIT = 30
+    HOLD_LIMIT = 30
+    TIMEOUT = 20
+
+    WAITING_ROOM_MAX = 4
+
+    RE_DIAL_LIMIT = 5
+    REDIRECT_LIMIT = 1
+
+    CONFERENCE_SCHEDULE_DELIMITER = ':'
+
+    # Rating given to users that are reported
+    USER_REPORT_RATING = -5
+
 
 
 @transaction.commit_manually
@@ -184,7 +207,7 @@ def match_or_send_to_waiting_room(call, schedule):
         return render_to_response("twilioresponse.xml", { 'say' :"We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!",
                                                           'hangup' : True })
     #Check if we have exceeded the waiting redirect limits
-    elif call.retries > REDIRECT_LIMIT:
+    elif call.retries >= REDIRECT_LIMIT:
         # The user has reached the limit of redials, so hang up
         print "WAITING LIMIT DONE - TRY TO MATCH WITH ANY PERSON"
         any_match = "We could not find any matches. If you'd like us to try to match you with Anyone please press any number now."
@@ -712,3 +735,25 @@ def beta(request):
 
 def notFound(request):
     return render(request, '404.html')
+
+
+
+
+
+## Handling incoming calls
+#@csrf_exempt
+#def callInitial(request):
+#    gatherurl = "/call/register/"
+#    gather =        "Welcome to WakeUpRoulette! If you'd like to register to this awesome service and join this new awesome way of waking up, please press any number now. "
+#    +   "I'm sorry, I didn't get that. If you'd like to register to this awesome service and join this new awesome way of waking up, please press any number now. "
+#    +   "If you'd like more information before registering, please check out www.wakeuproulette.com."
+#    +   "Wish you an awesome day. Good bye!"
+#    data = render_to_response("callresponse.xml", {     'gatherurl': gatherurl,
+#                                                        'gather' : gather})
+#    return HttpResponse(data, mimetype="application/xml")
+#
+#@csrf_exempt
+#def callRegister(request):
+
+
+
