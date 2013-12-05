@@ -919,7 +919,7 @@ def sms_verify(request):
         else:
             code = request.POST.get("code", "")
             if mv.code == code:
-                if request.user.profile.gender == 'F':
+                if True: #request.user.profile.gender == 'F':
                     request.user.profile.activated = True
                     request.user.profile.save()
                 mv.verified = True

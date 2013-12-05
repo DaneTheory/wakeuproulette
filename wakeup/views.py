@@ -24,14 +24,14 @@ if settings.PROD:
     # These are the settings that will be used in PROD
     # For testing please modify the variables below
     CALL_LIMIT = 60
-    WELCOME_LIMIT = 20
-    HOLD_LIMIT = 20
+    WELCOME_LIMIT = 10
+    HOLD_LIMIT = 10
     TIMEOUT = 20
 
     WAITING_ROOM_MAX = 4
 
     RE_DIAL_LIMIT = 5
-    REDIRECT_LIMIT = 1
+    REDIRECT_LIMIT = 4
     RATING_LIMIT = 3
 
     CONFERENCE_SCHEDULE_DELIMITER = ':'
@@ -700,8 +700,8 @@ def waitingRequest(request, username):
     return HttpResponse(data, mimetype="application/xml")
 
 
-def dayrun(request):
-    return render(request, 'dayrun.html')
+def eveningRoulette(request):
+    return render(request, 'eveningroulette.html')
 
 
 
