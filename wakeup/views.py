@@ -379,7 +379,7 @@ def answerCallback(request, schedule):
             noanswerurl = settings.WEB_ROOT + 'answercallback/' + schedule
             fallbackurl = settings.WEB_ROOT + 'fallback/' + schedule
 
-            print "No answer, calling again: ", phone, confurl, settings.PROD, os.environ['USER']
+            print "No answer, calling again: ", phone, confurl, settings.PROD, os.environ['USER'], os.environ['LOGNAME']
             call_async(phone, confurl, fallbackurl, noanswerurl)
 
             call.retries = call.retries + 1
