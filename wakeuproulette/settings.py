@@ -5,17 +5,11 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
-# This boolean states if the app is currently in PRODUCTION
-PROD = False
-
 # Check if we are running Locally or in production server
-if os.environ['USER'] == 'ubuntu':
-    PROD = True
+PROD = os.environ['USER'] == 'ubuntu'
 
-if PROD: WEB_ROOT = "http://wakeuproulette.com/"
+WEB_ROOT = "http://wakeuproulette.com/" if PROD else "http://19576e9d.ngrok.com/"
 
-# If app is not in production it will use the following web root, please modify it as required:
-else: WEB_ROOT = "http://19576e9d.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
