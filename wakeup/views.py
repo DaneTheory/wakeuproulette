@@ -12,6 +12,7 @@ from twilio.rest import TwilioRestClient
 from django.conf import settings
 from datetime import datetime
 from accounts.models import UserProfile
+import os
 
 from wakeup.tools.toolbox import send_async_mail, call_async
 
@@ -378,7 +379,7 @@ def answerCallback(request, schedule):
             noanswerurl = settings.WEB_ROOT + 'answercallback/' + schedule
             fallbackurl = settings.WEB_ROOT + 'fallback/' + schedule
 
-            print "No answer, calling again: ", phone, confurl, settings.PROD
+            print "No answer, calling again: ", phone, confurl, settings.PROD, os.environ['USER']
             call_async(phone, confurl, fallbackurl, noanswerurl)
 
             call.retries = call.retries + 1
