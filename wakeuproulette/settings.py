@@ -133,8 +133,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'wakeuproulette.urls'
@@ -204,7 +202,11 @@ LOGGING = {
         },
     },
     'handlers': {
-        'default': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'wakeup_handler': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             'filename': 'logs/wakeup.log',
@@ -223,18 +225,22 @@ LOGGING = {
         'request_handler': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/request.log',
+            'filename': 'logs/django-request.log',
             'maxBytes': 1024*1024*5, # 5 MB
             'backupCount': 5,
             'formatter':'standard',
-            },
+        },
     },
     'loggers': {
-
-        'wakeup': {
-            'handlers': ['default'],
-            'level': 'DEBUG',
+        'django': {
+            'handlers': ['null'],
+            'level': 'INFO',
             'propagate': True
+        },
+        'wakeup': {
+            'handlers': ['wakeup_handler'],
+            'level': 'DEBUG',
+            'propagate': False
         },
         'cron': {
             'handlers': ['cron_handler'],
@@ -244,7 +250,7 @@ LOGGING = {
         'django.request': {
             'handlers': ['request_handler'],
             'level': 'DEBUG',
-            'propagate': False
+            'propagate': True
         },
     }
 }
