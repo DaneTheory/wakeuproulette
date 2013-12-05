@@ -7,13 +7,17 @@ import time
 from django.conf import settings
 from django.db import transaction
 from wakeup.tools.toolbox import call_async
-import random
+
+import logging
+logger = logging.getLogger('cron')
 
 
 # Settings Variables
 maxTries = 1
 round = 60
 waitingtime = 60*5
+
+
 
 
 @transaction.commit_manually
@@ -46,10 +50,10 @@ class Command(NoArgsCommand):
         noanswerurl = settings.WEB_ROOT + 'answercallback/' + confname
         fallbackurl = settings.WEB_ROOT + 'fallback/' + confname
 
-        self.stdout.write("Wake Up Chron Roulette Started - " + str(schedule), ending='\n\n')
-
         towakeup = UserProfile.objects.filter(alarm=schedule).filter(alarmon=True, activated=True)
-        print towakeup
+
+        logger.info("START ################# Wake Up Chron Roulette Started - " + str(schedule) + "##################")
+        logger.info(towakeup)
 
         # Creating all call objects
         for u in towakeup:
@@ -57,21 +61,22 @@ class Command(NoArgsCommand):
             c.user = u.user
             c.datecreated = schedule
             c.save()
-            print "Call for "+ str(u) + " has been created"
 
         tries = 0
         # Iterate until we don't have any more people we need to wake up, or our tries have ran out
         while towakeup and tries < maxTries:
 
             tries = tries + 1
+            logger.debug(towakeup)
 
-            print "STARTING TRY", tries
+            logger.debug("STARTING TRY " + str(tries))
 
             for p in towakeup:
+                logger.debug("Calling " + p.user.username + " Phone: " + p.phone)
                 call_async(p.phone, confurl, fallbackurl, noanswerurl, silent=True)
 
-            print "Waiting",waitingtime,"seconds..."
-#             time.sleep(waitingtime)
+            logger.debug("Waiting " + str(waitingtime) + " seconds...")
+            time.sleep(waitingtime)
 #            raw_input('Press enter to continue')
 
             # Flush so that the changes reflect in the database
@@ -80,6 +85,6 @@ class Command(NoArgsCommand):
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
 
 
-        print "Finished..."
+        logger.debug("Finished... Cleaning up (setting alarmon=False, any_match=False)")
         # To finish turn everyone's alarm off
         UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, any_match=False)

@@ -16,20 +16,23 @@ import os
 
 from wakeup.tools.toolbox import send_async_mail, call_async
 
+import logging
+logger = logging.getLogger('wakeup')
 
 ############# PROD - DO NOT MODIFY #################
 if settings.PROD:
     # These are the settings that will be used in PROD
     # For testing please modify the variables below
     CALL_LIMIT = 60
-    WELCOME_LIMIT = 30
-    HOLD_LIMIT = 30
+    WELCOME_LIMIT = 20
+    HOLD_LIMIT = 20
     TIMEOUT = 20
 
     WAITING_ROOM_MAX = 4
 
     RE_DIAL_LIMIT = 5
     REDIRECT_LIMIT = 1
+    RATING_LIMIT = 3
 
     CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -49,6 +52,7 @@ else:
 
     RE_DIAL_LIMIT = 5
     REDIRECT_LIMIT = 1
+    RATING_LIMIT = 3
 
     CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -69,7 +73,7 @@ def as_date(schedule):
     return datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")
 
 def find_match(schedule, call):
-    print "Finding match for: ", call.user.username
+    logger.debug("Finding match for: " + call.user.username)
 
     # Refresh Database Changes
     flush_transaction()
@@ -95,7 +99,7 @@ def find_match(schedule, call):
     # Ordering
     allmatches = allmatches.order_by('?')
 
-    print "Matches found are: ", allmatches
+    logger.debug("Matches found are: " + str(allmatches))
 
     if allmatches:
         return allmatches[0]
@@ -105,6 +109,8 @@ def find_match(schedule, call):
 
 def get_call_or_none(schedule, phone):
     try:
+        # Refresh Database Changes
+        flush_transaction()
         return Call.objects.filter(datecreated=as_date(schedule)).get(user__profile__phone=phone)
 
     # Catch Exeption caused for a call not existing and return None
@@ -117,12 +123,12 @@ def get_active_waiting_room(schedule):
     flush_transaction()
     try:
         allWaitingRooms = Conference.objects.filter(datecreated=dateSchedule, maxcapacity=WAITING_ROOM_MAX)
-        print "All waiting rooms: ", allWaitingRooms
+        logger.debug("All waiting rooms: " + str(allWaitingRooms))
 
         # Find free waiting room
         for waiting in allWaitingRooms:
             if waiting.available():
-                print "Waiting room chosen: ", waiting.pk
+                logger.debug("Waiting room chosen: " + str(waiting.pk))
                 return waiting
 
     # No free waiting rooms so create one
@@ -210,7 +216,7 @@ def match_or_send_to_waiting_room(call, schedule):
     #Check if we have exceeded the waiting redirect limits
     elif call.retries >= REDIRECT_LIMIT:
         # The user has reached the limit of redials, so hang up
-        print "WAITING LIMIT DONE - TRY TO MATCH WITH ANY PERSON"
+        logger.debug("LIMIT RETRIES - Ask to try to match with any person")
         any_match = "We could not find any matches. If you'd like us to try to match you with Anyone please press any number now."
         goodbye = "We wish you an Amazing day! Good bye!"
         return render_to_response("twilioresponse.xml", { 'any_match' :any_match, 'schedule': schedule, 'hangup': True, 'goodbye' : goodbye })
@@ -232,25 +238,15 @@ def wakeUpRequest(request, schedule):
 
     post = request.POST
 
-    print "Handling WAKEUP request"
-    print "CallStatus: ", post['CallStatus']
-    print "Phone: ", post['To']
-    if 'AnsweredBy' in post: print "AnsweredBy: ", post['AnsweredBy']
-    if 'DialCallStatus' in post: print "DialCallStatus: ", post['DialCallStatus']
-    if 'RecordingUrl' in post:
-        print "Recoding URL: ", post['RecordingUrl']
-        print "Recording Duration: ", post['RecordingDuration']
+    logger.info("REQUEST - WAKE UP REQUEST - " + schedule + " - " + post['CallStatus'] + " " + post['To'])
 
     phone = post['To']
 
-    # Refresh Database Changes
-    flush_transaction()
     call = get_call_or_none(schedule, phone)
 
     # Check that call has been created
     if not call:
-        # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
-        print "Call Should exist"
+        logger.error("[Error in WakeUpRequest - " + schedule + " - "+phone+"] Call does not exist!")
 
         say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
@@ -260,14 +256,13 @@ def wakeUpRequest(request, schedule):
 
         # If user is currently waiting
         if 'DialCallStatus' in post and post['DialCallStatus'] == 'answered':
-            print "Person is still awake, and he's still waiting!"
+            logger.debug("Wake Up Request: " + call.user.username + " - Awake and Waiting.")
 
-            print "FINDING MATCH"
             data = match_or_send_to_waiting_room(call, schedule)
 
         # Else, person has just woken up
         else:
-            print "Person has just waken up and answered!"
+            logger.debug("Wake Up Request: " + call.user.username + " just woke up.")
 
             # TODO Evaluate this: Right now we're avoiding waiting rooms as people found them confusing, but we might implement them again later
 #            waiting = get_active_waiting_room(schedule)
@@ -291,10 +286,7 @@ def wakeUpRequest(request, schedule):
         print '\n'
 
     else:
-        print "Something unexpected happened! Check what was it:"
-        for var in post:
-            print var, post[var]
-        print '\n'
+        logger.error("Something unexpected happened for user "+ call.user.username +". Check what was it: " + str(post))
         data = render_to_response("twilioresponse.xml")
 
     return HttpResponse(data, mimetype="application/xml")
@@ -305,31 +297,24 @@ def answerCallback(request, schedule):
     phone = post.get('To')
 
 
-    print "####### SCHEDULE #####   ", schedule
-    print "Handling ANSWER CALLBACK request"
-    print "CallStatus: ", post['CallStatus']
-    print "Phone: ", post['To']
-    if 'CallDuration' in post: print 'CallDuration', post['CallDuration']
-    if 'AnsweredBy' in post: print "AnsweredBy: ", post['AnsweredBy']
-    if 'DialCallStatus' in post: print "DialCallStatus: ", post['DialCallStatus']
+    logger.info("REQUEST - ANSWER CALLBACK - " + schedule + " - " + post['CallStatus'] + " " + post['To'])
+    if 'CallDuration' in post: logger.debug('CallDuration: ' + post['CallDuration'])
+    if 'AnsweredBy' in post: logger.debug("AnsweredBy: " + post['AnsweredBy'])
+    if 'DialCallStatus' in post: logger.debug("DialCallStatus: " + post['DialCallStatus'])
     if 'RecordingUrl' in post:
-        print "Recoding URL: ", post['RecordingUrl']
-        print "Recording Duration: ", post['RecordingDuration']
+        logger.debug("Recoding URL: " + post['RecordingUrl'])
+        logger.debug("Recording Duration: " + post['RecordingDuration'])
 
 
-    # Refresh Database Changes
-    flush_transaction()
     call = get_call_or_none(schedule, phone)
 
     if not call:
-        # TODO As above, we need to log this somehow to report it
-        print "Call is not found - this error should be logged"
+        logger.error("[Error in Answer Callback - " + schedule + " - "+phone+"] Call does not exist!")
         data = render_to_response("twilioresponse.xml")
 
     # Call has been completed
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
-        print "Call has been completed!"
-        print "Conference Room", schedule
+        logger.info("CALL COMPLETED - "+schedule + " - User: " + call.user.username + " Answered: " + str(call.answered) + " Matched: " + str(call.matched))
 
         # Resetting all wakeup flags
         call.retries = 0
@@ -340,9 +325,9 @@ def answerCallback(request, schedule):
         if call.conference:
             conf = call.conference.call_set
 
-            print "Call set:", conf
+            logger.debug("Call set for conference: " + str(conf))
         else:
-            print "NO CONFERENCE!"
+            logger.debug("Call had no conference.")
 
         data = render_to_response("twilioresponse.xml")
 
@@ -350,22 +335,20 @@ def answerCallback(request, schedule):
     elif not call.answered:
         # Make sure that number of re-dials has not been exceeded
         if call.retries >= RE_DIAL_LIMIT:
-            print "LIMIT REDIALS. HANGING UP..."
+            logger.debug("Answer Callback: LIMIT REDIALS. HANGING UP...")
+
             data = render_to_response("twilioresponse.xml")
 
             # Check the call status - if it says failed, it is most probably because the phone number doesn't exist or there is no signal
             if post['CallStatus'] == 'failed':
-                # TODO Report in log
-
                 call.errorcode = "cfail"
 
-                print "Call Failed! Reporting. Phone: ", phone
+                logger.error("Call Failed! Reporting"+call.user.username+". Phone: "+ phone )
                 msg = "CallStatus: Failed\n"
                 msg += "Phone: " + phone + "\n"
                 msg += "Probably Number Doesn't Exist"
 
                 send_async_mail("WUR Fallback", msg, "wakeuproulette@gmail.com", zip(*settings.ADMINS)[1], True)
-                data = render_to_response("twilioresponse.xml")
 
             # Re-setting redial count
             call.retries = 0
@@ -373,13 +356,12 @@ def answerCallback(request, schedule):
             call.save()
 
         elif not call.answered:
-            print "REDIALING...."
+            logger.debug("REDIALING - Retries: " + str(call.retries) + " User: " + call.user.username + " Phone: " + phone)
 
             confurl = settings.WEB_ROOT + 'wakeuprequest/' + schedule
             noanswerurl = settings.WEB_ROOT + 'answercallback/' + schedule
             fallbackurl = settings.WEB_ROOT + 'fallback/' + schedule
 
-            print "No answer, calling again: ", phone, confurl, settings.PROD, os.environ['USER'], os.environ['LOGNAME']
             call_async(phone, confurl, fallbackurl, noanswerurl)
 
             call.retries = call.retries + 1
@@ -389,9 +371,8 @@ def answerCallback(request, schedule):
 
     # This else means that the user has answered already and there is no reason to call again
     else:
-        print "User was called when he already answered - check status:"
-        print "Call:", call, "Answered:", call.answered
-        print "Post:", post
+        logger.warning(call.user.username + " was called when he already answered " + str(call.answered) + " POST: " + str(post))
+        data = render_to_response("twilioresponse.xml")
 
     print '\n'
     return HttpResponse(data, mimetype="application/xml")
@@ -399,12 +380,13 @@ def answerCallback(request, schedule):
 
 @csrf_exempt
 def tryAnyMatch(request, schedule):
-    print "ANY MATCH REQUEST!"
 
     schedule = schedule.replace("/", "")
     post = request.POST
     phone = post['To']
-    flush_transaction()
+
+    logger.info("REQUEST - ANY MATCH - " + schedule + " - " + post['CallStatus'] + " " + phone)
+
     call = get_call_or_none(schedule, phone)
     call.user.profile.any_match = True
     call.user.profile.save()
@@ -415,25 +397,24 @@ def tryAnyMatch(request, schedule):
                                 , call.user.username
                                 , False
                                 , "We'll try to find you an awesome person!")
+
     return HttpResponse(data, mimetype="application/xml")
 
 
 
 @csrf_exempt
 def sendToPrivateRoom(request, schedule):
-    print "PRIVATE ROOM REQUEST!"
     post = request.POST
 
     phone = post['To']
 
-    # Refresh Database Changes
-    flush_transaction()
+    logger.info("REQUEST - PRIVATE ROOM - " + schedule + " - " + post['CallStatus'] + " " + phone)
+
     call = get_call_or_none(schedule, phone)
 
 
     if not call:
-        # TODO Report error, as call should exist - For now we'll just hang up on him - we need logging!
-        print "Call Should exist"
+        logger.error("[Error in Send To Private Room - " + schedule + " - "+phone+"] Call does not exist!")
 
         say = "We are very sorry - We could not find you a match today, but tomorrow we'll do our best to compensate it! We wish you an awesome day! Good bye!"
         data = render_to_response("twilioresponse.xml", { 'say' :say, 'hangup' : True })
@@ -464,12 +445,12 @@ def sendToPrivateRoom(request, schedule):
 
 @csrf_exempt
 def ratingRequest(request, schedule):
-    print "RATING REQUEST!"
     post = request.POST
 
-    # Refresh Database Changes
-    flush_transaction()
     phone = post['To']
+
+
+    logger.info("REQUEST - RATING - " + schedule + " - " + post['CallStatus'] + " - " + phone)
 
     call = get_call_or_none(schedule,phone)
 
@@ -484,11 +465,11 @@ def ratingRequest(request, schedule):
 
         # Request contact
         if digit == '1':
-            print "CONTACT REQUEST!"
+            logger.debug(call.user.username + " has requested connection to " + othercall.user.username + " plus thumbs up")
             call.user.profile.request_contact(othercall.user)
         # Thumbs up:
         if digit == '1' or digit == '2':
-            print "+1 reputation to", othercall.user.username
+            logger.debug(call.user.username + " gave +1 reputation to "+ othercall.user.username)
             othercall.user.profile.reputation = othercall.user.profile.reputation + 1
             othercall.user.profile.save()
 
@@ -499,7 +480,7 @@ def ratingRequest(request, schedule):
             othercall.save()
         # Thumbs down:
         elif digit == '3':
-            print "-1 reputation to", othercall.user.username
+            logger.debug(call.user.username + " gave -1 reputation to "+ othercall.user.username)
             othercall.user.profile.reputation = othercall.user.profile.reputation - 1
             othercall.user.profile.save()
 
@@ -510,7 +491,6 @@ def ratingRequest(request, schedule):
             othercall.save()
         # Reported
         elif digit == '0':
-            # TODO HANDLE REPORTING
             goodbye =  othercall.user.username + " has been reported. We apologize in behalf of your wake up buddy! Please contact us if you need anything! Wish you a great day!"
             othercall.user.profile.reputation = othercall.user.profile.reputation + USER_REPORT_RATING
             othercall.user.profile.save()
@@ -526,12 +506,19 @@ def ratingRequest(request, schedule):
             msg += "Schedule: " + schedule + "\r\n"
 
             # Reporting to admins
+            logger.warning(call.user.username + " has reported "+ othercall.user.username + " CallID: " + str(call.id))
             send_async_mail("USER REPORTED",msg, "hackasoton@gmail.com", zip(*settings.ADMINS)[1], True)
         else:
-            # TODO HANDLE WRONG TYPING - Use user retries for this
-            print "Incorrect number, user pressed" , digit
-            gatherurl = schedule
-            rating = "We're sorry, we didn't get that! To connect press One. For thumbs up press Two. For thumbs down press three. To report, please press ZERO."
+
+            logger.debug("Incorrect number, user pressed" + str(digit))
+
+            # Check if number of rating retries has not exceeded
+            if call.retries < RATING_LIMIT:
+                call.retries = call.retries + 1
+                call.save()
+
+                gatherurl = schedule
+                rating = "We're sorry, we didn't get that! To connect press One. For thumbs up press Two. For thumbs down press three. To report, please press ZERO."
 
         data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                             , 'rating' : rating
@@ -540,7 +527,7 @@ def ratingRequest(request, schedule):
                                                         })
     # TODO Exceptions caught include a digit not found in POST, as well as Call not found, but reporting could be included, and it shoudl be handled somehow when Call doesn't exist
     except Exception:
-        print "EXCEPT - CONFERENCE SHOULD EXIST"
+        logger.error("ERROR - CONFERENCE SHOULD EXIST. [In Rating Request. CallID: " + str(call.id) + "]")
         data = render_to_response("twilioresponse.xml", {     'hangup' : True
                                                             , 'goodbye' : goodbye
                                                         })
@@ -550,7 +537,6 @@ def ratingRequest(request, schedule):
 # TODO Make sure that there are no bugs due to not locking this function for transactions
 @csrf_exempt
 def finishRequest(request, schedule):
-    print "FINISH REQUEST"
 
     post = request.POST
 
@@ -560,15 +546,13 @@ def finishRequest(request, schedule):
     rURL = post.get('RecordingUrl')
     rDuration = post.get('RecordingDuration')
 
-    print "Phone:", phone
-    print "RecordingURL:",rURL
-    print "Duration:", rDuration
+
+    logger.info("REQUEST - FINISH - " + schedule + " - " + post['CallStatus'] + " - " + phone)
 
     call = get_call_or_none(schedule, phone)
 
     if not call:
-        # TODO: Report and Log
-        print "There was an error in storing the recording..."
+        logger.error("[Error in Finish Request - " + schedule + " - "+phone+"] Call does not exist!")
 
     else:
         # TODO: Test this
@@ -581,7 +565,7 @@ def finishRequest(request, schedule):
         # Check for recording
         if not rURL or not rDuration:
             # TODO Handle this error, as this it twilio error [Log]
-            print "No recording in Twilio POST!"
+            logger.error("[Error in Finish Request - " + schedule + " - "+phone+"] No recording in Twilio POST!" )
 
 
         # Create the recording if it doesn't exists, otherwise, update the recording values
@@ -611,8 +595,7 @@ def finishRequest(request, schedule):
 
             # Check if the other recording was created but wasn't initialized with a Recording (Twilio Error)
             if not callOther.recording.recordingurl:
-                # TODO Handle this error, as this it twilio error [Log]
-                print "No recording in the other recording object!"
+                logger.erro("[Error in Finish Request - " + schedule + " - "+phone+"] No recording in the other recording object!")
                 callOther.recording.recordingurl = rURL
                 callOther.recording.recordingduration = rDuration
 
@@ -639,9 +622,9 @@ def finishRequest(request, schedule):
 
         recording.save()
 
-#            except Exception:
-#                print "Other call does not exist yet"
-
+    # Setting retries to zero to limit the number of rating retries
+    call.retries = 0
+    call.save()
 
     rating = "Please rate your Wake Up Buddy Now! If you'd like to connect with " + callOther.user.username +" press one. To give "+callOther.user.profile.g("him","her")+" a thumbs up, press two. Otherwise, to give "+callOther.user.profile.g("him","her")+" thumbs down press Three. To report "+callOther.user.profile.g("him","her")+" press ZERO.! . ! . !"
     rating += "We're sorry, we didn't quite get that. To connect press One. For thumbs up press Two. For thumbs down press three. To report, please press ZERO."
@@ -671,8 +654,6 @@ def fallbackRequest(request, schedule):
         msg += "Phone: " + phone + "\n"
         # Save error in call
 
-        # Refresh Database Changes
-        flush_transaction()
         call = get_call_or_none(schedule, phone)
         if call:
             call.completed = True
