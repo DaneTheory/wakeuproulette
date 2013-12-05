@@ -6,10 +6,17 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
 # Check if we are running Locally or in production server
-PROD = os.environ['USER'] == 'ubuntu'
+# (ubuntu is when the server is ran normally - i.e. python manage.py shell
+#   root is for sudo to run on port 80 in the server)
+if os.environ['USER'] == 'ubuntu' or os.environ['USER'] == 'root':
+    PROD = True
+else:
+    PROD = False
 
-WEB_ROOT = "http://wakeuproulette.com/" if PROD else "http://19576e9d.ngrok.com/"
+if PROD: WEB_ROOT = "http://wakeuproulette.com/"
 
+# If app is not in production it will use the following web root, please modify it as required:
+else: WEB_ROOT = "http://19576e9d.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
