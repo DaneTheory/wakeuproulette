@@ -9,10 +9,12 @@
         if(scrolled > $('#home').height()) {
             $('#sitenav').addClass('navsolid');
             $('#main-nav').addClass('mainsolid');
+            $('#up-btn').text('△');
         }
         else {
             $('#sitenav').removeClass('navsolid');
             $('#main-nav').removeClass('mainsolid');
+            $('#up-btn').text('');
         }
 	}
 

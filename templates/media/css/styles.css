@@ -129,6 +129,7 @@ a:target {
 
 #sitenav.navsolid {
     background: rgba(0, 0, 0, 1);
+    height: 50px;
 }
 
 #main-nav.mainsolid a {
@@ -141,22 +142,17 @@ a:target {
     margin: 0;
     margin: auto auto;
     font-size: 1.6em;
+    height: 40px;
     width: 500px;
 }
 #main-nav a {
     display: inline-block;
-    padding: 10px 15px;
     color: white;
 
     -webkit-transition: font-size 0.2s linear;
     -moz-transition: font-size 0.2s linear;
     -o-transition: font-size 0.2s linear;
     transition: font-size 0.2s linear;
-}
-
-#main-nav a:hover {
-    padding: 5px 13px;
-    border: 2px solid;
 }
 
 #nav-logged {
