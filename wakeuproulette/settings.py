@@ -6,12 +6,15 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 
 # Check if we are running Locally or in production server
-# (ubuntu is when the server is ran normally - i.e. python manage.py shell
-#   root is for sudo to run on port 80 in the server)
-if os.environ['USER'] == 'ubuntu' or os.environ['USER'] == 'root':
-    PROD = True
-else:
-    PROD = False
+## (ubuntu is when the server is ran normally - i.e. python manage.py shell
+##   root is for sudo to run on port 80 in the server)
+#if os.environ['USER'] == 'ubuntu' or os.environ['USER'] == 'root':
+#    PROD = True
+#else:
+#    PROD = False
+
+# Too many issues - until we know a reliable way, this will have to be manual:
+PROD = True
 
 if PROD: WEB_ROOT = "http://wakeuproulette.com/"
 
