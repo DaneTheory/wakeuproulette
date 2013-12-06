@@ -192,10 +192,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'hackasoton@gmail.com'
 EMAIL_HOST_PASSWORD = 'HackaS0t0n'
 
-#
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'

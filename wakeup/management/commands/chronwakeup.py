@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand, make_option
+from django.core.management.base import NoArgsCommand
 from accounts.models import UserProfile
 from datetime import datetime, timedelta
 from twilio.rest import TwilioRestClient
 from wakeup.models import Call
 import time
-from django.conf import settings
 from django.db import transaction
+from django.conf import settings
 from wakeup.tools.toolbox import call_async
 
 import logging
@@ -28,10 +28,6 @@ def flush_transaction():
 class Command(NoArgsCommand):
 
     help = "Excecute Chron Wake Up Chron Roulette for the current batch of wake-ups."
-
-    option_list = NoArgsCommand.option_list + (
-        make_option('--verbose', action='store_true'),
-        )
 
     def handle_noargs(self, **options):
 
