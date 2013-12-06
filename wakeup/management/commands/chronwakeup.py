@@ -1,5 +1,5 @@
 from django.core.management.base import NoArgsCommand
-from accounts.models import UserProfile
+from accounts.models import UserProfile, Contact
 from datetime import datetime, timedelta
 from twilio.rest import TwilioRestClient
 from wakeup.models import Call
@@ -76,7 +76,16 @@ class Command(NoArgsCommand):
             flush_transaction()
             towakeup = UserProfile.objects.filter(alarmon=True).filter(user__call__datecreated=schedule, user__call__answered=False)
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
-
+            
+            # sending contact request emails
+            contact_requests = Contact.objects.filter(status='P', user__call__datecreated=schedule)
+            for contact_request in contact_requests:
+                contact_request.user.profile.send_request_contact_email(contact_request.contact)
+            
+            # sending accepted contact request emails
+            accepted_contacts = Contact.objects.filter(status='A', user__call__datecreated=schedule)
+            for accepted_contact in accepted_contacts:
+                accepted_contact.user.profile.send_accept_contact_email(accepted_contact.contact)
 
         print "Finished... Cleaning up (setting alarmon=False, any_match=False)"
         # To finish turn everyone's alarm off

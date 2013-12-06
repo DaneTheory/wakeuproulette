@@ -9,6 +9,7 @@ from datetime import datetime
 from wakeup.tools.toolbox import sms_async, send_async_mail
 from wakeuproulette.settings import EMAIL_HOST_USER
 
+
 #########################################
 ############### CONTACTS ################
 #########################################
@@ -24,6 +25,7 @@ def add_contact(request):
     try:
         contact = UserProfile.objects.get(user__username=othername)
         user.profile.request_contact(contact.user)
+        user.profile.send_request_contact_email(contact.user)
 
     except Exception:
         response['error'] = True
@@ -41,8 +43,8 @@ def accept_request(request):
         contact_request.status='A'
         contact_request.save()
         contact = Contact.objects.create(user=request.user,contact=contact_request.user,status='A')
+        request.user.profile.send_accept_contact_email(contact_request.user)
         response = {'html': render_to_string('layouts/contact.html', {'contact': contact})}
-        send_async_mail("WakeUpRoulette Accepted Request", request.user.username + " has accepted your contact request. To see the list of your contacts, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [contact_request.user.email])
     except Contact.DoesNotExist:
         response['error'] = True
     return HttpResponse(json.dumps(response), content_type="application/json")
@@ -139,6 +141,8 @@ def increment_rec_aura(request):
         rating.user = request.user
         rating.rated = True
         rating.save()
+
+        #send_async_mail("WakeUpRoulette Aura Boost", request.user.username + " has rated up your recording! To see the recording, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [contact_request.user.email])
 
     except Exception:
         response['error'] = True

@@ -7,6 +7,7 @@ from wakeup.tools.toolbox import sms_async, send_async_mail
 from datetime import time, date
 from wakeup.models import RecordingRating, Recording
 from wakeuproulette.settings import EMAIL_HOST_USER
+from django.core.urlresolvers import reverse
 
 GENDER_CHOICES = (
         ('M', 'Male'),
@@ -106,10 +107,8 @@ class UserProfile(UserenaBaseProfile):
                 other_contact.status = 'A'
                 other_contact.save()
                 Contact.objects.create(user=self.user, contact=user, status='A')
-                send_async_mail("WakeUpRoulette Accepted Request", self.user.username + " has accepted your contact request. To see the list of your contacts, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [user.email])
             except Contact.DoesNotExist:
                 Contact.objects.create(user=self.user, contact=user, status='P')
-                send_async_mail("WakeUpRoulette Contact Request", self.user.username + " has added you to the contacts. To accept the request, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [user.email])
 
 #            # Check if self recording is valid and other is valid
 #            if self.recording and self.recording.recordingurl and self.recordin.recordingduration:
@@ -130,6 +129,12 @@ class UserProfile(UserenaBaseProfile):
 
     def get_alarm_time(self):
         return self.alarm.strftime("%H:%M")
+    
+    def send_request_contact_email(self, user):
+        send_async_mail("WakeUpRoulette Contact Request", self.user.username + " has added you to the contacts. To accept the request, please go to " + self.user.username + "'s profile page at http://wakeuproulette.com" + reverse("accounts.views.wakeup_public", args=[self.user.username]) + ".", EMAIL_HOST_USER, [user.email])
+
+    def send_accept_contact_email(self, user):
+        send_async_mail("WakeUpRoulette Accepted Request", self.user.username + " has accepted your request. To see the profile page of " + self.user.username + " please go to http://wakeuproulette.com" + reverse("accounts.views.wakeup_public", args=[self.user.username]) + ".", EMAIL_HOST_USER, [user.email])
 
 
     ######## VERIFICATION ########
