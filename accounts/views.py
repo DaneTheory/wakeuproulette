@@ -799,7 +799,7 @@ def wakeup_dashboard(request):
     recordings = Recording.objects.filter(call__user=user)
     recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
     recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
-    recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
+    recordingduration = recordings.aggregate(Sum('recordingduration'))['recordingduration__sum']
 
     aura = profile.reputation*10 + (recordingaura if recordings else 0)
 
@@ -867,7 +867,7 @@ def wakeup_public(request, username):
     public_recordings = recordings.filter(privacy='P')
     recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
     recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
-    recordingduration = recordings.aggregate(Sum('recording__recordingduration'))['recording__recordingduration__sum']
+    recordingduration = recordings.aggregate(Sum('recordingduration'))['recordingduration__sum']
 
     aura = profile.reputation*10 + (recordingaura if recordings else 0)
 

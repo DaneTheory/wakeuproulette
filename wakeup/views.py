@@ -44,8 +44,8 @@ else:
 # These are the settings that will be used in PROD
     # For testing please modify the variables below
     CALL_LIMIT = 60
-    WELCOME_LIMIT = 30
-    HOLD_LIMIT = 30
+    WELCOME_LIMIT = 5
+    HOLD_LIMIT = 5
     TIMEOUT = 20
 
     WAITING_ROOM_MAX = 4
@@ -142,7 +142,7 @@ def get_active_waiting_room(schedule):
     return waiting
 
 
-def send_to_conference_room(call, schedule, match):
+def send_to_conference_room(call, schedule, match, record=False):
 
     # Check if the match is still on the phone - if not, mark match as not completed and try to find him a match
     flush_transaction()
@@ -158,7 +158,7 @@ def send_to_conference_room(call, schedule, match):
                                                         , 'timelimit' : CALL_LIMIT
                                                         , 'finishrequest' : schedule
                                                         , 'hanguponstar' : True
-                                                        , 'record' : call.user.profile.recording
+                                                        , 'record' : record
                                                         , 'beep' : True
                                                     })
 
@@ -184,7 +184,7 @@ def match_or_send_to_waiting_room(call, schedule):
 
     if call.matched:
         other = call.conference.call_set.exclude(pk=call.pk)[0]
-        data = send_to_conference_room(call, schedule, other)
+        data = send_to_conference_room(call, schedule, other, True)
 
         if data: return data
 
@@ -204,7 +204,7 @@ def match_or_send_to_waiting_room(call, schedule):
         matchcall.matched = True
         matchcall.save()
 
-        data = send_to_conference_room(call, schedule, matchcall)
+        data = send_to_conference_room(call, schedule, matchcall, False)
         if data: return data
 
     if call.user.profile.any_match:
@@ -571,11 +571,8 @@ def finishRequest(request, schedule):
         # Create the recording if it doesn't exists, otherwise, update the recording values
         # If there are no recordings created for the other user we proceed to create a new recording with this values just in case that
         # the other user experiences an error when getting and storing the recordings from the post request
-        recording = None
-        try:
-            recording = call.recording
-        except Recording.DoesNotExist:
-            recording = Recording()
+
+        recording = call.recording or callOther.recording or Recording()
 
         recording.recordingurl = rURL
         recording.recordingduration = rDuration
@@ -583,44 +580,11 @@ def finishRequest(request, schedule):
         recording.call = call
         recording.save()
 
-        # Check if the callers are contacts and initialize the recording as shared as required
-        if call.user.profile.is_contact(callOther.user):
-            recording.shared = True
-        else:
-            recording.shared = False
+        call.recording = recording
+        callOther.recording = recording
 
-        # If the other Recording has been created, then
-        try:
-            recording.other = callOther.recording
-
-            # Check if the other recording was created but wasn't initialized with a Recording (Twilio Error)
-            if not callOther.recording.recordingurl:
-                logger.erro("[Error in Finish Request - " + schedule + " - "+phone+"] No recording in the other recording object!")
-                callOther.recording.recordingurl = rURL
-                callOther.recording.recordingduration = rDuration
-
-            # If Shared, select as chosen if the other recording does not have a recordingurl or if the duration is less
-            if recording.shared  and ( not callOther.recording.recordingurl or recording.recordingduration <= callOther.recording.recordingduration ):
-                callOther.recording.chosen = False
-                recording.chosen = True
-
-        except Recording.DoesNotExist:
-            if recording.shared:
-                recording.chosen = True
-
-            # Create the other recording just in case (it will be modified when the other person finishes the call
-            otherRecording = Recording()
-            otherRecording.recordingurl = rURL
-            otherRecording.recordingduration = rDuration
-            otherRecording.datecreated = as_date(schedule)
-            otherRecording.call = callOther
-            otherRecording.other = recording
-            otherRecording.save()
-
-            recording.other = otherRecording
-
-
-        recording.save()
+        call.save()
+        callOther.save()
 
     # Setting retries to zero to limit the number of rating retries
     call.retries = 0

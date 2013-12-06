@@ -27,7 +27,6 @@ CONTACT_TYPE_CHOICES = (
 CONTACT_STATUS_CHOICES = (
         ('P', 'Pending'),
         ('A', 'Accepted'),
-        #('D', 'Denied'),
         ('B', 'Blocked'),
     )
 
