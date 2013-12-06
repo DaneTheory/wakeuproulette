@@ -3,10 +3,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
-from wakeup.tools.toolbox import sms_async
+from wakeup.tools.toolbox import sms_async, send_async_mail
 from datetime import time, date
 from wakeup.models import RecordingRating, Recording
-
+from wakeuproulette.settings import EMAIL_HOST_USER
 
 GENDER_CHOICES = (
         ('M', 'Male'),
@@ -106,8 +106,10 @@ class UserProfile(UserenaBaseProfile):
                 other_contact.status = 'A'
                 other_contact.save()
                 Contact.objects.create(user=self.user, contact=user, status='A')
+                send_async_mail("WakeUpRoulette Accepted Request", self.user.username + " has accepted your contact request. To see the list of your contacts, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [user.email])
             except Contact.DoesNotExist:
                 Contact.objects.create(user=self.user, contact=user, status='P')
+                send_async_mail("WakeUpRoulette Contact Request", self.user.username + " has added you to the contacts. To accept the request, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [user.email])
 
 #            # Check if self recording is valid and other is valid
 #            if self.recording and self.recording.recordingurl and self.recordin.recordingduration:
