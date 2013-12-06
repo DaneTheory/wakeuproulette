@@ -192,67 +192,80 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'hackasoton@gmail.com'
 EMAIL_HOST_PASSWORD = 'HackaS0t0n'
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
         'standard': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+            'format' : "[%(asctime)s] %(levelname)s [%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
         },
-    },
+        },
     'handlers': {
         'null': {
-            'level': 'DEBUG',
-            'class': 'logging.NullHandler',
-        },
-        'wakeup_handler': {
             'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/wakeup.log',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter':'standard',
+            'class':'django.utils.log.NullHandler',
             },
-        'cron_handler' : {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/cron.log',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter':'standard'
-        },
-        'request_handler': {
+        'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/django-request.log',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter':'standard',
+            'filename': PROJECT_ROOT + "/logs/wakeup.log",
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+            },
+        'console':{
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'formatter': 'standard'
         },
-    },
+        },
     'loggers': {
         'django': {
-            'handlers': ['null'],
-            'level': 'INFO',
-            'propagate': True
-        },
+            'handlers':['console'],
+            'propagate': True,
+            'level':'WARN',
+            },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+            },
         'wakeup': {
-            'handlers': ['wakeup_handler'],
+            'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
-            'propagate': False
-        },
-        'cron': {
-            'handlers': ['cron_handler'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
-        'django.request': {
-            'handlers': ['request_handler'],
-            'level': 'DEBUG',
-            'propagate': True
         },
     }
 }
+
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': True,
+#    'formatters': {
+#        'standard': {
+#            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+#        },
+#    },
+#    'handlers': {
+#        'wakeup_handler': {
+#            'level':'DEBUG',
+#            'class':'logging.handlers.RotatingFileHandler',
+#            'filename': 'logs/wakeup.log',
+#            'maxBytes': 1024*1024*5, # 5 MB
+#            'backupCount': 5,
+#            'formatter':'standard',
+#            },
+#    },
+#    'loggers': {
+#        'wakeup': {
+#            'handlers': ['wakeup_handler'],
+#            'level': 'DEBUG',
+#            'propagate': True
+#        },
+#    }
+#}
+
 
 TEMPLATE_CONTEXT_PROCESSORS=("django.core.context_processors.request","django.contrib.auth.context_processors.auth")
 

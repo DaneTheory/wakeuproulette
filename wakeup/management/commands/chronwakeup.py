@@ -8,9 +8,6 @@ from django.db import transaction
 from django.conf import settings
 from wakeup.tools.toolbox import call_async
 
-import logging
-logger = logging.getLogger('cron')
-
 
 # Settings Variables
 maxTries = 1
@@ -48,8 +45,8 @@ class Command(NoArgsCommand):
 
         towakeup = UserProfile.objects.filter(alarm=schedule).filter(alarmon=True, activated=True)
 
-        logger.info("START ################# Wake Up Chron Roulette Started - " + str(schedule) + "##################")
-        logger.info(towakeup)
+        print "START ################# Wake Up Chron Roulette Started - " + str(schedule) + "##################"
+        print str(towakeup)
 
         # Creating all call objects
         for u in towakeup:
@@ -63,15 +60,15 @@ class Command(NoArgsCommand):
         while towakeup and tries < maxTries:
 
             tries = tries + 1
-            logger.debug(towakeup)
+            print str(towakeup)
 
-            logger.debug("STARTING TRY " + str(tries))
+            print "STARTING TRY " + str(tries)
 
             for p in towakeup:
-                logger.debug("Calling " + p.user.username + " Phone: " + p.phone)
+                print "Calling " + p.user.username + " Phone: " + p.phone
                 call_async(p.phone, confurl, fallbackurl, noanswerurl, silent=True)
 
-            logger.debug("Waiting " + str(waitingtime) + " seconds...")
+            print "Waiting " + str(waitingtime) + " seconds..."
             time.sleep(waitingtime)
 #            raw_input('Press enter to continue')
 
@@ -81,6 +78,6 @@ class Command(NoArgsCommand):
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
 
 
-        logger.debug("Finished... Cleaning up (setting alarmon=False, any_match=False)")
+        print "Finished... Cleaning up (setting alarmon=False, any_match=False)"
         # To finish turn everyone's alarm off
         UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, any_match=False)

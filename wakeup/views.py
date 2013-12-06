@@ -17,7 +17,7 @@ import os
 from wakeup.tools.toolbox import send_async_mail, call_async
 
 import logging
-logger = logging.getLogger('wakeup')
+logger = logging.getLogger(__name__)
 
 ############# PROD - DO NOT MODIFY #################
 if settings.PROD:
