@@ -5,4 +5,7 @@ accounts/migrations/
 accounts/migrations/*
 wakeup/migrations/
 wakeup/migrations/*
-
+logs/
+.project
+.pydevproject
+.settings/
