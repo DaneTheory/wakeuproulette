@@ -6,9 +6,8 @@ import datetime
 from django.utils.timezone import utc, now as timezonenow
 
 PRIVACY_CHOICES = (
-                    ('U', 'Unpublished'),
                     ('S', 'Secret'),
-                    ('P', 'Published'),
+                    ('P', 'Public'),
                     ('D', 'Deleted'),
                 )
 
@@ -35,6 +34,9 @@ class Call(models.Model):
     user = models.ForeignKey(User)
     callduration = models.IntegerField(_("Call Duration"), default=0)
 
+    # This field points to a recording - a recording can be shared between two calls
+    recording = models.ForeignKey('Recording', null=True)
+
     # Call Flags
     snoozed = models.BooleanField(_("Snoozed"), default=False)
     answered = models.BooleanField(_("Answered"), default=False)
@@ -49,6 +51,9 @@ class Call(models.Model):
     retries = models.IntegerField(_("Re-tries"), default=0)
 
     datecreated = models.DateTimeField()
+
+#    def get_other_call(self):
+#        other = self.conference.call_set.exclude(pk=call.pk)[0]
 
     # Reload itself from database
     def reload(self):
@@ -70,47 +75,25 @@ class Call(models.Model):
 class Recording(models.Model):
 
     recordingurl = models.CharField(_("Recording URL"), max_length=200, null=True, blank=True)
-    recordingduration = models.IntegerField(_("Recording Duration"), default=0)
+    recordingduration = models.IntegerField(_("Recording Duration"), default=0, null=True)
 
-    call = models.OneToOneField(Call)
-
-    # Initial on creation, states whether the Recording is shared, or each Recording is individual
-    shared = models.BooleanField(_("Shared Recording"))
-    # States whether (If Recording is shared) this recording is the one chosen to be displayed and used
-    chosen = models.BooleanField(_("Selected (If Shared)"))
-    # Points to its other caller's Recording
-    other = models.OneToOneField('self', null=True)
-    # States the current privacy of the Recording
-    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES)
+    privacy = models.CharField(max_length=1, choices=PRIVACY_CHOICES, default='P')
 
     # Total number of times this recording has been played
     plays = models.IntegerField(_("Times Played"), default=0)
 
     # Rating of the recording for the call
-    rating = models.IntegerField(_("My Rating"), default=0)
+    rating = models.IntegerField(_("Recording Aura"), default=0)
 
     # Number of times this call has been reported
     warnings = models.IntegerField(_("warnings"), default=0)
 
     datecreated = models.DateTimeField()
 
-    def get_recording(self):
-        # Check if its shared and if it is, that it's the chosen recording
-        if self.shared and not self.chosen:
-            if not self.other.chosen:
-                print "Error, please report"
-                # TODO This should not happen - log this error
-            if self.other.recordingurl and self.other.recordingduration:
-                return self.other
-
-        return self
 
 
-    def save(self, *args, **kwargs):
-        if not self.privacy:
-            self.privacy = 'S' if self.shared else 'U'
-
-        super(Recording, self).save(*args, **kwargs)
+#class Share(models.Model):
+#    aura = models.IntegerField(_("Recording Aura"), default=0)
 
 
 class RecordingRating(models.Model):
@@ -133,6 +116,8 @@ class RecordingComment(models.Model):
     user = models.ForeignKey(User)
 
     comment = models.CharField(_("Comment"), max_length=300)
+
+
 
 
 
