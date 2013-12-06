@@ -129,11 +129,10 @@ a:target {
 
 #sitenav.navsolid {
     background: rgba(0, 0, 0, 1);
-    height: 50px;
 }
 
 #main-nav.mainsolid a {
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 #main-nav {
