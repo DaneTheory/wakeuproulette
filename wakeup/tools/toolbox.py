@@ -87,14 +87,14 @@ def sms_async(phone, message):
     SmsThread(phone, message).start()
     
 def local_time(time, request):
-    tz = request.session.get("user_timezone", "UTC")
+    tz = request.session.get("user_timezone", pytz.utc)
     server_tz = pytz.timezone('Europe/London')
     utc_dt = datetime.datetime(2012, 11, 27, time.hour, time.minute, time.second, tzinfo=server_tz)
     loc_dt = utc_dt.astimezone(tz)
     return datetime.time(loc_dt.hour, loc_dt.minute, loc_dt.second)
 
 def global_time(time, request):
-    tz = request.session.get("user_timezone", "UTC")
+    tz = request.session.get("user_timezone", pytz.utc)
     loc_dt = datetime.datetime(2012, 11, 27, time.hour, time.minute, time.second)
     loc_dt= tz.localize(loc_dt, is_dst=None)
     server_tz = pytz.timezone('Europe/London')
