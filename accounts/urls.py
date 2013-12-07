@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^increment_rec_play/$', account_ajax.increment_rec_play, name='increment_rec_play'),
     url(r'^insert_comment/$', account_ajax.insert_comment, name='insert_comment'),
     url(r'^set_alarm/$', account_ajax.set_alarm, name='set_alarm'),
-    url(r'^publish_recording/$', account_ajax.publish_recording, name='publish_recording'),
+    url(r'^share_recording/$', account_ajax.share_recording, name='share_recording'),
     url(r'^add_contact/$', account_ajax.add_contact, name='add_contact'),
     url(r'^set_timezone/$', account_ajax.set_timezone, name='set_timezone'),
     # View Profiles

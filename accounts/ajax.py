@@ -1,11 +1,12 @@
 from accounts.models import UserProfile, Contact
-from wakeup.models import Recording, RecordingRating, RecordingComment
+from wakeup.models import Recording, RecordingRating, RecordingComment, RecordingShare
 import json
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from datetime import datetime, time
+from django.shortcuts import render_to_response, RequestContext, render
 from wakeup.tools.toolbox import sms_async, send_async_mail
 from wakeuproulette.settings import EMAIL_HOST_USER
 import pytz
@@ -101,11 +102,13 @@ def insert_comment(request):
     txt = request.POST.get("comment", "")
     idx = request.POST.get("idx", "")
     response = {}
+
     try:
-        recording = Recording.objects.get(pk=idx)
+        share = RecordingShare.objects.get(pk=idx)
+
         comment = RecordingComment()
         comment.user = request.user
-        comment.recording = recording
+        comment.recordingshare = share
         comment.comment = txt
         comment.save()
 
@@ -227,19 +230,39 @@ def increment_rec_rewake(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
+
+
+#########################################
+################# SHARES ################
+#########################################
 @require_POST
 @login_required
-def publish_recording(request):
+def share_recording(request):
     rec_id = request.POST.get("rec_id", "")
+    body = request.POST.get("body", "")
     response = {}
 
     try:
         recording = Recording.objects.get(id=rec_id, call__user=request.user)
-        recording.privacy = 'P'
+        call = recording.call_set.get(user=request.user)
+
+        if recording.privacy != 'P':
+            raise Exception
+
         recording.save()
 
-    except Recording.DoesNotExist:
+        share = RecordingShare()
+        share.call = call
+        share.user = request.user
+        share.body = body
+        share.save()
+
+        # Indeed, we need to pass request this time or it won't be passed automatically
+        response['data'] = render_to_string('layouts/recording-shares.html', { 'share' : share, 'request': request })
+
+    except Exception, err:
         response['error'] = True
+        print err
 
     return HttpResponse(json.dumps(response), content_type="application/json")
 

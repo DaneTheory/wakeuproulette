@@ -1,30 +1,31 @@
-<div idx="{{ rec.pk }}" class="recording">
-    <img class="inline wakeup-box-shadow recording-img" src="{{ rec.other.call.user.profile.img_url }}">
+<div idx="{{ rec.pk }}" class="history-recording recording">
     <div class="inline recording-audio-section">
         <div class="recording-info">
-            <span class="recording-username"><a href="/accounts/public/{{ rec.other.call.user.username }}/">{{ rec.other.call.user.profile.get_full_name_or_username |title }}</a></span>
-            {% if rec.privacy != 'P' %}
-                <button class="recording-publish btn_publish">Publish</button>
-            {% else %}
-                <span class="recording-privacy">[Public]</span>
-            {% endif %}
+            {% for call in rec.call_set.all %}
+                {% if call.user != request.user %}
+                    <a href="/accounts/public/{{ call.user.username }}/">
+                        <img class="inline wakeup-box-shadow recording-img" src="{{ call.user.profile.img_url }}">
+                        <div class="recording-username">{{ call.user.profile.get_full_name_or_username |title }}</div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            <div class="recording-privacy-box">
+                {% if rec.privacy == 'P' %}
+                    <a data-reveal-id="share-modal" class="recording-share btn_publish">Share</a>
+                {% else %}
+                    <span class="recording-privacy">[Secret]</span>
+                {% endif %}
+            </div>
         </div>
         <audio controls class="recording-audio"  class="inline">
-            <source src="{{ rec.recordingurl }}" type="audio/x-wav">
+            <source class="recording-source" src="{{ rec.recordingurl }}" type="audio/x-wav">
             Please use a Chrome or Firefox to listen to your recordings
         </audio>
     </div>
     <div class="recording-data">
         <div title="Aura" class="tooltip aura-button"><img src="/media/icons/like-white.png"/><span>{{ rec.rating }}</span></div>
-        <div title="Re-wakes" class="tooltip rewakes-button"><img src="/media/icons/rewakeup-white.png"/><span>0</span></div>
+        <div title="Re-wakes" class="tooltip rewakes-button"><img src="/media/icons/rewakeup-white.png"/><span>{{ rec.shares }}</span></div>
         <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ rec.plays }}</span></div>
-    </div>
-    <div class="comments" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}">
-        <div id="comments-section">
-            {% for comment in rec.recordingcomment_set.all %}
-                {% include 'layouts/comment.html' with comment=comment %}
-            {% endfor %}
-        </div>
-        <textarea placeholder="Write a comment..." class="comment-textarea"></textarea>
     </div>
 </div>

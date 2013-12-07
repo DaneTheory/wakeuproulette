@@ -30,7 +30,7 @@ import datetime
 
 from twilio.rest import TwilioRestClient
 
-from wakeup.models import Conference, Call, Recording
+from wakeup.models import Conference, Call, Recording, RecordingShare
 from accounts.models import UserProfile, Contact
 from accounts.models import UserProfile, MessageVerification
 
@@ -802,6 +802,7 @@ def wakeup_dashboard(request):
     call_set = user.call_set.all()
     totalcalls = call_set.count()
     recordings = Recording.objects.filter(call__user=user)
+    shares = RecordingShare.objects.filter(call__user=user)
     recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
     recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
     recordingduration = recordings.aggregate(Sum('recordingduration'))['recordingduration__sum']
@@ -828,9 +829,10 @@ def wakeup_dashboard(request):
                                                     , 'overslept' : overslept
                                                     , 'recordings': recordings
                                                     , 'recordingduration': recordingduration
-                                                    , 'aura': aura
                                                     , 'alarm_time': alarm_time
-                                                    , 'allowed_times': allowed_times})
+                                                    , 'allowed_times': allowed_times
+                                                    , 'shares': shares
+                                                    , 'aura': aura})
 
 @secure_required
 def wakeup_public(request, username):
