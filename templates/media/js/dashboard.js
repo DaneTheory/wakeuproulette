@@ -26,44 +26,6 @@ window.onload=startTime;
 var dashboard = {
 	init: function() {
 
-
-
-
-
-
-        /*################### AJAX REQUESTS #################### */
-        /*################### AJAX REQUESTS #################### */
-        /*################### AJAX REQUESTS #################### */
-		function getCookie(name) {
-		    var cookieValue = null;
-		    if (document.cookie && document.cookie != '') {
-		        var cookies = document.cookie.split(';');
-		        for (var i = 0; i < cookies.length; i++) {
-		            var cookie = jQuery.trim(cookies[i]);
-		            // Does this cookie string begin with the name we want?
-		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-		                break;
-		            }
-		        }
-		    }
-		    return cookieValue;
-		}
-		var csrftoken = getCookie('csrftoken');
-
-		function csrfSafeMethod(method) {
-		    // these HTTP methods do not require CSRF protection
-		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-		}
-		$.ajaxSetup({
-		    crossDomain: false, // obviates need for sameOrigin test
-		    beforeSend: function(xhr, settings) {
-		        if (!csrfSafeMethod(settings.type)) {
-		            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-		        }
-		    }
-		});
-		
 		var contacts = $("#contacts");
         var recordings = $("#recordings");
         var comments = $(".comments");
@@ -96,8 +58,17 @@ var dashboard = {
             editableText.focus();
             // setup the blur event for this new textarea
             editableText.blur(editableTextBlurred);
-            $('#dash-alarm-time').timeEntry({show24Hours: true, minTime: '07:00AM', maxTime: '10:00AM'});
-            $('.alarm-tooltip').attr("title", "Beta available times: 7, 8, 9 and 10 only")
+            
+            alarm_times = [];
+            $(".allowed_time").each(function(i) {
+            	alarm_times.push($(this).attr("data-time"));
+            });
+            
+            $('#dash-alarm-time').timeEntry({show24Hours: true, minTime: alarm_times[0] + ":00", maxTime: alarm_times[alarm_times.length - 1] + ":00"});
+            
+            var time_string = "Beta available times: " + alarm_times[0] + ", " + alarm_times[1] + ", " + alarm_times[2] + " and " + alarm_times[3] + " only";
+
+            $('.alarm-tooltip').attr("title", time_string);
         }
 
         function editableTextBlurred() {

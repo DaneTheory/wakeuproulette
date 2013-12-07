@@ -22,6 +22,7 @@
 
     <script type="text/javascript" src="/media/js/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src='/media/js/main.js'></script>
+    <script type="text/javascript" src='/media/js/timezone.js'></script>
 
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
@@ -36,7 +37,7 @@
 
 </head>
 <body id="base-body"  style="background-image: url(/media/images/alarmsea.jpg); background-size: 1500px; background-repeat: no-repeat">
-
+<div id="all_info" style="display:none;" data-set_timezone_url="{% url 'accounts.ajax.set_timezone' %}"></div>
 <nav id='sitenav'>
 
     <div class="share">

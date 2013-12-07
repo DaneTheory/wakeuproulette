@@ -63,7 +63,10 @@
                     </div>
                 </label>
             </div>
-            <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
+            {% for allowed_time in allowed_times %}
+            	<span style="display:none;" class="allowed_time" data-time="{{ allowed_time }}"></span>
+            {% endfor %}
+            <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ alarm_time|date:"H:i" }}</div>
 			<div id="dash-interests">
                 <h3 style="margin-bottom:5px;">Connect with:</h3>
 				<div style="margin-top:10px;margin-left:50px; ">

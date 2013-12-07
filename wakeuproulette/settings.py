@@ -189,8 +189,8 @@ LOGOUT_URL = '/accounts/signout/'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'hackasoton@gmail.com'
-EMAIL_HOST_PASSWORD = 'HackaS0t0n'
+EMAIL_HOST_USER = 'wakeuproulette@gmail.com'
+EMAIL_HOST_PASSWORD = 'wakeup!!'
 
 
 LOGGING = {

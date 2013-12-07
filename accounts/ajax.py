@@ -5,10 +5,36 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from datetime import datetime
+from datetime import datetime, time
 from wakeup.tools.toolbox import sms_async, send_async_mail
 from wakeuproulette.settings import EMAIL_HOST_USER
+import pytz
+from pytz import timezone
+from wakeup.tools.toolbox import global_time
 
+########################################################
+############### LOCAL TIMEZONE SETTING  ################
+########################################################
+
+@require_POST
+def set_timezone(request):
+    user_offset = int(request.POST.get("time_zone_offset", "0"))
+    if user_offset < 0:
+        user_offset = (user_offset + 1440) % 1440
+    closest_delta = 1440
+    closest_tz = None
+    for tz_name in pytz.common_timezones:
+        tz = pytz.timezone(tz_name)
+        tz_offset = tz.utcoffset(datetime.now()).seconds / 60
+        delta = tz_offset - user_offset
+        if abs(delta) < abs(closest_delta):
+            closest_tz = tz
+            closest_delta = delta
+            if delta == 0:
+                break
+    request.session['user_timezone'] = closest_tz
+    response = {}
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 #########################################
 ############### CONTACTS ################
@@ -104,10 +130,16 @@ def set_alarm(request):
     response = {};
 
     print "onoff:",onoff
-    print alarm_time
-
+    #alarm_time = "23:59"
+    
+    struct_time = datetime.strptime(alarm_time, "%H:%M")
+    print struct_time
+    
     request.user.profile.alarmon = onoff == "true"
-    request.user.profile.alarm = alarm_time
+    request.user.profile.alarm = global_time(time(struct_time.hour, struct_time.minute, 0), request)
+    
+    print request.user.profile.alarm
+    
     request.user.profile.save()
     request.user.save()
 

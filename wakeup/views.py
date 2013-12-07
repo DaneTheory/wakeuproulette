@@ -10,9 +10,11 @@ from django.core.management import call_command
 from django.db import transaction
 from twilio.rest import TwilioRestClient
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, time
 from accounts.models import UserProfile
+from django.utils import timezone
 import os
+from wakeup.tools.toolbox import local_time
 
 from wakeup.tools.toolbox import send_async_mail, call_async
 
@@ -574,8 +576,8 @@ def finishRequest(request, schedule):
 
         recording = call.recording or callOther.recording or Recording()
 
-        recording.recordingurl = rURL
-        recording.recordingduration = rDuration
+        recording.recordingurl = rURL if rURL else ""
+        recording.recordingduration = rDuration if rDuration else 0
         recording.datecreated = as_date(schedule)
         recording.call = call
         recording.save()
@@ -665,7 +667,9 @@ def waitingRequest(request, username):
 
 
 def eveningRoulette(request):
-    return render(request, 'eveningroulette.html')
+    evening_roulette_time = local_time(time(20, 0, 0), request)
+    now_server = timezone.now()
+    return render(request, 'eveningroulette.html', {'evening_roulette_time': evening_roulette_time, 'server_hour': now_server.hour, 'server_minute': now_server.minute })
 
 
 

@@ -44,6 +44,8 @@ from wakeup.tools.toolbox import sms_async
 
 from accounts.decorators import active_required
 
+from wakeup.tools.toolbox import local_time
+
 class SecureEditProfileForm(EditProfileForm):
     
     class Meta:
@@ -752,6 +754,9 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         extra_context=extra_context,
         **kwargs)(request)
 
+
+
+
 @login_required
 @secure_required
 @active_required
@@ -760,7 +765,7 @@ def wakeup_dashboard(request):
     user = request.user
 
     deleted = False
-
+    
 #    If post, there's a request to delete recording
 #    if request.method == 'POST':
 #        recurl = request.POST['recurl']
@@ -807,7 +812,12 @@ def wakeup_dashboard(request):
     snoozed = totalcalls - wokeup
     overslept = call_set.filter(answered=False).count()
 
-
+    alarm_time = local_time(profile.alarm, request)
+    allowed_times = [7, 8, 9, 10]
+    i = 0
+    for allowed_time in allowed_times:
+        allowed_times[i] = local_time(datetime.time(hour=allowed_time, minute=0, second=0), request).hour
+        i += 1
     return render(request, 'user_dashboard.html', {   'name': name
                                                     , 'profileurl':profileurl
                                                     , 'totalcalls': totalcalls
@@ -818,7 +828,9 @@ def wakeup_dashboard(request):
                                                     , 'overslept' : overslept
                                                     , 'recordings': recordings
                                                     , 'recordingduration': recordingduration
-                                                    , 'aura': aura})
+                                                    , 'aura': aura
+                                                    , 'alarm_time': alarm_time
+                                                    , 'allowed_times': allowed_times})
 
 @secure_required
 def wakeup_public(request, username):

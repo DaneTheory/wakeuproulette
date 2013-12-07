@@ -1,7 +1,9 @@
 from django.core.mail import EmailMultiAlternatives
 from twilio.rest import TwilioRestClient
 import threading
-
+from pytz import timezone
+import pytz
+import datetime
 
 # Send emails asynchronously
 class EmailThread(threading.Thread):
@@ -83,4 +85,19 @@ class SmsThread(threading.Thread):
     
 def sms_async(phone, message):
     SmsThread(phone, message).start()
+    
+def local_time(time, request):
+    tz = request.session.get("user_timezone", "UTC")
+    server_tz = pytz.timezone('Europe/London')
+    utc_dt = datetime.datetime(2012, 11, 27, time.hour, time.minute, time.second, tzinfo=server_tz)
+    loc_dt = utc_dt.astimezone(tz)
+    return datetime.time(loc_dt.hour, loc_dt.minute, loc_dt.second)
+
+def global_time(time, request):
+    tz = request.session.get("user_timezone", "UTC")
+    loc_dt = datetime.datetime(2012, 11, 27, time.hour, time.minute, time.second)
+    loc_dt= tz.localize(loc_dt, is_dst=None)
+    server_tz = pytz.timezone('Europe/London')
+    utc_dt = loc_dt.astimezone(server_tz)
+    return datetime.time(utc_dt.hour, utc_dt.minute, utc_dt.second)
 

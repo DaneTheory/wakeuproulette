@@ -24,10 +24,11 @@
 
 </head>
 <body id="home-body">
+<div id="all_info" style="display:none;" data-set_timezone_url="{% url 'accounts.ajax.set_timezone' %}"></div>
 <nav id='sitenav'>
 
     <div class="share">
-        <a href="http://twitter.com/wakeuproulette" class="twitter">Tweet</a>
+        <a href="http://twitter.com/wakeuproulette" class="twitter">Tweet {{ time_now }}</a>
         <a href="http://facebook.com/wakeuproulette" class="facebook">Like</a>
         <a id="nav-evening-roulette-btn" class="wur-btn" href="/evening/">#EveningRoulette</a>
 {#        <a href="/newsletter" class="newsletter">#}
@@ -386,6 +387,7 @@
 
 <script type="text/javascript" src="/media/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src='/media/js/main.js'></script>
+<script type="text/javascript" src='/media/js/timezone.js'></script>
 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
