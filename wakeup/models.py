@@ -35,7 +35,7 @@ class Call(models.Model):
     callduration = models.IntegerField(_("Call Duration"), default=0)
 
     # This field points to a recording - a recording can be shared between two calls
-    recording = models.ForeignKey('Recording', null=True)
+    recording = models.ForeignKey('Recording', null=True, blank=True)
 
     # Call Flags
     snoozed = models.BooleanField(_("Snoozed"), default=False)
@@ -98,7 +98,7 @@ class Recording(models.Model):
 
 class RecordingRating(models.Model):
 
-    recording = models.ForeignKey(Recording)
+    recording = models.ForeignKey(Recording, null=True, blank=True)
     user = models.ForeignKey(User)
     rated = models.BooleanField(_("Rating"), default=False)
     lastplayed = models.DateTimeField(_("Last time user played"), auto_now_add=True)
@@ -112,7 +112,7 @@ class RecordingRating(models.Model):
 
 class RecordingComment(models.Model):
 
-    recording = models.ForeignKey(Recording)
+    recording = models.ForeignKey(Recording, null=True, blank=True, default="")
     user = models.ForeignKey(User)
 
     comment = models.CharField(_("Comment"), max_length=300)
