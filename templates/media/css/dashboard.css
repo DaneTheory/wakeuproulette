@@ -1,3 +1,7 @@
+html {
+    padding: 0px 0px 10px;
+}
+
 #dashboard {
     width: 100%;
     color: white;
@@ -205,7 +209,7 @@
 }
 
 .dash-block {
-    height: 500px;
+    height: 620px;
     text-align: center;
     float: left;
 
@@ -243,104 +247,88 @@
 
 
 
-/* Recordings */
+/* WakeUp Diary */
 
-#recordings {
+#wakeup-diary {
     width: 42%;
     min-width: 540px;
     margin-left: 20px;
 }
 
-#recordings-box {
-    height: 400px;
+#wakeup-diary-box {
+    height: 530px;
+    padding: 0px 20px 0px 20px;
     overflow: scroll;
 }
 
+
 .recording {
-    padding: 20px 20px 50px 20px;
+    padding: 20px 5px 50px 5px;
 }
 
 .recording-img {
     width: 60px;
+    margin-left: 20px;
+    margin-top: -20px;
     border: 3px solid;
     background-color: black;
     color: black;
 }
 
 .recording-audio-section {
-    width: 83%;
+    width: 95%;
 
     padding-left: 10px;
 }
 
-.recording-info {
-    padding: 10px 10px 30px 10px;
-}
-.recording-username {
-    float:left;
-}
-.recording-privacy {
-    float: right;
-}
-.recording-publish {
-    float: right;
-}
-
-.btn_publish {
-    font-family: NexaBold;
-    font-weight:normal;
-    -moz-border-radius:8px;
-    -webkit-border-radius:8px;
-    border-radius:8px;
-    border:1px solid #3866a3;
-    padding:3px 18px;
-    text-decoration:none;
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #63b8ee), color-stop(100%, #468ccf) );
-    background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
-    background:-ms-linear-gradient( top, #63b8ee 5%, #468ccf 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
-    background-color:#63b8ee;
-    color:#14396a;
-    border: 0;
-    outline:0 none !important;
-    outline:none;
-    display:inline-block;
-}.btn_publish:hover {
-     background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #468ccf), color-stop(100%, #63b8ee) );
-     background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
-     background:-ms-linear-gradient( top, #468ccf 5%, #63b8ee 100% );
-     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
-     border: 0;
-     outline:none;
-     outline:0 none !important;
-     background-color:#468ccf;
- }.btn_publish:active {
-      position:relative;
-      border: none;
-      outline:none;
-       outline:0 none !important;
-      border: 0;
-      top:1px;
-  }
 
 
-.recording-audio {
+.shared-recording {
+    padding: 20px 5px 50px 5px;
+}
+.shared-recording-audio {
     clear:both;
     width: 100%;
 }
 
-.recording-data {
+.share-info {
+    padding: 10px 10px 30px 10px;
+}
+.share-username {
+    float:left;
+    padding-left: 20px;
+}
+.share-privacy {
+    float: right;
+}
+.share-body {
+    float: right;
+    margin-right: 40px;
+    padding: 10px 10px 10px 10px;
+    text-align: left;
+    font-family: Calibri;
+    width: 330px;
+}
+#no-shares {
+    padding: 0px 0px 0px 0px;
+}
+#no-shares p{
+    font-size: 1.5em;
+}
+
+.share-data {
     clear: both;
     width: 100%;
     padding: 10px 0px 0px 5px;
 }
-.recording-data div {
-    width: 30%;
+.share-data div {
+    width: 33.3%;
     float: left;
 }
-.recording-data img {
-    width: 30px;
+.share-data img {
+    width: 33.3px;
 }
+
 
 
 /*####################### Comments Section #######################*/
@@ -380,31 +368,207 @@
 
 
 
-/* Badges */
+/* CALL HISTORY */
 
-#badges {
+#call-history {
     width: 25%;
     min-width: 320px;
     margin-left: 20px;
 }
 
+#call-history-box {
+    height: 530px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.recording-info div {
+    float: right;
+    width: 195px;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+.recording-username {
+    height: 17px;
+}
+.recording-privacy-box {
+    height: 22px;
+}
+.recording-privacy-box * {
+    margin: auto auto;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.recording-share {
+    width: 100px;
+}
 
 
 #contacts-box {
-    height: 400px;
+
 }
 #all_contacts {
     overflow: scroll;
     position:relative;
     padding-top:10px;
-    height:350px;
+    height:470px;
 }
+
+
+.btn_publish {
+    font-family: NexaBold;
+    font-weight:normal;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    border:1px solid #3866a3;
+    padding:3px 18px;
+    text-decoration:none;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #63b8ee), color-stop(100%, #468ccf) );
+    background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+    background:-ms-linear-gradient( top, #63b8ee 5%, #468ccf 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+    background-color:#63b8ee;
+    color:#14396a;
+    border: 0;
+    outline:0 none !important;
+    outline:none;
+    display:inline-block;
+}.btn_publish:hover {
+     background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #468ccf), color-stop(100%, #63b8ee) );
+     background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+     background:-ms-linear-gradient( top, #468ccf 5%, #63b8ee 100% );
+     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+     border: 0;
+     outline:none;
+     outline:0 none !important;
+     background-color:#468ccf;
+ }.btn_publish:active {
+      position:relative;
+      border: none;
+      outline:none;
+      outline:0 none !important;
+      border: 0;
+      top:1px;
+}
+
+.recording-audio {
+    clear:both;
+    width: 100%;
+}
+
+.recording-data {
+    clear: both;
+    width: 100%;
+    padding: 10px 0px 0px 5px;
+}
+.recording-data div {
+    width: 30%;
+    float: left;
+}
+.recording-data img {
+    width: 30px;
+}
+
+
+
+
+
+
+
+/*####################### MODAL AUDIO #######################*/
+
+#share-modal-audio {
+    width: 100%;
+}
+#share-modal-text {
+    width: 100%;
+    height: 50px;
+}
+.share-btn {
+    width: 48%;
+    height: 20px;
+    float:left;
+    border-radius: 0;
+    background: #eee;
+    position: relative;
+}
+.share-btn:hover {
+    background: black;
+}
+.share-btn:hover > #facebook-logo {
+    background-color: white;
+}
+.share-btn:hover > #facebook-logo:before {
+    position: absolute;
+    border: 15px solid #000;
+    border-bottom: none;
+    border-right: none;
+    border-top-left-radius: 15px;
+    width: 15px;
+    height: 65px;
+    content: "";
+}
+.share-btn:hover > #facebook-logo:after {
+    position: absolute;
+    top: 44px;
+    left: 43px;
+    height: 15px;
+    width: 42px;
+    background-color: #000;
+    content: "";
+}
+
+#facebook-logo {
+    margin: auto auto;
+    bottom: -30px;
+    right: 80px;
+
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    background-color: black;
+    position: absolute;
+
+    transform: scale(.3,.3);
+    -ms-transform: scale(.3,.3); /* IE 9 */
+    -webkit-transform: scale(.3,.3); /* Safari and Chrome */
+
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+}
+#facebook-logo:before {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: 15px solid #fff;
+    border-bottom: none;
+    border-right: none;
+    border-top-left-radius: 15px;
+    width: 15px;
+    height: 65px;
+    content: "";
+}
+#facebook-logo:after {
+    position: absolute;
+    top: 44px;
+    left: 43px;
+    height: 15px;
+    width: 42px;
+    background-color: #fff;
+    content: "";
+}
+
+
+
+
 
 /*Profile Left*/
-
-#recordings {
-
-}
 
 .ondisplay{
   text-align:center;

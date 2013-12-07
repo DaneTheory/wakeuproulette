@@ -82,24 +82,37 @@ class Recording(models.Model):
     # Total number of times this recording has been played
     plays = models.IntegerField(_("Times Played"), default=0)
 
+    # Total number of shares
+    shares = models.IntegerField(_("Total Shares"), default=0)
+
     # Rating of the recording for the call
     rating = models.IntegerField(_("Recording Aura"), default=0)
 
     # Number of times this call has been reported
     warnings = models.IntegerField(_("warnings"), default=0)
 
-    datecreated = models.DateTimeField()
+    datecreated = models.DateTimeField(auto_now_add=True)
 
 
+class RecordingShare(models.Model):
+    call = models.ForeignKey(Call)
+    user = models.ForeignKey(User)
 
-#class Share(models.Model):
-#    aura = models.IntegerField(_("Recording Aura"), default=0)
+    body = models.TextField(_("Body"), default="", blank=True)
+
+    rating = models.IntegerField(_("Recording Aura"), default=0)
+    shares = models.IntegerField(_("Recording Aura"), default=0)
+
+    warnings = models.IntegerField(_("Warnings"), default=0)
+
+    datecreated = models.DateTimeField(auto_now_add=True)
 
 
 class RecordingRating(models.Model):
 
-    recording = models.ForeignKey(Recording, null=True, blank=True)
+    recordingshare = models.ForeignKey(RecordingShare)
     user = models.ForeignKey(User)
+
     rated = models.BooleanField(_("Rating"), default=False)
     lastplayed = models.DateTimeField(_("Last time user played"), auto_now_add=True)
     reported = models.BooleanField(_("Reported"), default=False)
@@ -112,10 +125,12 @@ class RecordingRating(models.Model):
 
 class RecordingComment(models.Model):
 
-    recording = models.ForeignKey(Recording, null=True, blank=True, default="")
+    recordingshare = models.ForeignKey(RecordingShare)
     user = models.ForeignKey(User)
 
     comment = models.CharField(_("Comment"), max_length=300)
+
+
 
 
 

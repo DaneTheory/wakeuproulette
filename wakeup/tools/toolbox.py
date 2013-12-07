@@ -61,7 +61,7 @@ class CallThread(threading.Thread):
             , if_machine = 'Hangup'
             , status_callback = self.noanswerurl
             , status_method = 'Post'
-            , record=True)
+            , record=False)
 
         if not self.silent:
             print "Called " + self.phone

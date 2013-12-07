@@ -8,46 +8,40 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Recording.chosen'
-        db.delete_column(u'wakeup_recording', 'chosen')
+        # Adding field 'Recording.shares'
+        db.add_column(u'wakeup_recording', 'shares',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
 
-        # Deleting field 'Recording.other'
-        db.delete_column(u'wakeup_recording', 'other_id')
 
-        # Deleting field 'Recording.call'
-        db.delete_column(u'wakeup_recording', 'call_id')
+        # Changing field 'Recording.recordingduration'
+        db.alter_column(u'wakeup_recording', 'recordingduration', self.gf('django.db.models.fields.IntegerField')(null=True))
 
-        # Deleting field 'Recording.shared'
-        db.delete_column(u'wakeup_recording', 'shared')
+        # Changing field 'Recording.datecreated'
+        db.alter_column(u'wakeup_recording', 'datecreated', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True))
 
-        # Renaming field 'Call.recording'
-        db.rename_column(u'wakeup_call', 'rec_id', 'recording_id')
+        # Changing field 'RecordingComment.recording'
+        db.alter_column(u'wakeup_recordingcomment', 'recording_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.Recording'], null=True))
 
+        # Changing field 'RecordingRating.recording'
+        db.alter_column(u'wakeup_recordingrating', 'recording_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.Recording'], null=True))
 
     def backwards(self, orm):
-        # Adding field 'Recording.chosen'
-        db.add_column(u'wakeup_recording', 'chosen',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+        # Deleting field 'Recording.shares'
+        db.delete_column(u'wakeup_recording', 'shares')
 
-        # Adding field 'Recording.other'
-        db.add_column(u'wakeup_recording', 'other',
-                      self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wakeup.Recording'], unique=True, null=True),
-                      keep_default=False)
 
-        # Adding field 'Recording.call'
-        db.add_column(u'wakeup_recording', 'call',
-                      self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wakeup.Call'], unique=True, null=True),
-                      keep_default=False)
+        # Changing field 'Recording.recordingduration'
+        db.alter_column(u'wakeup_recording', 'recordingduration', self.gf('django.db.models.fields.IntegerField')())
 
-        # Adding field 'Recording.shared'
-        db.add_column(u'wakeup_recording', 'shared',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+        # Changing field 'Recording.datecreated'
+        db.alter_column(u'wakeup_recording', 'datecreated', self.gf('django.db.models.fields.DateTimeField')())
 
-        # Renaming field 'Call.recording'
-        db.rename_column(u'wakeup_call', 'recording_id', 'rec_id')
+        # Changing field 'RecordingComment.recording'
+        db.alter_column(u'wakeup_recordingcomment', 'recording_id', self.gf('django.db.models.fields.related.ForeignKey')(default='', to=orm['wakeup.Recording']))
 
+        # Changing field 'RecordingRating.recording'
+        db.alter_column(u'wakeup_recordingrating', 'recording_id', self.gf('django.db.models.fields.related.ForeignKey')(default='', to=orm['wakeup.Recording']))
 
     models = {
         u'auth.group': {
@@ -98,7 +92,7 @@ class Migration(SchemaMigration):
             'matched': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True'}),
+            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True', 'blank': 'True'}),
             'retries': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'snoozed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
@@ -111,20 +105,21 @@ class Migration(SchemaMigration):
         },
         u'wakeup.recording': {
             'Meta': {'object_name': 'Recording'},
-            'datecreated': ('django.db.models.fields.DateTimeField', [], {}),
+            'datecreated': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'plays': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'P'", 'max_length': '1'}),
             'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'recordingduration': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'recordingduration': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
             'recordingurl': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'shares': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'warnings': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'wakeup.recordingcomment': {
             'Meta': {'object_name': 'RecordingComment'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']"}),
+            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'wakeup.recordingrating': {
@@ -133,7 +128,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lastplayed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'rated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']"}),
+            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True', 'blank': 'True'}),
             'reported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         }

@@ -1,0 +1,28 @@
+<div idx="{{ share.pk }}" class="shared-recording recording">
+    <a href="/accounts/public/{{ share.user.username }}/">
+        <img class="inline wakeup-box-shadow recording-img" src="{{ request.user.profile.img_url }}">
+    </a>
+    <a class="share-username" href="/accounts/public/{{ call.user.username }}/">
+        {{ request.user.profile.get_full_name_or_username |title }}
+    </a>
+    <div class="share-body">
+        {{ share.body }}
+    </div>
+    <audio controls class="recording-audio"  class="inline">
+        <source src="{{ share.call.recording.recordingurl }}" type="audio/x-wav">
+        Please use a Chrome or Firefox to listen to your recordings
+    </audio>
+    <div class="share-data">
+        <div title="Aura" class="tooltip aura-button"><img src="/media/icons/like-white.png"/><span>{{ share.rating }}</span></div>
+        <div title="Re-wakes" class="tooltip rewakes-button"><img src="/media/icons/rewakeup-white.png"/>{{ share.shares }}</div>
+        <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
+    </div>
+    <div class="comments">
+        <div id="comments-section">
+            {% for comment in share.recordingcomment_set.all %}
+                {% include 'layouts/comment.html' with comment=comment %}
+            {% endfor %}
+        </div>
+        <textarea placeholder="Write a comment..." class="comment-textarea"></textarea>
+    </div>
+</div>

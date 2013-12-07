@@ -66,8 +66,9 @@ var dashboard = {
 		
 		var contacts = $("#contacts");
         var recordings = $("#recordings");
-        var comments = $(".comments");
+        var diary = $("#wakeup-diary");
         var alarm = $('#dash-alarm');
+        var modal = $('#share-modal');
 		
 		$("#all_contacts_btn").bind("click", function() {
 			$("#all_contacts").show();
@@ -160,7 +161,7 @@ var dashboard = {
 
         /*###### COMMENTS ####### */
 
-        $('.comment-textarea').keydown(function(event) {
+        $('#wakeup-diary-box').on('keydown', '.comment-textarea', function(event) {
             // This extends textarea as required
             var that = $(this);
             if (that.scrollTop()) {
@@ -176,6 +177,7 @@ var dashboard = {
             if (event.keyCode == 13) {
                 comment = $(this).val();
                 idx = get_recording_id(this);
+
                 $(this).attr('disabled', 'true');
 
                 setTimeout(function(){
@@ -187,7 +189,7 @@ var dashboard = {
                 var that = $(this);
 
                 $.ajax({
-                    url: comments.attr("data-insert_comment"),
+                    url: diary.attr("data-insert_comment"),
                     dataType: "json",
                     type: "POST",
                     data: {
@@ -247,7 +249,7 @@ var dashboard = {
             });
         });
 
-        $('.recording-audio').bind("play", function() {
+        $('.recording-audio, .shared-recording-audio').bind("play", function() {
             var curr = $(this).parent().parent().find('.play-count span');
             idx = get_recording_id(this);
 
@@ -266,20 +268,42 @@ var dashboard = {
             });
         });
 
-        $('.recording-publish').bind('click', function() {
+
+
+        /*###### CALL SHARE ####### */
+
+        $('.recording-share').bind('click', function() {
             idx = get_recording_id(this);
             var that = $(this);
 
+            console.log(that.closest(".recording").find(".recording-source"));
+            src = that.closest(".recording").find(".recording-source").attr("src");
+            console.log(src);
+
+            $('#share-modal-audio').attr("idx", idx);
+            $('#share-modal-audio-source').attr("src", src);
+            $('#share-modal-audio').load();
+        });
+
+        $('#submit-share-btn').bind('click', function() {
+            idx = $('#share-modal-audio').attr('idx');
+            body = $('#share-modal-text').val();
+
+
             $.ajax({
-                url: recordings.attr("data-publish_recording_url"),
+                url: modal.attr("data-share_recording_url"),
                 dataType: "json",
                 type: "POST",
                 data: {
-                    rec_id: idx
+                      rec_id: idx
+                    , body: body
                 },
                 success: function(res) {
+                    console.log(res);
                     if (!res.error) {
-                        that.replaceWith('<span class="recording-privacy">[Public]</span>');
+                        $('.close-reveal-modal').click();
+                        $('#no-shares').remove();
+                        $('#wakeup-diary-box').prepend(res.data);
                     }
                 }
             });

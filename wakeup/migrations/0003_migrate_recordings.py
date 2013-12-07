@@ -122,7 +122,7 @@ class Migration(DataMigration):
             'matched': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'rec': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'related_call'", 'null': 'True', 'to': u"orm['wakeup.Recording']"}),
+            'recording': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'related_call'", 'null': 'True', 'to': u"orm['wakeup.Recording']"}),
             'retries': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'snoozed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
@@ -136,7 +136,6 @@ class Migration(DataMigration):
         u'wakeup.recording': {
             'Meta': {'object_name': 'Recording'},
             'call': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['wakeup.Call']", 'unique': 'True', 'null': 'True'}),
-            'chosen': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'datecreated': ('django.db.models.fields.DateTimeField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'other': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['wakeup.Recording']", 'unique': 'True', 'null': 'True'}),

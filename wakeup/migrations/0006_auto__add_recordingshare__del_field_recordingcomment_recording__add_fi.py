@@ -8,45 +8,53 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Recording.chosen'
-        db.delete_column(u'wakeup_recording', 'chosen')
+        # Adding model 'RecordingShare'
+        db.create_table(u'wakeup_recordingshare', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('call', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.Call'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('body', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
+            ('rating', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('shares', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('warnings', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('datecreated', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+        ))
+        db.send_create_signal(u'wakeup', ['RecordingShare'])
 
-        # Deleting field 'Recording.other'
-        db.delete_column(u'wakeup_recording', 'other_id')
+        # Deleting field 'RecordingComment.recording'
+        db.delete_column(u'wakeup_recordingcomment', 'recording_id')
 
-        # Deleting field 'Recording.call'
-        db.delete_column(u'wakeup_recording', 'call_id')
+        # Adding field 'RecordingComment.recordingshare'
+        db.add_column(u'wakeup_recordingcomment', 'recordingshare',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.RecordingShare']))
 
-        # Deleting field 'Recording.shared'
-        db.delete_column(u'wakeup_recording', 'shared')
+        # Deleting field 'RecordingRating.recording'
+        db.delete_column(u'wakeup_recordingrating', 'recording_id')
 
-        # Renaming field 'Call.recording'
-        db.rename_column(u'wakeup_call', 'rec_id', 'recording_id')
+        # Adding field 'RecordingRating.recordingshare'
+        db.add_column(u'wakeup_recordingrating', 'recordingshare',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.RecordingShare']))
 
 
     def backwards(self, orm):
-        # Adding field 'Recording.chosen'
-        db.add_column(u'wakeup_recording', 'chosen',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
+        # Deleting model 'RecordingShare'
+        db.delete_table(u'wakeup_recordingshare')
+
+        # Adding field 'RecordingComment.recording'
+        db.add_column(u'wakeup_recordingcomment', 'recording',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.Recording'], null=True, blank=True),
                       keep_default=False)
 
-        # Adding field 'Recording.other'
-        db.add_column(u'wakeup_recording', 'other',
-                      self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wakeup.Recording'], unique=True, null=True),
+        # Deleting field 'RecordingComment.recordingshare'
+        db.delete_column(u'wakeup_recordingcomment', 'recordingshare_id')
+
+        # Adding field 'RecordingRating.recording'
+        db.add_column(u'wakeup_recordingrating', 'recording',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wakeup.Recording'], null=True, blank=True),
                       keep_default=False)
 
-        # Adding field 'Recording.call'
-        db.add_column(u'wakeup_recording', 'call',
-                      self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wakeup.Call'], unique=True, null=True),
-                      keep_default=False)
-
-        # Adding field 'Recording.shared'
-        db.add_column(u'wakeup_recording', 'shared',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
-
-        # Renaming field 'Call.recording'
-        db.rename_column(u'wakeup_call', 'recording_id', 'rec_id')
+        # Deleting field 'RecordingRating.recordingshare'
+        db.delete_column(u'wakeup_recordingrating', 'recordingshare_id')
 
 
     models = {
@@ -98,7 +106,7 @@ class Migration(SchemaMigration):
             'matched': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True'}),
+            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']", 'null': 'True', 'blank': 'True'}),
             'retries': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'snoozed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
@@ -111,20 +119,21 @@ class Migration(SchemaMigration):
         },
         u'wakeup.recording': {
             'Meta': {'object_name': 'Recording'},
-            'datecreated': ('django.db.models.fields.DateTimeField', [], {}),
+            'datecreated': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'plays': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'P'", 'max_length': '1'}),
             'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'recordingduration': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'recordingduration': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
             'recordingurl': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'shares': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'warnings': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'wakeup.recordingcomment': {
             'Meta': {'object_name': 'RecordingComment'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']"}),
+            'recordingshare': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.RecordingShare']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'wakeup.recordingrating': {
@@ -133,9 +142,20 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lastplayed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'rated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'recording': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Recording']"}),
+            'recordingshare': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.RecordingShare']"}),
             'reported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+        },
+        u'wakeup.recordingshare': {
+            'Meta': {'object_name': 'RecordingShare'},
+            'body': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'call': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wakeup.Call']"}),
+            'datecreated': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'shares': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'warnings': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         }
     }
 
