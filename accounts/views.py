@@ -903,13 +903,13 @@ def rand_x_digit_num(x, leading_zeroes=True):
             return str("%0." + str(x) + "d") % random.randint(0, 10**x-1)
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'^(0|0044|\+44)7[0-9]{9}$'
+PHONE_REGEX = r'(^(0|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(61|061|\+61)[0-9]{9}$)'
 class WakeUpSignupForm(SignupForm):
     phone = forms.RegexField(   regex=PHONE_REGEX,
                                 max_length=30,
                                 widget=forms.TextInput(attrs = {'class': 'required'}),
                                 label=_("Phone"),
-                                error_messages={'invalid': _("Sorry, currently it's only available for UK numbers.")})
+                                error_messages={'invalid': _("Sorry, currently it's only available for UK, US and Australian numbers.")})
 
     gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female')))
     date_of_birth = forms.DateField(label=_('Date of Birth Format: [DD/MM/YYYY]'), input_formats=('%d/%m/%Y',))

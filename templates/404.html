@@ -29,7 +29,8 @@
     <div id="usersection">
         {% if user.is_authenticated %}
             <span id="nav-logged">
-                <a class="simplebutton" href="/accounts/dashboard/">My Dashboard</a>
+                <a id="all-wakeups-nav-button" style="color: white;"  class="simplebutton" href="/">All WakeUps</a>
+                <a style="padding-left: 30px"  class="simplebutton" href="/accounts/dashboard/">My Dashboard</a>
                 <a style="color: white; padding-left: 20px" class="simplebutton" href="/accounts/signout/">Sign Out</a>
             </span>
         {% else %}

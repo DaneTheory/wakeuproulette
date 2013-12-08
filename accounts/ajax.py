@@ -192,7 +192,15 @@ def increment_share_aura(request):
         rating.rated = True
         rating.save()
 
-        #send_async_mail("WakeUpRoulette Aura Boost", request.user.username + " has rated up your recording! To see the recording, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [contact_request.user.email])
+        send_to = []
+
+        if request.user != share.user:
+            send_to.append(share.user.email)
+
+        if share.call.user != request.user:
+            send_to.append(share.call.user.email)
+
+        send_async_mail("WakeUpRoulette Aura Boost", request.user.profile.get_full_name_or_username() + " has rated up your WakeUp! To see your WakeUp, please go to http://wakeuproulette.com/sharedwakeup/"+str(share.id)+"/", EMAIL_HOST_USER, send_to)
 
     except Exception, err:
         response['error'] = True
@@ -284,6 +292,18 @@ def share_recording(request):
         # Indeed, we need to pass request this time or it won't be passed automatically
         response['data'] = render_to_string('layouts/recording-shares.html', { 'share' : share, 'request': request })
         response['url'] = settings.WEB_ROOT + "sharedwakeup/" + str(share.id) + "/"
+
+        send_to = []
+
+        if share.call.user != request.user:
+            send_to.append(share.call.user.email)
+
+        if share.user != request.user:
+            send_to.append(share.user.email)
+
+        if send_to:
+            send_async_mail("WakeUpRoulette Share", request.user.profile.get_full_name_or_username() + " has shared up your WakeUp! To see the WakeUp Share, please go to http://wakeuproulette.com/sharedwakeup/"+str(share.id)+"/", EMAIL_HOST_USER, send_to)
+
 
     except Exception, err:
         response['error'] = True
