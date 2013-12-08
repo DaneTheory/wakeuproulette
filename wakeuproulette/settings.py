@@ -21,7 +21,9 @@ if PROD: WEB_ROOT = "http://wakeuproulette.com/"
 # If app is not in production it will use the following web root, please modify it as required:
 else: WEB_ROOT = "http://65038fc5.ngrok.com/"
 
-DEBUG = True
+
+
+DEBUG = not PROD
 TEMPLATE_DEBUG = DEBUG
 
 #USERENA OVERRIDE SETTINGS
