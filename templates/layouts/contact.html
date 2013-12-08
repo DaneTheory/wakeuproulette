@@ -1,3 +1,4 @@
+{% load wakeup_tags %}
 {% with contact_user=contact.contact %}
 	<div class="contact" data-contact_id="{{ contact.id }}">
 	    <div class="contact-img">
@@ -5,7 +6,7 @@
 		</div>
 		<div style="width:75%;float:left;text-align:left;">
 			<p style="margin-top:0px;"><a href="/accounts/public/{{ contact_user.username }}/">{{ contact_user.profile.get_full_name_or_username }}</a></p>
-			<p>Alarm: {{ contact_user.profile.alarm|date:"H:i" }}&nbsp;({% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %})</p>
+			<p>Alarm: {% local_time contact_user.profile.alarm %}&nbsp;({% if contact_user.profile.alarmon %}ON{% else %}OFF{% endif %})</p>
 		</div>
 	</div>
 {% endwith %}
