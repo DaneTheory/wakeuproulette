@@ -35,6 +35,8 @@ USERENA_HIDE_EMAIL = False
 USERENA_DISABLE_PROFILE_LIST = True
 USERENA_MUGSHOT_SIZE = 200
 USERENA_DEFAULT_PRIVACY = 'closed'
+#USERENA_MUGSHOT_PATH = os.path.abspath(os.path.join(PROJECT_ROOT, "..", "WakeUpRouletteMugshots"))
+
 
 ADMINS = (
     ('Alejandro Saucedo', 'axsauze@gmail.com'),
