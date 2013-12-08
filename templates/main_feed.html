@@ -14,11 +14,11 @@
     <link rel="stylesheet" type="text/css" href="/media/css/mainfeed.css">
     <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
 
-{#    <script type="text/javascript" src="/media/js/dashboard.js"></script>#}
+    <script type="text/javascript" src="/media/js/shares.js"></script>
 {#    <script type="text/javascript" src="/media/js/charts.js"></script>#}
 {#    <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>#}
 {#    <script type="text/javascript" src="/media/js/simplemodal.js"></script>#}
-
+<div id="shares_info" style="display:none;" data-load_on_scroll="1" data-load_shares_url="{% url 'accounts.ajax.load_shares' %}" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}"></div>
     <div id="main-feed">
         <div id="dash-body">
             <div id="main-feed-content" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
@@ -31,7 +31,7 @@
                             <img style="width:200px; float: right;" src="/media/icons/right-arrow.gif"/>
                         </div>
                     {% else %}
-                        {% for share in shares reversed %}
+                        {% for share in shares %}
                             {% include 'layouts/recording-shares.html' with share=share %}
                         {% endfor %}
                     {% endif %}

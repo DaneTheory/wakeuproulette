@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^share_recording/$', account_ajax.share_recording, name='share_recording'),
     url(r'^add_contact/$', account_ajax.add_contact, name='add_contact'),
     url(r'^set_timezone/$', account_ajax.set_timezone, name='set_timezone'),
+    url(r'^load_shares/$', account_ajax.load_shares, name='load_shares'),
     # View Profiles
     url(r'^dashboard/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),

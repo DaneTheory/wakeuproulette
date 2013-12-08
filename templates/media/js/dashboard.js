@@ -27,10 +27,7 @@ var dashboard = {
 	init: function() {
 
 		var contacts = $("#contacts");
-        var recordings = $("#recordings");
-        var diary = $("#wakeup-diary");
         var alarm = $('#dash-alarm');
-        var modal = $('#share-modal');
 		
 		$("#all_contacts_btn").bind("click", function() {
 			$("#all_contacts").show();
@@ -41,14 +38,6 @@ var dashboard = {
 			$("#all_contacts").hide();
 			$("#requests").show();
 		});
-
-        function get_element_id(elem) {
-            while(!$(elem).attr('idx')){
-                elem = $(elem).parent();
-            }
-            return elem.attr('idx');
-        }
-
 
         /*###### ALARM ######## */
         function divClicked() {
@@ -126,194 +115,7 @@ var dashboard = {
 
             });
         }
-
-
-
-
-        /*###### COMMENTS ####### */
-
-        $('#wakeup-diary-box').on('keydown', '.comment-textarea', function(event) {
-            // This extends textarea as required
-            var that = $(this);
-            if (that.scrollTop()) {
-                $(this).height(function(i,h){
-                    return h + 20;
-                });
-                $(this).parent().height(function(i,h){
-                    return h + 20;
-                });
-            }
-
-            //This submits the form if the user pressed enter
-            if (event.keyCode == 13) {
-                comment = $(this).val();
-                idx = get_element_id(this);
-
-                $(this).attr('disabled', 'true');
-
-                setTimeout(function(){
-                    console.log("here")
-                    $('.comment-textarea').removeAttr('disabled', 'false');
-                }, 5000);
-
-
-                var that = $(this);
-
-                $.ajax({
-                    url: diary.attr("data-insert_comment"),
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        comment: comment,
-                        idx : idx
-                    },
-                    success: function(res) {
-                        if (!res.error) {
-                            console.log(that.closest('div').children('.comments-section'));
-                            $(that.closest('div').children()[0]).append(res.html);
-                            that.val('')
-                        }
-                    }
-
-                });
-            }
-        });
-
-
-        /*###### RECORDINGS ####### */
-
-        $('#wakeup-diary-box').on('click', '.share-aura-button', function(event) {
-            var that = $(this);
-            var curr = that.children('span');
-            // This gets the sharing id rather than the recording ID
-            idx = get_element_id(this);
-            console.log(idx);
-
-            $.ajax({
-                url: diary.attr("data-increment_share_aura_url"),
-                dataType: "json",
-                type: "POST",
-                data: {
-                    idx: idx
-                },
-                success: function(res) {
-                    if (!res.error) {
-                        that.find('img').attr("src", "/media/icons/like-white.png")
-                        curr.text(+ parseInt(curr.text(), 10) + 1);
-                    }
-                }
-            });
-        });
-
-        $('.rewakes-button').bind("click", function() {
-            var curr = $(this).children('span');
-            idx = get_element_id(this);
-
-            $.ajax({
-                url: recordings.attr("data-increment_rec_rewake_url"),
-                dataType: "json",
-                type: "POST",
-                data: {
-                    rec_id: idx
-                },
-                success: function(res) {
-                    if (!res.error) {
-                        curr.text(+ parseInt(curr.text(), 10) + 1);
-                    }
-                }
-            });
-        });
-
-        $('.recording-audio, .shared-recording-audio').bind("play", function() {
-            var curr = $(this).parent().parent().find('.play-count span');
-            idx = get_element_id(this);
-
-            $.ajax({
-                url: recordings.attr("data-increment_rec_play_url"),
-                dataType: "json",
-                type: "POST",
-                data: {
-                    rec_id: idx
-                },
-                success: function(res) {
-                    if (!res.error) {
-                        curr.text(+ parseInt(curr.text(), 10) + 1);
-                    }
-                }
-            });
-        });
-
-
-
-        /*###### CALL SHARE ####### */
-
-        $('.recording-share').bind('click', function() {
-            idx = get_element_id(this);
-            var that = $(this);
-
-            console.log(that.closest(".recording").find(".recording-source"));
-            src = that.closest(".recording").find(".recording-source").attr("src");
-            console.log(src);
-
-            $('#share-modal-audio').attr("idx", idx);
-            $('#share-modal-audio-source').attr("src", src);
-            $('#share-modal-audio').load();
-        });
-
-        $('#submit-share-btn').bind('click', function() {
-            idx = $('#share-modal-audio').attr('idx');
-            body = $('#share-modal-text').val();
-            url = $('#share-modal-audio-source').attr('src');
-            facebookurl = "http://www.facebook.com/sharer/sharer.php?s=100"
-                            + "&p[url]=" + url
-                            + "&p[images][0]="
-                            + "&p[title]=Wake%20Up%20Roulette"
-                            + "&p[summary]=Wake%20Up%20every%20day%20to%20an%20Amazing%20conversation!";
-            twitterurl = "http://twitter.com/home?status=Check%20out%20my%20@WakeUpRoulette%20call!!%20"
-                            + url;
-
-
-            $.ajax({
-                url: modal.attr("data-share_recording_url"),
-                dataType: "json",
-                type: "POST",
-                data: {
-                      rec_id: idx
-                    , body: body
-                },
-                success: function(res) {
-                    console.log(res);
-                    if (!res.error) {
-                        $('.close-reveal-modal').click();
-                        $('#no-shares').remove();
-                        $('#wakeup-diary-box').prepend(res.data);
-                        $('#twitter-share-a-ref').removeClass("checked");
-                        $('#facebook-share-a-ref').removeClass("checked");
-                        $('#share-modal-text').val('');
-                    }
-                }
-            });
-            if ($('#twitter-share-a-ref').hasClass("checked")) {
-                window.open(twitterurl, '_blank');
-            }
-            if ($('#facebook-share-a-ref').hasClass("checked")) {
-                window.open(facebookurl, '_blank');
-            }
-        });
-
-//        Share buttons checkbox
-        $('.share-btn').bind('click', function() {
-            var that = $(this);
-
-            if (that.hasClass("checked")) {
-                that.removeClass("checked");
-            } else {
-                that.addClass("checked");
-            }
-        });
-
-
-
+        
         /*###### CONTACTS ####### */
 
         $("#add-contact-button").bind("click", function() {

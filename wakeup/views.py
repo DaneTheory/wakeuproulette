@@ -67,12 +67,13 @@ else:
 def flush_transaction():
     transaction.commit()
 
-
 def home(request):
     if not request.user.is_authenticated():
         return render(request, 'index.html')
     else:
-        return render(request, 'main_feed.html')
+        data = {}
+        data['shares'] = RecordingShare.query_list(request.GET, request)
+        return render(request, 'main_feed.html', data)
 
 def as_date(schedule):
     return datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")
