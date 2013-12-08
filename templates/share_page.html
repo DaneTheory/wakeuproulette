@@ -6,9 +6,30 @@
 {% block content_title %}<h2 xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">{{ profile.get_full_name_or_username |title }})</h2>{% endblock %}
 
 {% block dashboard %}
-    <div id="share-recording-page">
-        <div id="share-recording-page-box">
+    <link rel="stylesheet" href="/media/css/dashboard.css">
+    <link rel="stylesheet" href="/media/css/recordingshare.css">
+    <script type="text/javascript" src="/media/js/dashboard.js"></script>
 
+    <div id="shared-recording-container">
+        <div id="wakeup-diary" class="wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+            <div class="title">
+                {% if share %}
+                    {{ share.user.profile.get_full_name_or_username }}'s Shared Wake-Up</div>
+                {% else %}
+                    Oops...</div>
+                {% endif %}
+            <div id="wakeup-diary-box">
+                {% if request.user.not_authenticated %}
+                    <h1>Unfortunately this call is not public.</h1>
+                    <h1>Please log in to be able to hear this call.</h1>
+                {% elif not share %}
+                    <div id="no-share-recording-found">
+                        <h1>It seems that this WakeUp does not exist!</h1>
+                    </div>
+                {% else %}
+                    {% include 'layouts/recording-shares.html' with share=share %}
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

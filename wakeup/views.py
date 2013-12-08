@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from models import Conference, Call, Recording
+from models import Conference, Call, Recording, RecordingShare
 from django.core.management import call_command
 from django.db import transaction
 from twilio.rest import TwilioRestClient
@@ -674,6 +674,18 @@ def eveningRoulette(request):
     now_server = timezone.now()
     return render(request, 'eveningroulette.html', {'evening_roulette_time': evening_roulette_time, 'server_hour': now_server.hour, 'server_minute': now_server.minute })
 
+
+def shared_wakeup(request, shareid):
+    share = None
+
+    try:
+        share = RecordingShare.objects.get(id=shareid)
+    except RecordingShare.DoesNotExist:
+        pass
+
+    print share
+
+    return render(request, 'share_page.html', { 'share': share })
 
 
 class AlarmForm(forms.Form):
