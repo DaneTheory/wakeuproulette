@@ -126,13 +126,9 @@ class RecordingRating(models.Model):
     user = models.ForeignKey(User)
 
     rated = models.BooleanField(_("Rating"), default=False)
-    lastplayed = models.DateTimeField(_("Last time user played"), auto_now_add=True)
     reported = models.BooleanField(_("Reported"), default=False)
 
     datecreated = models.DateTimeField(auto_now_add=True)
-
-    def last_viewed_one_hour(self):
-        return self.lastplayed > timezonenow() - datetime.timedelta(hours=1)
 
 
 class RecordingComment(models.Model):

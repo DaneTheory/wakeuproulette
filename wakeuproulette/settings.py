@@ -193,8 +193,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'wakeuproulette@gmail.com'
 EMAIL_HOST_PASSWORD = 'wakeup!!'
 
-APPEND_SLASH = True
-
 
 LOGGING = {
     'version': 1,
