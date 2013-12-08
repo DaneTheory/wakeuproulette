@@ -204,33 +204,40 @@ def increment_share_aura(request):
 @login_required
 def increment_rec_play(request):
     rec_id = request.POST.get("rec_id", "")
+    share_id = request.POST.get("share_id", "")
     response = {}
     try:
+        
+        if share_id != "":
+            rec_share = RecordingShare.objects.get(pk=share_id)
+            recording = rec_share.call.recording
+        else:
+            recording = Recording.objects.get(pk=rec_id)
 
-        recording = Recording.objects.get(pk=rec_id)
+        #rating = None
 
-        rating = None
+        #try:
+        #    rating = RecordingRating.objects.get(recordingshare__call__recording=recording, user=request.user)
 
-        try:
-            rating = RecordingRating.objects.get(recording=recording, user=request.user)
+        #    if rating.last_viewed_one_hour():
+        #        response['error'] = True
+        #        return HttpResponse(json.dumps(response), content_type="application/json")
 
-            if rating.last_viewed_one_hour():
-                response['error'] = True
-                return HttpResponse(json.dumps(response), content_type="application/json")
-
-        except RecordingRating.DoesNotExist:
-            rating = RecordingRating()
+        #except RecordingRating.DoesNotExist:
+        #    rating = RecordingRating()
 
         recording.plays = recording.plays + 1
         recording.save()
 
-        rating.recording = recording
-        rating.user = request.user
-        rating.datecreated = datetime.now()
-        rating.lastplayed = datetime.now()
-        rating.save()
+        #rating.recording = recording
+        #rating.user = request.user
+        #rating.datecreated = datetime.now()
+        #rating.lastplayed = datetime.now()
+        #rating.save()
 
     except Recording.DoesNotExist:
+        response['error'] = True
+    except RecordingShare.DoesNotExist:
         response['error'] = True
     return HttpResponse(json.dumps(response), content_type="application/json")
 

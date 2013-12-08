@@ -9,7 +9,7 @@
     <div class="share-body">
         {{ share.body }}
     </div>
-    <audio controls class="recording-audio"  class="inline">
+    <audio controls class="shared-recording-audio"  class="inline" data-played="0">
         <source src="{{ share.call.recording.recordingurl }}" type="audio/x-wav">
         Please use a Chrome or Firefox to listen to your recordings
     </audio>
@@ -18,7 +18,7 @@
             {% liked share as already_liked %}
             <img {% if already_liked %} src="/media/icons/like-white.png" {% else %} src="/media/icons/like-active.png" {% endif %}/><span>{{ share.rating }}</span></div>
         <div title="Re-wakes" class="tooltip share-rewake-button"><img src="/media/icons/rewakeup-white.png"/>{{ share.shares }}</div>
-        <div title="Play Count" class="tooltip share-play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
+        <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
     </div>
     <div class="comments">
         <div id="comments-section">

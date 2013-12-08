@@ -50,30 +50,10 @@ class SecureEditProfileForm(EditProfileForm):
     
     class Meta:
         model = UserProfile
-        fields = ['mugshot', 'dob', 'phone', 'gender']
+        fields = ['mugshot']
     
     def __init__(self, *args, **kwargs):
         super (SecureEditProfileForm, self).__init__(*args,**kwargs)
-        self.fields['dob'].input_formats=('%d/%m/%Y',)
-        self.fields['dob'].required = True
-        #self.fields['phone'].initial = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', self.fields['phone'].initial)
-        
-    def clean_dob(self):
-        dob = self.cleaned_data['dob']
-        age = (date.today() - dob).days/365
-        if age < 18:
-            raise forms.ValidationError('Must be at least 18 years old to register')
-        return dob
-    
-    #def clean_phone(self):
-    #    cleaned = self.cleaned_data['phone']
-    #    without_trailing = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', cleaned)
-    #    with_uk_extension = "+44" + without_trailing
-    #    try:
-    #        UserProfile.objects.get(phone=with_uk_extension)
-    #        raise forms.ValidationError('This phone number is already registered')
-    #    except UserProfile.DoesNotExist: 
-    #        return with_uk_extension
 
 class ExtraContextTemplateView(TemplateView):
     """ Add extra context to a simple template view """
