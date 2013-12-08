@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from models import Conference, Call, Recording
+from models import Conference, Call, Recording, RecordingShare
 from django.core.management import call_command
 from django.db import transaction
 from twilio.rest import TwilioRestClient
@@ -67,12 +67,13 @@ else:
 def flush_transaction():
     transaction.commit()
 
-
 def home(request):
     if not request.user.is_authenticated():
         return render(request, 'index.html')
     else:
-        return render(request, 'main_feed.html')
+        data = {}
+        data['shares'] = RecordingShare.query_list(request.GET, request)
+        return render(request, 'main_feed.html', data)
 
 def as_date(schedule):
     return datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")

@@ -293,4 +293,15 @@ def connect_gender(request):
     request.user.profile.save()
     response = {}
     return HttpResponse(json.dumps(response), content_type="application/json")
-    
+
+@require_POST
+@login_required
+def load_shares(request):
+    shares = RecordingShare.query_list(request.POST, request)
+    response = {}
+    response['html'] = ""
+    response['fetched'] = len(shares)
+    for share in shares:
+        response['html'] += render_to_string("layouts/recording-shares.html", {"share": share, 'request': request})
+    return HttpResponse(json.dumps(response), content_type="application/json")
+

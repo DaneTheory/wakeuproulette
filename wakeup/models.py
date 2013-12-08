@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.db.models import Q
 
 import datetime
 from django.utils.timezone import utc, now as timezonenow
@@ -93,6 +94,7 @@ class Recording(models.Model):
 
     datecreated = models.DateTimeField(auto_now_add=True)
 
+SHARES_LOAD_LIMIT = 5
 
 class RecordingShare(models.Model):
     call = models.ForeignKey(Call)
@@ -106,6 +108,15 @@ class RecordingShare(models.Model):
     warnings = models.IntegerField(_("Warnings"), default=0)
 
     datecreated = models.DateTimeField(auto_now_add=True)
+    
+    @staticmethod
+    def query_list(params, request):
+        upper_id = int(params.get("upper_id", "-1"))
+        shares = RecordingShare.objects.filter(Q(user__contacts__contact=request.user, user__contacts__status='A') | Q(user=request.user)).order_by("-id")
+        if upper_id != -1:
+            shares = shares.filter(id__lt=upper_id)
+        shares = shares[:SHARES_LOAD_LIMIT]
+        return shares
 
 
 class RecordingRating(models.Model):

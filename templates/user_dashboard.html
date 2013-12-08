@@ -16,10 +16,11 @@
 <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
 
 <script type="text/javascript" src="/media/js/dashboard.js"></script>
+<script type="text/javascript" src="/media/js/shares.js"></script>
 <script type="text/javascript" src="/media/js/charts.js"></script>
 <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>
 <script type="text/javascript" src="/media/js/simplemodal.js"></script>
-
+<div id="shares_info" style="display:none;" data-load_on_scroll="0" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}"></div>
 <div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">
         <div id="dash-profile" class="inline">
@@ -113,7 +114,7 @@
             	</div>
             </div>
         </div>
-        <div id="wakeup-diary" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+        <div id="wakeup-diary" class="dash-block wakeup-box-shadow" >
             <div class="title">My WakeUp Diary</div>
             <div id="wakeup-diary-box">
             {% if not shares %}
@@ -208,7 +209,7 @@
 
 </script>
 
-<div id="share-modal" class="reveal-modal" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}">
+<div id="share-modal" class="reveal-modal">
     <h1>Share your WakeUp!</h1>
 
     <audio idx="" controls id="share-modal-audio">
