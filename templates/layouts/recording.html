@@ -2,10 +2,10 @@
     <div class="inline recording-audio-section">
         <div class="recording-info">
             {% for call in rec.call_set.all %}
-                {% if call.user != request.user %}
-                    <a href="/accounts/public/{{ call.user.username }}/">
-                        <img class="inline wakeup-box-shadow recording-img" src="{{ call.user.profile.img_url }}">
-                        <div class="recording-username">{{ call.user.profile.get_full_name_or_username |title }}</div>
+                {% if call.user != user %}
+                    <a href="/accounts/public/{{ user.username }}/">
+                        <img class="inline wakeup-box-shadow recording-img" src="{{ user.profile.img_url }}">
+                        <div class="recording-username">{{ user.profile.get_full_name_or_username |title }}</div>
                     </a>
                 {% endif %}
             {% endfor %}
