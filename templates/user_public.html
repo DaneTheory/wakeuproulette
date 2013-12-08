@@ -112,7 +112,7 @@
                 }
             </style>
             <div id="wakeup-diary" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
-                <div class="title">My WakeUp Diary</div>
+                <div class="title">{{ other.profile.get_full_name_or_username }}'s WakeUp Diary</div>
                 <div id="wakeup-diary-box">
                     {% if not shares %}
                         <div id="no-shares">

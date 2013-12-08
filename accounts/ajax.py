@@ -12,6 +12,7 @@ from wakeuproulette.settings import EMAIL_HOST_USER
 import pytz
 from pytz import timezone
 from wakeup.tools.toolbox import global_time
+from wakeuproulette import settings
 
 ########################################################
 ############### LOCAL TIMEZONE SETTING  ################
@@ -281,6 +282,7 @@ def share_recording(request):
 
         # Indeed, we need to pass request this time or it won't be passed automatically
         response['data'] = render_to_string('layouts/recording-shares.html', { 'share' : share, 'request': request })
+        response['url'] = settings.WEB_ROOT + "sharedwakeup/" + str(share.id) + "/"
 
     except Exception, err:
         response['error'] = True

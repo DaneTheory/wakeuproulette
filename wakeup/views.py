@@ -676,6 +676,18 @@ def eveningRoulette(request):
     return render(request, 'eveningroulette.html', {'evening_roulette_time': evening_roulette_time, 'server_hour': now_server.hour, 'server_minute': now_server.minute })
 
 
+def shared_wakeup(request, shareid):
+    share = None
+
+    try:
+        share = RecordingShare.objects.get(id=shareid)
+    except RecordingShare.DoesNotExist:
+        pass
+
+    print share
+
+    return render(request, 'share_page.html', { 'share': share })
+
 
 class AlarmForm(forms.Form):
     alarm = forms.TimeField()

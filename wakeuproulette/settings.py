@@ -19,7 +19,7 @@ PROD = False
 if PROD: WEB_ROOT = "http://wakeuproulette.com/"
 
 # If app is not in production it will use the following web root, please modify it as required:
-else: WEB_ROOT = "http://c47cc61.ngrok.com/"
+else: WEB_ROOT = "http://65038fc5.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -35,6 +35,8 @@ USERENA_HIDE_EMAIL = False
 USERENA_DISABLE_PROFILE_LIST = True
 USERENA_MUGSHOT_SIZE = 200
 USERENA_DEFAULT_PRIVACY = 'closed'
+#USERENA_MUGSHOT_PATH = os.path.abspath(os.path.join(PROJECT_ROOT, "..", "WakeUpRouletteMugshots"))
+
 
 ADMINS = (
     ('Alejandro Saucedo', 'axsauze@gmail.com'),
@@ -190,6 +192,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'wakeuproulette@gmail.com'
 EMAIL_HOST_PASSWORD = 'wakeup!!'
+
+APPEND_SLASH = True
 
 
 LOGGING = {

@@ -853,6 +853,7 @@ def wakeup_profile(request, user, template, data):
 
     return render(request, template, data)
 
+
 @login_required
 @secure_required
 def not_activated(request):

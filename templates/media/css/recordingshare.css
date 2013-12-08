@@ -1,0 +1,39 @@
+#shared-recording-container {
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+}
+
+#wakeup-diary {
+    border: solid;
+    clear: both;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    color: white;
+    height: 600px;
+}
+
+#wakeup-diary-box {
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-top: 30px;
+
+}
+
+.share-body {
+    width: 510px;
+}
+.recording-audio {
+    width: 96%;
+}
+.share-data {
+    text-align: center;
+}
