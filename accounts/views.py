@@ -844,10 +844,11 @@ def wakeup_public(request, username):
             except Contact.DoesNotExist:
                 pass
 
-    data.is_contact = is_contact
-    data.is_pending = is_pending
-    data.is_waiting = is_waiting
-    data.reqid = reqid
+    data['is_contact'] = is_contact
+    data['is_pending'] = is_pending
+    data['is_waiting'] = is_waiting
+    data['reqid'] = reqid
+    data['other'] = other
 
 
     return wakeup_profile(request, other, 'user_public.html', data)

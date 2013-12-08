@@ -1,9 +1,9 @@
 <div idx="{{ share.pk }}" class="shared-recording recording">
     {% load wakeup_tags %}
     <a href="/accounts/public/{{ share.user.username }}/">
-        <img class="inline wakeup-box-shadow recording-img" src="{{ request.user.profile.img_url }}">
+        <img class="inline wakeup-box-shadow recording-img" src="{{ share.user.profile.img_url }}">
     </a>
-    <a class="share-username" href="/accounts/public/{{ call.user.username }}/">
+    <a class="share-username" href="/accounts/public/{{ share.user.username }}/">
         {{ share.user.profile.get_full_name_or_username |title }}
     </a>
     <div class="share-body">

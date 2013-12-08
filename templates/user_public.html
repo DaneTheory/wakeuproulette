@@ -26,9 +26,9 @@
                 <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/{{ request.user.username }}/edit/">
                     <img src="/media/icons/settings-white.png"/>
                 </a>
-                <div class="title">{{ name }}</div>
-                <a href="/accounts/{{ request.user.username }}/edit/"></a>
-                <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
+                <div class="title">{{ other.profile.get_full_name_or_username }}</div>
+                <a href="/accounts/{{ other.user.username }}/edit/"></a>
+                <img id="profile-picture" class="wakeup-box-shadow" src="{{ other.profile.img_url }}"/>
                 <div id="aura-points">Aura Points: {{ aura }}</div>
             </div>
             <div id="dash-stats" class="inline">
@@ -59,37 +59,27 @@
             </div>
             <div id="dash-settings" class="inline tooltip alarm-tooltip" title="Click alarm time">
                 <div id="dash-time"></div>
-                <div id="switch" class="inline wakeup-box-shadow" >
-                    <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" {% if request.user.profile.alarmon %}checked{% endif %}>
-                    <label class="onoffswitch-label" for="myonoffswitch">
-                        <div class="onoffswitch-inner">
-                            <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
-                            <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
-                        </div>
-                    </label>
-                </div>
-                {% for allowed_time in allowed_times %}
-                    <span style="display:none;" class="allowed_time" data-time="{{ allowed_time }}"></span>
-                {% endfor %}
-                <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ alarm_time|date:"H:i" }}</div>
-                <div id="dash-interests">
-                    <h3 style="margin-bottom:5px;">Connect with:</h3>
-                    <div style="margin-top:10px;margin-left:50px; ">
-                        <span class="inline">Men:</span>
-                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
-                            <input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
-                            <label for="connect_men"></label>
-                        </div>
-                        <span class="inline">Women:</span>
-                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
-                            <input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
-                            <label for="connect_women"></label>
+                <div class="title">Alarm:</div>
+                <div id="public-dash-alarm" class="inline">Alarm: {{ other.profile.get_alarm_time }}</div>
+
+                {% if not request.user.is_authenticated %}
+
+                {% elif is_waiting %}
+                    <div class="request" data-request_id="{{ reqid }}">
+                        <div style="width:75%;float:left;text-align:left;">
+                            <p><button class="accept_request btn_publish">Accept</button>
+                                <button class="ignore_request btn_publish">Ignore</button></p>
                         </div>
                     </div>
-
-
-                </div>
-
+                {% elif is_pending %}
+                    <div id="add-contact">
+                        <div id="contact-pending">Contact Pending</div>
+                    </div>
+                {% elif not is_contact %}
+                    <div id="add-contact">
+                        <button id="add-contact-button" class="btn_publish" data-other_username="{{ other.username }}" data-add_contact_url="{% url 'accounts.ajax.add_contact' %}">Add Contact</button>
+                    </div>
+                {% endif %}
 
             </div>
         </div>
@@ -113,28 +103,26 @@
                     </div>
                 </div>
             </div>
+            <style>
+                #wakeup-diary {
+                    width: 880px;
+                }
+                .share-body {
+                    width: 670px;
+                }
+            </style>
             <div id="wakeup-diary" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
                 <div class="title">My WakeUp Diary</div>
                 <div id="wakeup-diary-box">
                     {% if not shares %}
                         <div id="no-shares">
-                            <p>Oh, it seems that you haven't shared any of your calls yet...</p>
-                            <p>You just have to click share in one of your private calls!</p>
-                            <img style="width:200px; float: right;" src="/media/icons/right-arrow.gif"/>
+                            <p>Oh, it seems that {{ other.profile.get_full_name_or_username }} hasn't shared any wake ups yet...</p>
                         </div>
                     {% else %}
                         {% for share in shares reversed %}
                             {% include 'layouts/recording-shares.html' with share=share %}
                         {% endfor %}
                     {% endif %}
-                </div>
-            </div>
-            <div id="call-history" class="dash-block wakeup-box-shadow">
-                <div class="title">Private History</div>
-                <div id="call-history-box">
-                    {% for recording in recordings reversed %}
-                        {% include 'layouts/recording.html' with rec=recording %}
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -204,31 +192,6 @@
                 }
             }
         };
-
-
     </script>
-
-    <div id="share-modal" class="reveal-modal" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}">
-        <h1>Share your WakeUp!</h1>
-
-        <audio idx="" controls id="share-modal-audio">
-            <source id="share-modal-audio-source" src="" type="audio/x-wav">
-            Please use a Chrome or Firefox to listen to your recordings
-        </audio>
-
-        <form>
-            <textarea id="share-modal-text" name="sharebody" placeholder="Share your WakeUps, Thoughts, Stories, Anything!"></textarea>
-            <a id="facebook-share-a-ref" class="share-btn wur-btn">
-                <div class="facebook-logo"></div>
-            </a>
-            <a id="twitter-share-a-ref" class="share-btn wur-btn">
-                <div id="twitter-share-btn"> <div class="twitter-logo"></div></div>
-            </a>
-
-            </a>
-            <input id="submit-share-btn" type="button" value="Share">
-        </form>
-        <a class="close-reveal-modal">&#215;</a>
-    </div>
 
 {% endblock %}
