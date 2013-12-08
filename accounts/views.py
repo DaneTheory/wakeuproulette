@@ -762,10 +762,8 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 @active_required
 def wakeup_dashboard(request):
 
-    user = request.user
-
-    deleted = False
-    
+#    deleted = False
+#
 #    If post, there's a request to delete recording
 #    if request.method == 'POST':
 #        recurl = request.POST['recurl']
@@ -794,51 +792,26 @@ def wakeup_dashboard(request):
 #    profile = UserProfile.objects.get(user__username=username)
 #    conferences = Conferences.objects.filter(Q(caller1=profile) | Q(caller2=profile))
 
-    profile = user.get_profile()
+    user = request.user
+    profile = user.profile
 
-    name = user.get_full_name()
-    if not name: name = user.username
-    profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
-    call_set = user.call_set.all()
-    totalcalls = call_set.count()
-    recordings = Recording.objects.filter(call__user=user)
-    shares = RecordingShare.objects.filter(call__user=user)
-    recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
-    recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
-    recordingduration = recordings.aggregate(Sum('recordingduration'))['recordingduration__sum']
+    data = {}
 
-    aura = profile.reputation*10 + (recordingaura if recordings else 0)
-
-    wokeup = call_set.filter(snoozed=False).count()
-    snoozed = totalcalls - wokeup
-    overslept = call_set.filter(answered=False).count()
-
-    alarm_time = local_time(profile.alarm, request)
-    allowed_times = [7, 8, 9, 10]
+    data['alarm_time'] = local_time(profile.alarm, request)
+    data['allowed_times'] = [7, 8, 9, 10]
     i = 0
-    for allowed_time in allowed_times:
-        allowed_times[i] = local_time(datetime.time(hour=allowed_time, minute=0, second=0), request).hour
+    for allowed_time in data['allowed_times']:
+        data['allowed_times'][i] = local_time(datetime.time(hour=allowed_time, minute=0, second=0), request).hour
         i += 1
-    return render(request, 'user_dashboard.html', {   'name': name
-                                                    , 'profileurl':profileurl
-                                                    , 'totalcalls': totalcalls
-                                                    , 'recordingplays' : recordingplays
-                                                    , 'recordingaura' : recordingaura
-                                                    , 'wokeup' : wokeup
-                                                    , 'snoozed' : snoozed
-                                                    , 'overslept' : overslept
-                                                    , 'recordings': recordings
-                                                    , 'recordingduration': recordingduration
-                                                    , 'alarm_time': alarm_time
-                                                    , 'allowed_times': allowed_times
-                                                    , 'shares': shares
-                                                    , 'aura': aura})
+
+    return wakeup_profile(request, user, 'user_dashboard.html', data)
 
 @secure_required
 def wakeup_public(request, username):
 
     user = request.user
-    print user
+    data = {}
+
     other = None
     try:
         other = User.objects.get(username=username)
@@ -871,40 +844,33 @@ def wakeup_public(request, username):
             except Contact.DoesNotExist:
                 pass
 
+    data.is_contact = is_contact
+    data.is_pending = is_pending
+    data.is_waiting = is_waiting
+    data.reqid = reqid
 
-    name = other.get_full_name()
-    if not name: name = username
-    profileurl = profile.mugshot.url if profile.mugshot else ('/media/images/man-placeholder.jpg' if profile.gender == 'M' else '/media/images/woman-placeholder.jpg')
-    call_set = other.call_set.all()
-    totalcalls = call_set.count()
-    recordings = Recording.objects.filter(call__user=other)
-    public_recordings = recordings.filter(privacy='P')
-    recordingplays = recordings.aggregate(Sum('plays'))['plays__sum']
-    recordingaura = recordings.aggregate(Sum('rating'))['rating__sum']
-    recordingduration = recordings.aggregate(Sum('recordingduration'))['recordingduration__sum']
 
-    aura = profile.reputation*10 + (recordingaura if recordings else 0)
+    return wakeup_profile(request, other, 'user_public.html', data)
 
-    wokeup = call_set.filter(snoozed=False).count()
-    snoozed = totalcalls - wokeup
-    overslept = call_set.filter(answered=False).count()
+def wakeup_profile(request, user, template, data):
 
-    return render(request, 'user_public.html', {      'name': name
-                                                    , 'profileurl':profileurl
-                                                    , 'totalcalls': totalcalls
-                                                    , 'recordingplays' : recordingplays
-                                                    , 'recordingaura' : recordingaura
-                                                    , 'wokeup' : wokeup
-                                                    , 'snoozed' : snoozed
-                                                    , 'overslept' : overslept
-                                                    , 'recordings': public_recordings
-                                                    , 'recordingduration': recordingduration
-                                                    , 'aura': aura
-                                                    , 'other': other
-                                                    , "is_contact": is_contact
-                                                    , "is_pending": is_pending
-                                                    , "is_waiting": is_waiting
-                                                    , "reqid": reqid})
+    profile = user.get_profile()
+
+    call_set = user.call_set.all()
+    data['totalcalls'] = call_set.count()
+    data['recordings'] = Recording.objects.filter(call__user=user)
+    data['shares'] = RecordingShare.objects.filter(call__user=user)
+    data['recordingplays'] = data['recordings'].aggregate(Sum('plays'))['plays__sum']
+    data['recordingaura'] = data['recordings'].aggregate(Sum('rating'))['rating__sum']
+    data['recordingduration'] = data['recordings'].aggregate(Sum('recordingduration'))['recordingduration__sum']
+
+    data['aura'] = profile.reputation*10 + (data['recordingaura'] if data['recordings'] else 0)
+
+    data['wokeup'] = call_set.filter(snoozed=False).count()
+    data['snoozed'] = data['totalcalls'] - data['wokeup']
+    data['overslept'] = call_set.filter(answered=False).count()
+
+    return render(request, template, data)
 
 @login_required
 @secure_required

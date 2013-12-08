@@ -1,4 +1,5 @@
 <div idx="{{ share.pk }}" class="shared-recording recording">
+    {% load wakeup_tags %}
     <a href="/accounts/public/{{ share.user.username }}/">
         <img class="inline wakeup-box-shadow recording-img" src="{{ request.user.profile.img_url }}">
     </a>
@@ -13,9 +14,11 @@
         Please use a Chrome or Firefox to listen to your recordings
     </audio>
     <div class="share-data">
-        <div title="Aura" class="tooltip aura-button"><img src="/media/icons/like-white.png"/><span>{{ share.rating }}</span></div>
-        <div title="Re-wakes" class="tooltip rewakes-button"><img src="/media/icons/rewakeup-white.png"/>{{ share.shares }}</div>
-        <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
+        <div title="Aura" class="tooltip share-aura-button">
+            {% liked share as already_liked %}
+            <img {% if already_liked %} src="/media/icons/like-white.png" {% else %} src="/media/icons/like-active.png" {% endif %}/><span>{{ share.rating }}</span></div>
+        <div title="Re-wakes" class="tooltip share-rewake-button"><img src="/media/icons/rewakeup-white.png"/>{{ share.shares }}</div>
+        <div title="Play Count" class="tooltip share-play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
     </div>
     <div class="comments">
         <div id="comments-section">

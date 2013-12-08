@@ -69,7 +69,10 @@ def flush_transaction():
 
 
 def home(request):
-    return render(request, 'index.html')
+    if not request.user.is_authenticated():
+        return render(request, 'index.html')
+    else:
+        return render(request, 'main_feed.html')
 
 def as_date(schedule):
     return datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")

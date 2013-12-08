@@ -1,0 +1,109 @@
+
+/* CALL HISTORY */
+
+#call-history {
+    width: 25%;
+    min-width: 320px;
+    margin-left: 20px;
+}
+
+#call-history-box {
+    height: 530px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.recording-info div {
+    float: right;
+    width: 195px;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+.recording-username {
+    height: 17px;
+}
+.recording-privacy-box {
+    height: 22px;
+}
+.recording-privacy-box * {
+    margin: auto auto;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.recording-share {
+    width: 100px;
+}
+
+
+#contacts-box {
+
+}
+#all_contacts {
+    overflow: scroll;
+    position:relative;
+    padding-top:10px;
+    height:470px;
+}
+
+
+.btn_publish {
+    font-family: NexaBold;
+    font-weight:normal;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    border:1px solid #3866a3;
+    padding:3px 18px;
+    text-decoration:none;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #63b8ee), color-stop(100%, #468ccf) );
+    background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+    background:-ms-linear-gradient( top, #63b8ee 5%, #468ccf 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+    background-color:#63b8ee;
+    color:#14396a;
+    border: 0;
+    outline:0 none !important;
+    outline:none;
+    display:inline-block;
+}.btn_publish:hover {
+     background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #468ccf), color-stop(100%, #63b8ee) );
+     background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+     background:-ms-linear-gradient( top, #468ccf 5%, #63b8ee 100% );
+     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+     border: 0;
+     outline:none;
+     outline:0 none !important;
+     background-color:#468ccf;
+ }.btn_publish:active {
+      position:relative;
+      border: none;
+      outline:none;
+      outline:0 none !important;
+      border: 0;
+      top:1px;
+  }
+
+.recording-audio {
+    clear:both;
+    width: 100%;
+}
+
+.recording-data {
+    clear: both;
+    width: 100%;
+    padding: 10px 0px 0px 5px;
+}
+.recording-data div {
+    width: 30%;
+    float: left;
+}
+.recording-data img {
+    width: 30px;
+}
+
+
+
+

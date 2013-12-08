@@ -1,0 +1,175 @@
+{% extends 'userena/base_userena.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% blocktrans with other.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
+{% block content_title %}<h2 xmlns="http://www.w3.org/1999/html">{{ other.profile.get_full_name_or_username |title }})</h2>{% endblock %}
+
+{% block dashboard %}
+
+    <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
+
+    <script type="text/javascript" src="/media/js/dashboard.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="/media/js/charts.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>
+
+    <div id="dashboard" onload="startTime();">
+        <div id="dash-head" class="wakeup-box-shadow">
+            <div id="dash-profile" class="inline">
+                <div class="title">{{ name }}</div>
+                <img id="profile-picture" class="wakeup-box-shadow" src="{{ profileurl }}"/>
+                <div id="aura-points">Aura Points: {{ aura }}</div>
+            </div>
+            <div id="dash-stats" class="inline">
+                <div id="dash-stats-title" class="title">WakeUp Stats</div>
+                <table id="global-stats">
+                    <tr>
+                        <td>Total WakeUps:</td>
+                        <td>{{ totalcalls }}</td>
+                    </tr>
+                    <tr>
+                        <td>Talk Time:</td>
+                        <td>{{ recordingduration }}</td>
+                    </tr>
+                    <tr>
+                        <td>Call Aura:</td>
+                        <td>{{ other.profile.reputation }}</td>
+                    </tr>
+                    <tr>
+                        <td>Recording Plays:</td>
+                        <td>{{ recordingplays }}</td>
+                    </tr>
+                    <tr>
+                        <td>Recording Aura:</td>
+                        <td>{{ recordingaura }}</td>
+                    </tr>
+                </table>
+                <div id="chart"></div>
+            </div>
+            <div id="dash-settings" class="inline">
+                <div id="dash-time"></div>
+                <div class="title">Alarm:</div>
+                <div id="public-dash-alarm" class="inline">Alarm: {{ other.profile.get_alarm_time }}</div>
+
+                {% if not request.user.is_authenticated %}
+
+                {% elif is_waiting %}
+                    <div id="contacts" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" ></div>
+                    <div class="request" data-request_id="{{ reqid }}">
+                        <div style="width:75%;float:left;text-align:left;">
+                            <p><button class="accept_request btn_publish">Accept</button>
+                                <button class="ignore_request btn_publish">Ignore</button></p>
+                        </div>
+                    </div>
+                {% elif is_pending %}
+                    <div id="add-contact">
+                        <div id="contact-pending">Contact Pending</div>
+                    </div>
+                {% elif not is_contact %}
+                <div id="add-contact">
+                    <button id="add-contact-button" class="btn_publish" data-other_username="{{ other.username }}" data-add_contact_url="{% url 'accounts.ajax.add_contact' %}">Add Contact</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if is_contact %}
+        <div id="dash-body">
+            <div id="contacts" class="dash-block wakeup-box-shadow" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
+                <div class="title">Contacts</div>
+                <div id="contacts-box">
+                    <div id="all_contacts" style="height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
+                        {% for contact in other.profile.get_contacts %}
+                            {% include 'layouts/contact.html' with contact=contact %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div id="recordings" class="dash-block wakeup-box-shadow" data-increment_rec_aura_url="{% url 'accounts.ajax.increment_rec_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+                <div class="title">WakeUp Wall</div>
+                <div id="recordings-box">
+                    {% if not recordings %}
+                        <h1 style="float: left; padding-left: 70px">{{ other.profile.get_full_name_or_username }} has not published any WakeUps...</h1>
+                    {% endif %}
+                    {% for recording in recordings %}
+                        {% include 'layouts/recording.html' with rec=recording %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="badges" class="dash-block wakeup-box-shadow">
+                <div class="title">Badges</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        $(function() {
+            $("#chart").chart({
+                template: "pie_basic_1",
+                values: {
+                    serie1: [{{ wokeup }}, {{ snoozed }}, {{ overslept }}]
+                },
+                labels: ["1", "2", "3"],
+                legend: ["Woke Up", "Snoozed", "Over-slept"],
+                tooltips: {
+                    serie1: ["Woke Up:<br><strong>{{ wokeup }} times</strong>", "Snoozed:<br><strong>{{ snoozed }} times</strong>", "Over-slept:<br><strong>{{ overslept }} times</strong>"]
+                },
+                defaultSeries: {
+                    values: [{
+                        plotProps: {
+                            fill: "green"
+                        }
+                    }, {
+                        plotProps: {
+                            fill: "blue"
+                        }
+                    }, {
+                        plotProps: {
+                            fill: "black"
+                        }
+                    }]
+                }
+            });
+
+        });
+
+        $.elycharts.templates['pie_basic_1'] = {
+            type: "pie",
+            defaultSeries: {
+                plotProps: {
+                    stroke: "white",
+                    "stroke-width": 2,
+                    opacity: 0.8
+                },
+                highlight: {
+                    move: 20
+                },
+                tooltip: {
+                    frameProps: {
+                        opacity: 0.5
+                    }
+                },
+                startAnimation: {
+                    active: true,
+                    type: "grow"
+                }
+            },
+            features: {
+                legend: {
+                    horizontal: false,
+                    width: 90,
+                    height: 80,
+                    x: 282,
+                    y: 100,
+                    borderProps: {
+                        "fill-opacity": 0.3
+                    }
+                }
+            }
+        };
+
+
+    </script>
+{% endblock %}

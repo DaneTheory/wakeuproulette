@@ -124,7 +124,6 @@ SECRET_KEY = '^--!*rux&17c(z_-slkc(axld%us!$=$37$5tcob4gg^(8hv2k'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -270,4 +269,5 @@ LOGGING = {
 TEMPLATE_CONTEXT_PROCESSORS=(
       "django.core.context_processors.request"
     , "django.contrib.auth.context_processors.auth"
-    , "wakeup.context_processors.in_prod")
+    , "wakeup.context_processors.in_prod"
+)

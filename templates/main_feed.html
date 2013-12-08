@@ -1,0 +1,74 @@
+{% extends 'userena/base_userena.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
+{% block content_title %}<h2 xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">{{ profile.get_full_name_or_username |title }})</h2>{% endblock %}
+
+{% block dashboard %}
+
+    <link rel="Stylesheet" media="screen" href="/media/css/reveal.css">
+    <script type="text/javascript" src="/media/js/reveal.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/media/css/mainfeed.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
+
+{#    <script type="text/javascript" src="/media/js/dashboard.js"></script>#}
+{#    <script type="text/javascript" src="/media/js/charts.js"></script>#}
+{#    <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>#}
+{#    <script type="text/javascript" src="/media/js/simplemodal.js"></script>#}
+
+    <div id="main-feed">
+        <div id="dash-body">
+            <div id="main-feed-content" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+                <div class="title">WakeUp Feed</div>
+                <div id="main-feed-content-box">
+                    {% if not shares %}
+                        <div id="no-shares">
+                            <p>Oh, it seems none of your contacts has shared any WakeUps yet!</p>
+                            <p>Why don't you kick it off by sharing your first WakeUp?</p>
+                            <img style="width:200px; float: right;" src="/media/icons/right-arrow.gif"/>
+                        </div>
+                    {% else %}
+                        {% for share in shares reversed %}
+                            {% include 'layouts/recording-shares.html' with share=share %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div id="call-history" class="dash-block wakeup-box-shadow">
+                <div class="title">Private History</div>
+                <div id="call-history-box">
+                    {% for recording in recordings reversed %}
+                        {% include 'layouts/recording.html' with rec=recording %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="share-modal" class="reveal-modal" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}">
+        <h1>Share your WakeUp!</h1>
+
+        <audio idx="" controls id="share-modal-audio">
+            <source id="share-modal-audio-source" src="" type="audio/x-wav">
+            Please use a Chrome or Firefox to listen to your recordings
+        </audio>
+
+        <form>
+            <textarea id="share-modal-text" name="sharebody" placeholder="Share your WakeUps, Thoughts, Stories, Anything!"></textarea>
+            <a id="facebook-share-a-ref" class="share-btn wur-btn">
+                <div class="facebook-logo"></div>
+            </a>
+            <a id="twitter-share-a-ref" class="share-btn wur-btn">
+                <div id="twitter-share-btn"> <div class="twitter-logo"></div></div>
+            </a>
+
+            </a>
+            <input id="submit-share-btn" type="button" value="Share">
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+
+{% endblock %}

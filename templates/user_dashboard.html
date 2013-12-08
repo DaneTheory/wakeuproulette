@@ -13,6 +13,7 @@
 
 <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
 <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
+<link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
 
 <script type="text/javascript" src="/media/js/dashboard.js"></script>
 <script type="text/javascript" src="/media/js/charts.js"></script>
@@ -112,7 +113,7 @@
             	</div>
             </div>
         </div>
-        <div id="wakeup-diary" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_rec_aura_url="{% url 'accounts.ajax.increment_rec_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
+        <div id="wakeup-diary" class="dash-block wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
             <div class="title">My WakeUp Diary</div>
             <div id="wakeup-diary-box">
             {% if not shares %}
@@ -217,10 +218,12 @@
 
     <form>
         <textarea id="share-modal-text" name="sharebody" placeholder="Share your WakeUps, Thoughts, Stories, Anything!"></textarea>
-        <a class="share-btn wur-btn">
-            <div id="facebook-logo"></div>
+        <a id="facebook-share-a-ref" class="share-btn wur-btn">
+            <div class="facebook-logo"></div>
         </a>
-        <a class="share-btn wur-btn">
+        <a id="twitter-share-a-ref" class="share-btn wur-btn">
+            <div id="twitter-share-btn"> <div class="twitter-logo"></div></div>
+        </a>
 
         </a>
         <input id="submit-share-btn" type="button" value="Share">

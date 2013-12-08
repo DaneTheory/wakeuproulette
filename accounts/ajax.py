@@ -112,6 +112,10 @@ def insert_comment(request):
         comment.comment = txt
         comment.save()
 
+        if(request.user != share.user):
+            print "sending email"
+            share.user.profile.send_comment_notification_email(request.user)
+
         response = { 'html': render_to_string('layouts/comment.html', { 'comment': comment }) }
 
     except Recording.DoesNotExist:
@@ -156,31 +160,42 @@ def set_alarm(request):
 #########################################
 @require_POST
 @login_required
-def increment_rec_aura(request):
-    rec_id = request.POST.get("rec_id", "")
+def increment_share_aura(request):
+    share_id = request.POST.get("idx", "")
     response = {}
+
     try:
-        recording = Recording.objects.get(pk=rec_id)
+        share = RecordingShare.objects.get(pk=share_id)
+        recording = share.call.recording
 
         rating = None
+
         try:
-            rating = RecordingRating.objects.get(recording=recording, user=request.user)
+            rating = RecordingRating.objects.get(recordingshare=share, user=request.user)
+
+            # If he already gave aura to the recording, raise an exception
             if rating.rated: raise Exception
+
         except RecordingRating.DoesNotExist:
             rating = RecordingRating()
 
         recording.rating = recording.rating + 1
         recording.save()
 
-        rating.recording = recording
+        share.rating = share.rating + 1
+        share.save()
+
+        rating.recordingshare = share
         rating.user = request.user
         rating.rated = True
         rating.save()
 
         #send_async_mail("WakeUpRoulette Aura Boost", request.user.username + " has rated up your recording! To see the recording, please login to your account at http://wakeuproulette.com/accounts/dashboard/", EMAIL_HOST_USER, [contact_request.user.email])
 
-    except Exception:
+    except Exception, err:
         response['error'] = True
+        print err
+
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 @require_POST

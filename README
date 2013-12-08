@@ -8,5 +8,5 @@ Instructions to set up:
 2) Add initial migrations for the apps specified with 'python manage.py migrate <app-name>'
 
 
-For now to run:
-python manage.py runserver 0.0.0.0:8000 2>&1 | tee logs/wakeuproulette.log
+Database backups:
+	python manage.py dumpdata --exclude=contenttypes --exclude=auth.Permission > initial_data.json

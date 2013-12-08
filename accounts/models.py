@@ -128,6 +128,9 @@ class UserProfile(UserenaBaseProfile):
 
     def get_alarm_time(self):
         return self.alarm.strftime("%H:%M")
+
+    def send_comment_notification_email(self, user):
+        send_async_mail("WakeUpRoulette New Comment", self.user.username + " has just commented in your WakeUp. To reply, please go to " + self.user.username + "'s profile page at http://wakeuproulette.com" + reverse("accounts.views.wakeup_public", args=[self.user.username]) + ".", EMAIL_HOST_USER, [user.email])
     
     def send_request_contact_email(self, user):
         send_async_mail("WakeUpRoulette Contact Request", self.user.username + " has added you to the contacts. To accept the request, please go to " + self.user.username + "'s profile page at http://wakeuproulette.com" + reverse("accounts.views.wakeup_public", args=[self.user.username]) + ".", EMAIL_HOST_USER, [user.email])
