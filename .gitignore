@@ -8,3 +8,5 @@ logs/
 .pydevproject
 .settings/
 build/
+wakeup/management/commands/dostuff.py
+.DS_Store
