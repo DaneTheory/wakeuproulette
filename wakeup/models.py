@@ -112,9 +112,10 @@ class RecordingShare(models.Model):
     @staticmethod
     def query_list(params, request):
         upper_id = int(params.get("upper_id", "-1"))
-        shares = RecordingShare.objects.filter(Q(user__contacts__contact=request.user, user__contacts__status='A') | Q(user=request.user)).distinct().order_by("-id")
+        shares = RecordingShare.objects.filter(Q(user__contacts__contact=request.user, user__contacts__status='A') | Q(user=request.user)).order_by("-id")
         if upper_id != -1:
             shares = shares.filter(id__lt=upper_id)
+        shares = shares.distinct()
         shares = shares[:SHARES_LOAD_LIMIT]
         return shares
 

@@ -104,23 +104,35 @@ var shares = {
                 }
             });
         });
-        $('body').on("play", ".recording-audio, .shared-recording-audio", function() {
-            var curr = $(this).parent().parent().find('.play-count span');
-            idx = get_element_id(this);
-
-            $.ajax({
-                url: shares_info.attr("data-increment_rec_play_url"),
-                dataType: "json",
-                type: "POST",
-                data: {
-                    rec_id: idx
-                },
-                success: function(res) {
-                    if (!res.error) {
-                        curr.text(+ parseInt(curr.text(), 10) + 1);
-                    }
-                }
-            });
+        
+        $("body").on("click", ".recording-audio, .shared-recording-audio", function() {
+        	if ($(this).attr("data-played") === "0") {
+        		$(this).attr("data-played", "1");
+	            var curr = $(this).closest(".recording").find('.play-count span');
+	            idx = get_element_id(this);
+	            var rec_id = null;
+	            var share_id = null;
+	            if ($(this).hasClass("recording-audio")) {
+	            	rec_id = idx;
+	            }
+	            else {
+	            	share_id = idx;
+	            }
+	            $.ajax({
+	                url: shares_info.attr("data-increment_rec_play_url"),
+	                dataType: "json",
+	                type: "POST",
+	                data: {
+	                    rec_id: rec_id,
+	                    share_id: share_id
+	                },
+	                success: function(res) {
+	                    if (!res.error) {
+	                        curr.text(parseInt(curr.text()) + 1);
+	                    }
+	                }
+	            });
+        	}
         });
         
 
