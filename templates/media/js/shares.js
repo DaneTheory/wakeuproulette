@@ -141,15 +141,6 @@ var shares = {
         $('#submit-share-btn').bind('click', function() {
             idx = $('#share-modal-audio').attr('idx');
             body = $('#share-modal-text').val();
-            url = $('#share-modal-audio-source').attr('src');
-            facebookurl = "http://www.facebook.com/sharer/sharer.php?s=100"
-                            + "&p[url]=" + url
-                            + "&p[images][0]="
-                            + "&p[title]=Wake%20Up%20Roulette"
-                            + "&p[summary]=Wake%20Up%20every%20day%20to%20an%20Amazing%20conversation!";
-            twitterurl = "http://twitter.com/home?status=Check%20out%20my%20@WakeUpRoulette%20call!!%20"
-                            + url;
-
 
             $.ajax({
                 url: shares_info.attr("data-share_recording_url"),
@@ -162,6 +153,22 @@ var shares = {
                 success: function(res) {
                     console.log(res);
                     if (!res.error) {
+
+                        facebookurl = "http://www.facebook.com/sharer/sharer.php?s=100"
+                            + "&p[url]=" + res.url
+                            + "&p[images][0]="
+                            + "&p[title]=Wake%20Up%20Roulette"
+                            + "&p[summary]=Wake%20Up%20every%20day%20to%20an%20Amazing%20conversation!";
+                        twitterurl = "http://twitter.com/home?status=Check%20out%20my%20@WakeUpRoulette%20call!!%20"
+                            + res.url;
+
+                        if ($('#twitter-share-a-ref').hasClass("checked")) {
+                            window.open(twitterurl, '_blank');
+                        }
+                        if ($('#facebook-share-a-ref').hasClass("checked")) {
+                            window.open(facebookurl, '_blank');
+                        }
+
                         $('.close-reveal-modal').click();
                         $('#no-shares').remove();
                         $('#wakeup-diary-box').prepend(res.data);
@@ -169,14 +176,9 @@ var shares = {
                         $('#facebook-share-a-ref').removeClass("checked");
                         $('#share-modal-text').val('');
                     }
-                }
+                },
+                async: false
             });
-            if ($('#twitter-share-a-ref').hasClass("checked")) {
-                window.open(twitterurl, '_blank');
-            }
-            if ($('#facebook-share-a-ref').hasClass("checked")) {
-                window.open(facebookurl, '_blank');
-            }
         });
 
 //        Share buttons checkbox

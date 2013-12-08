@@ -19,7 +19,7 @@ PROD = False
 if PROD: WEB_ROOT = "http://wakeuproulette.com/"
 
 # If app is not in production it will use the following web root, please modify it as required:
-else: WEB_ROOT = "http://c47cc61.ngrok.com/"
+else: WEB_ROOT = "http://65038fc5.ngrok.com/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
