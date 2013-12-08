@@ -804,6 +804,8 @@ def wakeup_dashboard(request):
         data['allowed_times'][i] = local_time(datetime.time(hour=allowed_time, minute=0, second=0), request).hour
         i += 1
 
+    data['recordings'] = Recording.objects.filter(call__user=user)
+
     return wakeup_profile(request, user, 'user_dashboard.html', data)
 
 @secure_required
@@ -859,7 +861,6 @@ def wakeup_profile(request, user, template, data):
 
     call_set = user.call_set.all()
     data['totalcalls'] = call_set.count()
-    data['recordings'] = Recording.objects.filter(call__user=user)
     data['shares'] = RecordingShare.objects.filter(call__user=user)
     data['recordingplays'] = data['recordings'].aggregate(Sum('plays'))['plays__sum']
     data['recordingaura'] = data['recordings'].aggregate(Sum('rating'))['rating__sum']

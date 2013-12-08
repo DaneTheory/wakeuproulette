@@ -18,6 +18,7 @@ from wakeuproulette import settings
 ############### LOCAL TIMEZONE SETTING  ################
 ########################################################
 
+
 @require_POST
 def set_timezone(request):
     user_offset = int(request.POST.get("time_zone_offset", "0"))

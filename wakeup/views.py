@@ -73,6 +73,7 @@ def home(request):
     else:
         data = {}
         data['shares'] = RecordingShare.query_list(request.GET, request)
+        data['recordings'] = Recording.objects.filter(call__user=request.user)
         return render(request, 'main_feed.html', data)
 
 def as_date(schedule):

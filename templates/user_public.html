@@ -20,6 +20,7 @@
     <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>
     <script type="text/javascript" src="/media/js/simplemodal.js"></script>
 
+    <div id="shares_info" style="display:none;" data-load_on_scroll="0" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}" data-prepend_share_id="#wakeup-diary-box"></div>
     <div id="dashboard" onload="startTime();">
         <div id="dash-head" class="wakeup-box-shadow">
             <div id="dash-profile" class="inline">
@@ -92,12 +93,12 @@
                         <a id="all_contacts_btn">All</a><a id="requests_btn">Requests ({{ request.user.profile.get_requests.count }})</a>
                     </div>
                     <div id="all_contacts">
-                        {% for contact in request.user.profile.get_contacts reversed %}
+                        {% for contact in other.profile.get_contacts reversed %}
                             {% include 'layouts/contact.html' with contact=contact %}
                         {% endfor %}
                     </div>
                     <div id="requests" style="display:none;height:400px;overflow-y:auto;overflow-x:hidden;padding-top:10px;">
-                        {% for request in request.user.profile.get_requests reversed %}
+                        {% for request in other.profile.get_requests reversed %}
                             {% include 'layouts/request.html' with request=request %}
                         {% endfor %}
                     </div>
