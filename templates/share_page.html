@@ -19,7 +19,7 @@
                     Oops...</div>
                 {% endif %}
             <div id="wakeup-diary-box">
-                {% if not request.user.authenticated %}
+                {% if not request.user.is_authenticated %}
                     <h1>Unfortunately this call is not public.</h1>
                     <h1>Please <a href="/accounts/signin/">log in</a> to be able to listen to this WakeUp.</h1>
                 {% elif not share %}
