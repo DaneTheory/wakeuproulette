@@ -116,9 +116,7 @@
                 <div id="wakeup-diary-box">
                     {% if not shares %}
                         <div id="no-shares">
-                            <p>Oh, it seems that you haven't shared any of your calls yet...</p>
-                            <p>You just have to click share in one of your private calls!</p>
-                            <img style="width:200px; float: right;" src="/media/icons/right-arrow.gif"/>
+                            <p>Oh, it seems that {{ other.profile.get_full_name_or_username }} hasn't shared any wake ups yet...</p>
                         </div>
                     {% else %}
                         {% for share in shares reversed %}
