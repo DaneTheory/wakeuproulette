@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/media/css/recordingshare.css">
     <script type="text/javascript" src="/media/js/dashboard.js"></script>
 
+    <div id="shares_info" style="display:none;" data-load_on_scroll="0" data-load_shares_url="{% url 'accounts.ajax.load_shares' %}" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}"></div>
     <div id="shared-recording-container">
         <div id="wakeup-diary" class="wakeup-box-shadow" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}">
             <div class="title">
