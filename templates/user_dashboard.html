@@ -130,7 +130,7 @@
             </div>
         </div>
         <div id="call-history" class="dash-block wakeup-box-shadow">
-            <div class="title">Private History</div>
+            <div class="title">My Call History</div>
             <div id="call-history-box">
                 {% for recording in recordings reversed %}
                     {% include 'layouts/recording.html' with rec=recording user=request.user %}

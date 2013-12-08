@@ -14,12 +14,9 @@ class Command(NoArgsCommand):
 
         print "doing stuff..."
 
-        calls = Call.objects.all()
-
-        for call in calls:
-            if call.recording:
-                call.recording.privacy = 'P'
-                call.recording.save()
+        for u in UserProfile.objects.all():
+            u.mugshot = ""
+            u.save()
 
 
         print "Done doing stuff."
