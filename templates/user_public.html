@@ -192,31 +192,6 @@
                 }
             }
         };
-
-
     </script>
-
-    <div id="share-modal" class="reveal-modal" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}">
-        <h1>Share your WakeUp!</h1>
-
-        <audio idx="" controls id="share-modal-audio">
-            <source id="share-modal-audio-source" src="" type="audio/x-wav">
-            Please use a Chrome or Firefox to listen to your recordings
-        </audio>
-
-        <form>
-            <textarea id="share-modal-text" name="sharebody" placeholder="Share your WakeUps, Thoughts, Stories, Anything!"></textarea>
-            <a id="facebook-share-a-ref" class="share-btn wur-btn">
-                <div class="facebook-logo"></div>
-            </a>
-            <a id="twitter-share-a-ref" class="share-btn wur-btn">
-                <div id="twitter-share-btn"> <div class="twitter-logo"></div></div>
-            </a>
-
-            </a>
-            <input id="submit-share-btn" type="button" value="Share">
-        </form>
-        <a class="close-reveal-modal">&#215;</a>
-    </div>
 
 {% endblock %}
