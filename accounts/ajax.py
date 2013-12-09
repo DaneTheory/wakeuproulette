@@ -305,7 +305,7 @@ def share_recording(request):
         print send_to
 
         if send_to:
-            send_async_mail("WakeUpRoulette Share", request.user.profile.get_full_name_or_username() + " has shared up your WakeUp! To see the WakeUp Share, please go to http://wakeuproulette.com/sharedwakeup/"+str(share.id)+"/", EMAIL_HOST_USER, send_to)
+            send_async_mail("WakeUpRoulette Share", request.user.profile.get_full_name_or_username() + " has added your WakeUp to his WakeUp Diary! To see this WakeUp, please go to http://wakeuproulette.com/sharedwakeup/"+str(share.id)+"/", EMAIL_HOST_USER, send_to)
 
 
     except Exception, err:
