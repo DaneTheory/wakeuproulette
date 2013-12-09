@@ -15,7 +15,8 @@ urlpatterns = patterns('',
     url(r'^ratingrequest/(?P<schedule>.+)$', views.ratingRequest, name='rating'),
     url(r'^anymatchrequest/(?P<schedule>.+)$', views.tryAnyMatch, name='anymatch'),
     url(r'^finishrequest/(?P<schedule>.+)$', views.finishRequest, name='finish'),
-    url(r'^waitingrequest/(?P<username>.+)$', views.waitingRequest, name='waiting'),
+
+    url(r'^waitingrequest/(?P<username>.*)$', views.waitingRequest, name='waiting'),
     # Handling fallback errors
     url(r'^fallback/(?P<schedule>.+)$', views.fallbackRequest, name='fallback'),
 

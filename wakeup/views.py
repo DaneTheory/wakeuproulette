@@ -149,7 +149,7 @@ def get_active_waiting_room(schedule):
     return waiting
 
 
-def send_to_conference_room(call, schedule, match, record=False):
+def send_to_conference_room(call, schedule, match, initial=False):
 
     # Check if the match is still on the phone - if not, mark match as not completed and try to find him a match
     flush_transaction()
@@ -165,11 +165,12 @@ def send_to_conference_room(call, schedule, match, record=False):
                                                         , 'timelimit' : CALL_LIMIT
                                                         , 'finishrequest' : schedule
                                                         , 'hanguponstar' : True
-                                                        , 'record' : record
+                                                        , 'record' : not initial
                                                         , 'beep' : True
+                                                        , 'waiturl' : '/waitingrequest/' + (call.user.username if initial else "")
                                                     })
 
-def send_to_waiting_room(timelimit, schedule, username, gather=None, say=None, song=None):
+def send_to_waiting_room(timelimit, schedule, username, gather=None, say=None):
     print "Sending to conference room", username, "with schedule", schedule
     return render_to_response("twilioresponse.xml", { 'say' :say
                                                     , 'gather' : gather
@@ -191,7 +192,7 @@ def match_or_send_to_waiting_room(call, schedule):
 
     if call.matched:
         other = call.conference.call_set.exclude(pk=call.pk)[0]
-        data = send_to_conference_room(call, schedule, other, True)
+        data = send_to_conference_room(call, schedule, other, initial=False)
 
         if data: return data
 
@@ -211,7 +212,7 @@ def match_or_send_to_waiting_room(call, schedule):
         matchcall.matched = True
         matchcall.save()
 
-        data = send_to_conference_room(call, schedule, matchcall, False)
+        data = send_to_conference_room(call, schedule, matchcall, initial=True)
         if data: return data
 
     if call.user.profile.any_match:
@@ -322,6 +323,7 @@ def answerCallback(request, schedule):
     # Call has been completed
     elif post['CallStatus'] == 'completed' and post['AnsweredBy'] == 'human':
         logger.info("CALL COMPLETED - "+schedule + " - User: " + call.user.username + " Answered: " + str(call.answered) + " Matched: " + str(call.matched))
+        logger.info(post)
 
         # Resetting all wakeup flags
         call.retries = 0
@@ -610,7 +612,7 @@ def finishRequest(request, schedule):
 
 @csrf_exempt
 def fallbackRequest(request, schedule):
-    print "UNEXPECTED FALLBACK!"
+    logger.error("UNEXPECTED FALLBACK!")
 
     post = request.POST
 
@@ -666,8 +668,20 @@ def fallbackRequest(request, schedule):
 
 @csrf_exempt
 def waitingRequest(request, username):
-    data = render_to_response("waitingresponse.xml",
-        { 'song': '/media/mp3/evenings-babe.mp3'  })
+    params = {}
+    logger.info("[WAITING REQUEST] Username: " + username)
+
+    try:
+        if not username: raise UserProfile.DoesNotExist
+
+        u = UserProfile.objects.get(user__username=username)
+
+    except UserProfile.DoesNotExist:
+        params['say'] = "Oh no! We just noticed that your WakeUp buddy hung up or got disconnected, please press star to proceed to the rating."
+
+    params['song'] = '/media/mp3/evenings-babe.mp3'
+
+    data = render_to_response("waitingresponse.xml",params)
     return HttpResponse(data, mimetype="application/xml")
 
 

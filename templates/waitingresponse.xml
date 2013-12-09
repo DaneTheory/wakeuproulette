@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
+    {% if say %}<Say>{{ say }}</Say>{% endif %}
     {% if song %}
         <Play>{{ song }}</Play>
     {% endif %}
-    <Redirect/>
 </Response>

@@ -86,7 +86,10 @@ class SmsThread(threading.Thread):
         print "Messaged verification code " + self.phone
     
 def sms_async(phone, message):
-    SmsThread(phone, message).start()
+    try:
+        SmsThread(phone, message).start()
+    except Exception, err:
+        send_async_mail("Error Phone Verification", "There was an attempt to verify the number " + phone + " but it failed. Err: " + str(err), "wakeuproulette@gmail.com", zip(*settings.ADMINS)[1])
     
 def local_time(time, request):
     tz = request.session.get("user_timezone", pytz.utc)
