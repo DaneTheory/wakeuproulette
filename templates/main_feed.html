@@ -42,7 +42,7 @@
                 <div id="call-history-box">
                 {% if recordings %}
                     {% for recording in recordings reversed %}
-                        {% include 'layouts/recording.html' with rec=recording %}
+                        {% include 'layouts/recording.html' with rec=recording user=request.user %}
                     {% endfor %}
                 {% else %}
                     <br><br>

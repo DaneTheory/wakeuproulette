@@ -133,9 +133,16 @@
         <div id="call-history" class="dash-block wakeup-box-shadow">
             <div class="title">My Call History</div>
             <div id="call-history-box">
-                {% for recording in recordings reversed %}
-                    {% include 'layouts/recording.html' with rec=recording user=request.user %}
-                {% endfor %}
+                {% if recordings %}
+                    {% for recording in recordings reversed %}
+                        {% include 'layouts/recording.html' with rec=recording user=request.user %}
+                    {% endfor %}
+                {% else %}
+                    <br><br>
+                    <h1 style="font-family: NexaBold; font-size: 1.5em; padding: 0px 20px 0px 20px;">You don't have any WakeUps Yet!</h1>
+                    <br><br>
+                    <h1 style="font-family: NexaBold; font-size: 1.5em; padding: 0px 20px 0px 20px;">Join an <a href="/evening/">#EveningRoulette</a> or set up your <a href="/accounts/dashboard/">alarm for tomorrow</a> morning to get Started!!</h1>
+                {% endif %}
             </div>
         </div>
     </div>
