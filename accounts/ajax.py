@@ -275,8 +275,9 @@ def share_recording(request):
     response = {}
 
     try:
-        recording = Recording.objects.get(id=rec_id, call__user=request.user)
-        call = recording.call_set.get(user=request.user)
+        recording = Recording.objects.get(id=rec_id)
+        call = recording.call_set.exclude(user=request.user)[0]
+        print call
 
         if recording.privacy != 'P':
             raise Exception
@@ -300,6 +301,8 @@ def share_recording(request):
 
         if share.user != request.user:
             send_to.append(share.user.email)
+
+        print send_to
 
         if send_to:
             send_async_mail("WakeUpRoulette Share", request.user.profile.get_full_name_or_username() + " has shared up your WakeUp! To see the WakeUp Share, please go to http://wakeuproulette.com/sharedwakeup/"+str(share.id)+"/", EMAIL_HOST_USER, send_to)
