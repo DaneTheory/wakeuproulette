@@ -916,8 +916,8 @@ class WakeUpSignupForm(SignupForm):
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']
-        without_trailing = re.sub(r'(0044|44|0|\+44)(\d+)', r'\2', cleaned)
-        with_uk_extension = "+44" + without_trailing
+        without_trailing = re.sub(r'(00|0|\+)(\d+)', r'\2', cleaned)
+        with_uk_extension = "+" + without_trailing
         try:
             UserProfile.objects.get(phone=with_uk_extension)
             raise forms.ValidationError('This phone number is already registered')
