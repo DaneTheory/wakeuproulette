@@ -75,8 +75,8 @@ html {
     margin-top: 5px;
 
     border: 3px solid;
-    background-color: black;
-    color: black;
+    background-color: white;
+    color: white;
 }
 
 #aura-points {
@@ -228,7 +228,7 @@ html {
 .contact-img img {
     width:40px;
 
-    border: solid black;
+    border: solid white;
 }
 #vactrack-buttons {
     height: 50px;
@@ -265,8 +265,8 @@ html {
     margin-left: 20px;
     margin-top: -20px;
     border: 3px solid;
-    background-color: black;
-    color: black;
+    background-color: white;
+    color: white;
 }
 
 .recording-audio-section {
@@ -345,7 +345,7 @@ html {
 
 .comment-img {
     width: 30px;
-    border: black solid;
+    border: white solid;
 }
 
 .comment-section {
