@@ -1,8 +1,6 @@
 wakeuproulette.iml
 .idea
 *.pyc
-accounts/migrations/
-accounts/migrations/*
 logs/
 .project
 .pydevproject
