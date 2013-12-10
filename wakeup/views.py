@@ -283,8 +283,8 @@ def wakeUpRequest(request, schedule):
             call.save()
 
             # Mark user as awake so he doesn't get any more snoozes
-            call.user.profile.alarmon = False
-            call.user.profile.save()
+            #call.user.profile.alarmon = False
+            #call.user.profile.save()
 
             data = send_to_waiting_room(  WELCOME_LIMIT
                                         , schedule

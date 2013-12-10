@@ -206,6 +206,18 @@ var dashboard = {
 			}
 		});
 		
+		$("#recurrent").bind("click", function(e) {
+			var check_box = $(this);
+			$.ajax({
+				url: check_box.attr("data-set_recurrent_url"),
+				dataType: "json",
+				type: "POST",
+				success: function(res) {
+					
+				}
+			});
+		});
+		
 	}
 }
 

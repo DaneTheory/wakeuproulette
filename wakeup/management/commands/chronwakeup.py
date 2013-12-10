@@ -74,7 +74,7 @@ class Command(NoArgsCommand):
 
             # Flush so that the changes reflect in the database
             flush_transaction()
-            towakeup = UserProfile.objects.filter(alarmon=True).filter(user__call__datecreated=schedule, user__call__answered=False)
+            towakeup = UserProfile.objects.filter(user__call__datecreated=schedule, user__call__answered=False)
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
             
             # sending contact request emails
@@ -89,4 +89,6 @@ class Command(NoArgsCommand):
 
         print "Finished... Cleaning up (setting alarmon=False, any_match=False)"
         # To finish turn everyone's alarm off
-        UserProfile.objects.filter(user__call__datecreated=schedule).update(alarmon=False, any_match=False)
+        UserProfile.objects.filter(user__call__datecreated=schedule).update(any_match=False)
+        UserProfile.objects.filter(user__call__datecreated=schedule, recurring=False).update(alarmon=False)
+        

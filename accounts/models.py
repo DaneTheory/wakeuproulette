@@ -75,7 +75,7 @@ class UserProfile(UserenaBaseProfile):
     
     activated = models.BooleanField(default=False)
 
-
+    recurring = models.BooleanField(default=False)
 
     ######## CONTACTS ########
 

@@ -154,8 +154,13 @@ def set_alarm(request):
 
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-
-
+@require_POST
+@login_required
+def set_recurrent(request):
+    request.user.profile.recurring = not request.user.profile.recurring
+    request.user.profile.save()
+    response = {}
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 #########################################
 ############## RECORDINGS ###############
