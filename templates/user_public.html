@@ -25,9 +25,6 @@
     <div id="dashboard" onload="startTime();">
         <div id="dash-head" class="wakeup-box-shadow">
             <div id="dash-profile" class="inline">
-                <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/{{ request.user.username }}/edit/">
-                    <img src="/media/icons/settings-white.png"/>
-                </a>
                 <div class="title">{{ other.profile.get_full_name_or_username }}</div>
                 <a href="/accounts/{{ other.user.username }}/edit/"></a>
                 <img id="profile-picture" class="wakeup-box-shadow" src="{{ other.profile.img_url }}"/>
