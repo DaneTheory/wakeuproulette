@@ -2,24 +2,6 @@ html {
     padding: 0px 0px 10px;
 }
 
-#dashboard {
-    width: 100%;
-    color: black;
-
-    position: relative;
-
-    font-family: NexaBold;
-}
-
-
-.wakeup-box-shadow {
-    box-shadow:
-        0 0 0 2px black,
-        0 0 0 5px white;
-
-    background: white;
-}
-
 .title {
     width:100%;
 

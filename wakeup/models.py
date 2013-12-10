@@ -141,6 +141,16 @@ class RecordingComment(models.Model):
 
 
 
+# Wakeuppers
+class WakeUp(models.Model):
+    user = models.ForeignKey(User)
+    call = models.OneToOneField(Call, null=True, blank=True)
+
+    schedule = models.DateTimeField(_("WakeUpper Time"))
+
+    datecreated = models.DateTimeField(_("WakeUpper Time"), auto_now=True)
+
+
 
 
 

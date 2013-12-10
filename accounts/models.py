@@ -77,6 +77,8 @@ class UserProfile(UserenaBaseProfile):
 
     recurring = models.BooleanField(default=False)
 
+    white = models.BooleanField(default=True)
+
     ######## CONTACTS ########
 
     def confirm_contact(self, user):
