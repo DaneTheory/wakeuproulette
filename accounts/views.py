@@ -50,7 +50,7 @@ class SecureEditProfileForm(EditProfileForm):
     
     class Meta:
         model = UserProfile
-        fields = ['mugshot']
+        fields = ['mugshot', 'phone']
     
     def __init__(self, *args, **kwargs):
         super (SecureEditProfileForm, self).__init__(*args,**kwargs)
@@ -554,9 +554,10 @@ def password_change(request, username, template_name='userena/password_form.html
     extra_context['profile'] = user.get_profile()
     return ExtraContextTemplateView.as_view(template_name=template_name,
         extra_context=extra_context)(request)
+
+@login_required
 @secure_required
-@permission_required_or_403('change_profile', (get_profile_model(), 'user__username', 'username'))
-def profile_edit(request, username, edit_profile_form=SecureEditProfileForm,
+def profile_edit(request, edit_profile_form=SecureEditProfileForm,
                  template_name='userena/profile_form.html', success_url=None,
                  extra_context=None, **kwargs):
     """
@@ -601,7 +602,7 @@ def profile_edit(request, username, edit_profile_form=SecureEditProfileForm,
 
     """
     user = get_object_or_404(get_user_model(),
-        username__iexact=username)
+        username__iexact=request.user.username)
 
     profile = user.get_profile()
 
@@ -622,7 +623,7 @@ def profile_edit(request, username, edit_profile_form=SecureEditProfileForm,
                     fail_silently=True)
 
             if success_url: redirect_to = success_url
-            else: redirect_to = reverse('userena_profile_detail', kwargs={'username': username})
+            else: redirect_to = reverse('userena_profile_detail', kwargs={'username': request.user.username})
             return redirect(redirect_to)
 
     if not extra_context: extra_context = dict()
@@ -733,7 +734,6 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
         template_name=template_name,
         extra_context=extra_context,
         **kwargs)(request)
-
 
 
 
@@ -903,7 +903,7 @@ def rand_x_digit_num(x, leading_zeroes=True):
             return str("%0." + str(x) + "d") % random.randint(0, 10**x-1)
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'(^(0|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(61|061|\+61)[0-9]{9}$)'
+PHONE_REGEX = r'(^(044|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(61|061|\+61)[0-9]{9}$)'
 class WakeUpSignupForm(SignupForm):
     phone = forms.RegexField(   regex=PHONE_REGEX,
                                 max_length=30,

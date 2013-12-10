@@ -107,7 +107,7 @@ urlpatterns = patterns('',
         name='userena_password_change_complete'),
 
     # Edit profile
-    url(r'^(?P<username>[\.\w-]+)/edit/$',
+    url(r'^edit/$',
         account_views.profile_edit,
         name='userena_profile_edit'),
 

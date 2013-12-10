@@ -24,11 +24,11 @@
 <div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">
         <div id="dash-profile" class="inline">
-            <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/{{ request.user.username }}/edit/">
+            <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/edit/">
                 <img src="/media/icons/settings-white.png"/>
             </a>
             <div class="title">{{ request.user.profile.get_full_name_or_username }}</div>
-            <a href="/accounts/{{ request.user.username }}/edit/"></a>
+            <a href="/accounts/edit/"></a>
             <img id="profile-picture" class="wakeup-box-shadow" src="{{ request.user.profile.img_url }}"/>
             <div id="aura-points">Aura Points: {{ aura }}</div>
         </div>

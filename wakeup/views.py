@@ -68,8 +68,10 @@ def flush_transaction():
     transaction.commit()
 
 def home(request):
-    if not request.user.is_authenticated():
+
+    if not request.user.is_authenticated() or request.user.profile.is_verified():
         return render(request, 'index.html')
+
     else:
         data = {}
         data['shares'] = RecordingShare.query_list(request.GET, request)

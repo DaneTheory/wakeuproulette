@@ -631,3 +631,7 @@ article h1 {
     position: absolute;
     z-index: 99;
 }
+
+.profile-img {
+    width: 250px;
+}

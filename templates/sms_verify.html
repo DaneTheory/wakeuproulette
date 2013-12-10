@@ -11,7 +11,8 @@
 <form action="" method="post">
   {% csrf_token %}
   <fieldset>
-    <legend>Please, insert 4-digit verificaton code we have sent you on your phone number.</legend>
+    <legend>Please, insert 4-digit verificaton code we have sent to {{ request.user.profile.phone }}.</legend>
+    <legend>Wrong number? You can edit your phone at your <a href="/accounts/edit/">profile settings</a>.</legend>
     <p>
     <label for="id_code">Code</label> 
     <input class="required" id="id_code" maxlength="4" name="code" type="text" />
