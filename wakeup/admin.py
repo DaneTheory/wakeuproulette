@@ -10,6 +10,7 @@ class CallAdmin(admin.ModelAdmin):
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'alarmon', 'alarm', 'reputation', 'phone', 'gender', 'warnings', 'femalematch', 'malematch', 'any_match', 'recurring', 'is_verified', 'activated']
+    ordering = ('-alarmon', '-alarm')
 
 class MessageVerificationAdmin(admin.ModelAdmin):
     list_display = ['user', 'code', 'verified', 'time_sent', 'time_verified']
