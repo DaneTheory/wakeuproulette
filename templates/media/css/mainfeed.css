@@ -216,10 +216,6 @@ html {
     background: white;
 }
 
-#contacts {
-    width: 25%;
-    min-width: 320px;
-}
 
 /* Contacts */
 .contact {
@@ -544,3 +540,10 @@ html {
     float: right;
 }
 
+
+
+
+#call-history {
+    position: fixed;
+    left: 900px;
+}
