@@ -27,13 +27,13 @@ if settings.PROD:
     # For testing please modify the variables below
     CALL_LIMIT = 60
     WELCOME_LIMIT = 10
-    HOLD_LIMIT = 10
+    HOLD_LIMIT = 20
     TIMEOUT = 20
 
     WAITING_ROOM_MAX = 4
 
     RE_DIAL_LIMIT = 5
-    REDIRECT_LIMIT = 4
+    REDIRECT_LIMIT = 3
     RATING_LIMIT = 3
 
     CONFERENCE_SCHEDULE_DELIMITER = ':'

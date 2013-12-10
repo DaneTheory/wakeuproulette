@@ -10,9 +10,15 @@ from wakeup.tools.toolbox import call_async
 
 
 # Settings Variables
-maxTries = 1
-round = 60
-waitingtime = 60*5
+if settings.PROD:
+    maxTries = 1
+    round = 60
+    waitingtime = 60*5
+
+else:
+    maxTries = 1
+    round = 60
+    waitingtime = 60
 
 
 
