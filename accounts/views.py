@@ -778,7 +778,7 @@ def wakeup_dashboard(request):
     data = {}
 
     data['alarm_time'] = local_time(profile.alarm, request)
-    data['allowed_times'] = [7, 8, 9, 10, 11]
+    data['allowed_times'] = [7, 8, 9, 10, 11, 12]
     i = 0
     for allowed_time in data['allowed_times']:
         data['allowed_times'][i] = local_time(datetime.time(hour=allowed_time, minute=0, second=0), request).hour
