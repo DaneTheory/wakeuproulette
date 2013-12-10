@@ -16,9 +16,9 @@
     <div class="share-data">
         <div title="Aura" class="tooltip share-aura-button">
             {% liked share as already_liked %}
-            <img {% if already_liked %} src="/media/icons/like-white.png" {% else %} src="/media/icons/like-active.png" {% endif %}/><span>{{ share.rating }}</span></div>
-        <div title="Re-wakes" class="tooltip share-rewake-button"><img src="/media/icons/rewakeup-white.png"/>{{ share.shares }}</div>
-        <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-white.png"/><span>{{ share.call.recording.plays }}</span></div>
+            <img {% if already_liked %} src="/media/icons/like-black.png" {% else %} src="/media/icons/like-active.png" {% endif %}/><span>{{ share.rating }}</span></div>
+        <div title="Re-wakes" class="tooltip share-rewake-button"><img src="/media/icons/rewakeup-black.png"/>{{ share.shares }}</div>
+        <div title="Play Count" class="tooltip play-count"><img src="/media/icons/views-black.png"/><span>{{ share.call.recording.plays }}</span></div>
     </div>
     <div class="comments">
         <div id="comments-section">

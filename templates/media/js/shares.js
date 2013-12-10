@@ -79,7 +79,7 @@ var shares = {
                 },
                 success: function(res) {
                     if (!res.error) {
-                        that.find('img').attr("src", "/media/icons/like-white.png")
+                        that.find('img').attr("src", "/media/icons/like-black.png")
                         curr.text(+ parseInt(curr.text(), 10) + 1);
                     }
                 }
