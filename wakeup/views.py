@@ -69,7 +69,7 @@ def flush_transaction():
 
 def home(request):
 
-    if not request.user.is_authenticated() or request.user.profile.is_verified():
+    if not request.user.is_authenticated() or not request.user.profile.is_verified():
         return render(request, 'index.html')
 
     else:
