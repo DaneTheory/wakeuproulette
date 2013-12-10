@@ -174,7 +174,7 @@ html {
 
 
 .alarm-tooltip:hover:after{
-    bottom: 80px;
+    bottom: 200px;
     margin-left: 100px;
     width: 120px;
     background-color: white;

@@ -42,7 +42,7 @@ var dashboard = {
         /*###### ALARM ######## */
         function divClicked() {
             var divHtml = $(this).html();
-            var editableText = $("<input id='dash-alarm-time' class='inline' type='text' />");
+            var editableText = $("<input style='margin-bottom: -40px;' id='dash-alarm-time' class='inline' type='text' />");
             editableText.val(divHtml);
             $(this).replaceWith(editableText);
             editableText.focus();
@@ -63,7 +63,7 @@ var dashboard = {
 
         function editableTextBlurred() {
             var html = $(this).val();
-            var viewableText = $("<div id='dash-alarm-time' class='inline'>");
+            var viewableText = $("<div style='margin-bottom: -40px;' id='dash-alarm-time' class='inline'>");
             viewableText.html(html);
             $(this).replaceWith(viewableText);
             // setup the click event for this new div
