@@ -217,8 +217,52 @@ var dashboard = {
 				}
 			});
 		});
-		
-	}
+
+
+//        Intro Guide
+
+        var introguide = introJs();
+        introguide.setOptions({
+            steps: [
+                {
+                    element: '#profile-picture',
+                    intro: "Hey there! We'd be delighted if you'd like to take a super-quick WakeUp Tour to learn all the awesome features!",
+                    position: 'bottom'
+                },
+                {
+                    element: '#chart',
+                    intro: 'This chart displays your WakeUp activity. WakeUps are in <font color="green">Green</font>, Snoozes are in <font color="blue">Blue</font> and Oversleeps are in <font color="gray">Black</a>.',
+                    position: 'left'
+                },
+                {
+                    element: '#dash-alarm-time',
+                    intro: "You can click your alarm to select the time you'd like to wake up.",
+                    position: 'left'
+                },
+                {
+                    element: '#call-history',
+                    intro: "After each call, you will find your recordings here, which you can then share in your WakeUp diary, Twitter or even Facebook!.",
+                    position: 'left'
+                },
+                {
+                    element: '#wakeup-diary',
+                    intro: "Your WakeUp diary will contain your shared WakeUps, which then people will be able to comment, like and share!.",
+                    position: 'left'
+                },
+                {
+                    element: '#contacts',
+                    intro: "After each call, you will be invited to connect with your WakeUp buddy!.",
+                    position: 'right'
+                },
+                {
+                    element: '#settings',
+                    intro: "Finally, you can tweak your profile in your settings! We wish you An awesome WakeUp conversation!!",
+                    position: 'bottom'
+                }
+            ]
+        });
+//        introguide.start();
+    }
 }
 
 

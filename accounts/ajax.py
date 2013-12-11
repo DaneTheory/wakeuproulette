@@ -1,5 +1,5 @@
 from accounts.models import UserProfile, Contact
-from wakeup.models import Recording, RecordingRating, RecordingComment, RecordingShare
+from wakeup.models import Recording, RecordingRating, RecordingComment, RecordingShare, WakeUp
 import json
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -343,10 +343,36 @@ def load_shares(request):
 @require_POST
 @login_required
 def set_evening(request):
-    checked = request.get("checked", "")
-    date = request.get("date", "")
 
-    print "herer"
+    response = {}
 
-    return "no"
+    try:
+        checked = request.POST.get("checked", "")
+        date = request.POST.get("date", "")
+
+        pythondate = datetime.strptime(date, settings.DATE_FORMAT)
+        ischecked = checked == "true"
+
+        print checked
+        print pythondate, ischecked
+
+        if ischecked:
+
+            if WakeUp.objects.filter(user=request.user, schedule=pythondate).exists(): raise Exception
+
+            w = WakeUp()
+            w.user = request.user
+            w.schedule = pythondate
+            w.save()
+        else:
+            print "deleting w"
+            w = WakeUp.objects.get(user=request.user, schedule=pythondate)
+            w.delete()
+
+
+    except Exception, err:
+        response['error'] = True
+        print err
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
 

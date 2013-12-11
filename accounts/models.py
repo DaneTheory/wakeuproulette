@@ -41,7 +41,7 @@ class Contact(models.Model):
     # TODO: Maybe give the option to the users to specify their groups in their contacts
     type = models.CharField(_("Contact Type"), max_length=1, choices=CONTACT_TYPE_CHOICES, default='A')
 
-    datecreated = models.DateField(_("Date Created"), auto_now_add=True)
+    datecreated = models.DateTimeField(_("Date Created"), auto_now_add=True)
 
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User,unique=True, verbose_name=_('user'),related_name='profile')

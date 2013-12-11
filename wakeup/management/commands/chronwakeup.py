@@ -21,7 +21,7 @@ if settings.PROD:
 else:
     maxTries = 1
     round = 60
-    waitingtime = 60
+    waitingtime = 65
 
 
 @transaction.commit_manually
@@ -35,6 +35,7 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
 
         schedule = datetime.now()
+        emailschedule = schedule
 
         # Round to the nearest X minutes
         discard = timedelta(   minutes=schedule.minute % round,
@@ -90,15 +91,16 @@ class Command(NoArgsCommand):
             # Setting people who didn't answered on the first time to snoozed = True
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
 
-            # sending contact request emails
-            contact_requests = Contact.objects.filter(status='P', user__call__datecreated=schedule)
+            contact_requests = Contact.objects.filter(datecreated__gt=emailschedule).filter(status='P')
             for contact_request in contact_requests:
                 contact_request.user.profile.send_request_contact_email(contact_request.contact)
 
             # sending accepted contact request emails
-            accepted_contacts = Contact.objects.filter(status='A', user__call__datecreated=schedule)
+            accepted_contacts = Contact.objects.filter(datecreated__gt=emailschedule).filter(status='A')
             for accepted_contact in accepted_contacts:
                 accepted_contact.user.profile.send_accept_contact_email(accepted_contact.contact)
+
+            emailschedule = datetime.now()
 
             if not towakeup or tries >= maxTries:
                 break

@@ -9,11 +9,14 @@
 
 <link rel="Stylesheet" media="screen" href="/media/css/reveal.css">
 <script type="text/javascript" src="/media/js/reveal.js"></script>
+<script type="text/javascript" src="/media/js/intro.js"></script>
 
 
 <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
 <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
 <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
+<link rel="Stylesheet" media="screen" href="/media/css/introjs.css">
+
 {% if request.user.profile.white %}
     <link rel="Stylesheet" media="screen" href="/media/css/white-template.css">
 {% else %}
@@ -24,7 +27,7 @@
 <script type="text/javascript" src="/media/js/shares.js"></script>
 <script type="text/javascript" src="/media/js/charts.js"></script>
 <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>
-<script type="text/javascript" src="/media/js/simplemodal.js"></script>
+
 <div id="shares_info" style="display:none;" data-load_on_scroll="0" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}" data-prepend_share_id="#wakeup-diary-box"></div>
 <div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">

@@ -91,6 +91,7 @@ def sms_async(phone, message):
     except Exception, err:
         send_async_mail("Error Phone Verification", "There was an attempt to verify the number " + phone + " but it failed. Err: " + str(err), "wakeuproulette@gmail.com", zip(*settings.ADMINS)[1])
 
+
 def local_date(date, request):
     tz = request.session.get("user_timezone", pytz.utc)
     server_tz = pytz.timezone('Europe/London')

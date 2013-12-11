@@ -83,7 +83,7 @@ def home(request):
         return render(request, 'main_feed.html', data)
 
 def as_date(schedule):
-    return datetime.datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")
+    return datetime.datetime.strptime(schedule, settings.DATE_FORMAT)
 
 def find_match(schedule, call):
     logger.debug("Finding match for: " + call.user.username)
@@ -695,6 +695,8 @@ def waitingRequest(request, username):
 @active_required
 def eveningRoulette(request):
 
+    print request
+
     number_of_evenings = 12
     now_server = timezone.now()
     local_now = local_date(now_server, request)
@@ -710,7 +712,7 @@ def eveningRoulette(request):
         local_schedule = local_date(now_schedule, request)
 
         evening = {
-              'server_time' : now_schedule
+              'server_time' : datetime.datetime.strftime(now_schedule, settings.DATE_FORMAT)
             , 'local_time' : local_schedule
             , 'subscribed' : WakeUp.objects.filter(user=request.user, schedule=now_schedule).exists()
             , 'active_count' : active_alarm
