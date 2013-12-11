@@ -219,49 +219,60 @@ var dashboard = {
 		});
 
 
-//        Intro Guide
-
-        var introguide = introJs();
-        introguide.setOptions({
-            steps: [
-                {
-                    element: '#profile-picture',
-                    intro: "Hey there! We'd be delighted if you'd like to take a super-quick WakeUp Tour to learn all the awesome features!",
-                    position: 'bottom'
-                },
-                {
-                    element: '#chart',
-                    intro: 'This chart displays your WakeUp activity. WakeUps are in <font color="green">Green</font>, Snoozes are in <font color="blue">Blue</font> and Oversleeps are in <font color="gray">Black</a>.',
-                    position: 'left'
-                },
-                {
-                    element: '#dash-alarm-time',
-                    intro: "You can click your alarm to select the time you'd like to wake up.",
-                    position: 'left'
-                },
-                {
-                    element: '#call-history',
-                    intro: "After each call, you will find your recordings here, which you can then share in your WakeUp diary, Twitter or even Facebook!.",
-                    position: 'left'
-                },
-                {
-                    element: '#wakeup-diary',
-                    intro: "Your WakeUp diary will contain your shared WakeUps, which then people will be able to comment, like and share!.",
-                    position: 'left'
-                },
-                {
-                    element: '#contacts',
-                    intro: "After each call, you will be invited to connect with your WakeUp buddy!.",
-                    position: 'right'
-                },
-                {
-                    element: '#settings',
-                    intro: "Finally, you can tweak your profile in your settings! We wish you An awesome WakeUp conversation!!",
-                    position: 'bottom'
-                }
-            ]
+        $('#tutorial').bind('click', function() {
+            var introguide = introJs();
+            introguide.setOptions({
+                steps: [
+                    {
+                        element: '#profile-picture',
+                        intro: "Welcome to WakeUp Roulette! We'd be delighted if you'd like to take a super-quick WakeUp Tour to learn all the awesome features!",
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#dash-alarm-time',
+                        intro: "You can set up your alarm by clicking in the time! When you're ready you can turn it on and you'll be waken up to an Awesome conversation!",
+                        position: 'left'
+                    },
+                    {
+                        element: '#call-history',
+                        intro: "After each call, you will find your recordings here, which you can then share in your WakeUp diary, Twitter or even Facebook!.",
+                        position: 'left'
+                    },
+                    {
+                        element: '#wakeup-diary',
+                        intro: "Your WakeUp diary will contain your shared WakeUps, which then people will be able to comment, like and share!.",
+                        position: 'left'
+                    },
+                    {
+                        element: '#contacts',
+                        intro: "After each call, you will be invited to connect with your WakeUp buddy!.",
+                        position: 'right'
+                    },
+                    {
+                        element: '#dash-stats',
+                        intro: 'This section displays your WakeUp stats. The number of times you wake up immediately, after a snooze, or oversleep will give you aura points!',
+                        position: 'left'
+                    },
+                    {
+                        element: '#all-wakeups-nav-button',
+                        intro: "You can see all your contact's updates in your WakeUp Feed!",
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#nav-evening-roulette-btn',
+                        intro: "If you're up for making someone's day amazing by waking him/her up, you can go to the #EveningRoulette! Remember, it's free and anonymous!",
+                        position: 'bottom'
+                    } ,
+                    {
+                        element: '#tutorial',
+                        intro: "Thank you Very much for your time! You can click these icons for mini-tutorials like this! We wish you an Awesome WakeUp!",
+                        position: 'bottom'
+                    }
+                ]
+            });
+            introguide.start();
+            return false;
         });
-//        introguide.start();
     }
 }
 

@@ -237,6 +237,7 @@ html {
     width: 42%;
     min-width: 830px;
     margin-left: 20px;
+    position: relative;
 }
 
 #main-feed-content-box {
@@ -534,4 +535,16 @@ html {
 #call-history {
     position: fixed;
     left: 900px;
+}
+
+#tutorial {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+#tutorial:hover.tooltip:hover:after {
+    bottom: -50px;
+}
+#tutorial img {
+    width: 30px
 }

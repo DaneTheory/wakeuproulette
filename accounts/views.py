@@ -388,8 +388,7 @@ def signin(request, auth_form=AuthenticationForm,
                         fail_silently=True)
 
                 # Whereto now?
-                redirect_to = redirect_signin_function(
-                    request.REQUEST.get(redirect_field_name), user)
+                redirect_to = '/accounts/dashboard/'
                 return HttpResponseRedirect(redirect_to)
             else:
                 return redirect(reverse('userena_disabled',
@@ -740,7 +739,7 @@ def profile_list(request, page=1, template_name='userena/profile_list.html',
 @login_required
 @secure_required
 @active_required
-def wakeup_dashboard(request):
+def wakeup_dashboard(request, command):
 
 #    deleted = False
 #
@@ -776,6 +775,9 @@ def wakeup_dashboard(request):
     profile = user.profile
 
     data = {}
+
+    # Tutorial requested?
+    data['tutorial'] = command == "tutorial"
 
     data['alarm_time'] = local_time(profile.alarm, request)
     data['allowed_times'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
@@ -839,7 +841,7 @@ def wakeup_profile(request, user, template, data):
 
     call_set = user.call_set.all()
     data['totalcalls'] = call_set.count()
-    data['shares'] = RecordingShare.objects.filter(call__user=user)
+    data['shares'] = RecordingShare.objects.filter(Q(call__user=user) | Q(user=user))
     data['recordings'] = Recording.objects.filter(call__user=user)
     data['recordingplays'] = data['recordings'].aggregate(Sum('plays'))['plays__sum']
     data['recordingaura'] = data['recordings'].aggregate(Sum('rating'))['rating__sum']
@@ -887,7 +889,7 @@ def sms_verify(request):
                 mv.verified = True
                 mv.time_verified = datetime.datetime.now()
                 mv.save()
-                return redirect(reverse('userena_signup_complete', kwargs={'username': request.user.username}))
+                return redirect(reverse('wakeup_call_dashboard', kwargs={'command': "tutorial"}))
             else:
                 error = "The code is incorrect. Please, try again"
     return render(request, 'sms_verify.html', {'error': error})

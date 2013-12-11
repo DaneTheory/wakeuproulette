@@ -7,6 +7,7 @@
 #evening-content {
     width: 850px;
     height: 590px;
+    position: relative;
 
     margin-left: 40px;
     margin-top: 60px;
@@ -61,8 +62,8 @@
 #evening-time {
     font-family: Ostrich;
     font-size: 6em;
-    margin-top: 10px;
-    margin-bottom: 40px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 
@@ -78,7 +79,17 @@
     padding: 0px 20px 20px 20px;
 }
 
-
+#tutorial {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+#tutorial:hover.tooltip:hover:after {
+    bottom: -50px;
+}
+#tutorial img {
+    width: 30px
+}
 
 /*   Evening component   */
 .evening-block {
@@ -123,4 +134,48 @@
     float: left;
     width: 50px;
     text-align: center;
+}
+
+#evening-info-description {
+    color: white;
+    padding: 5px 15px 5px 15px;
+    margin-top: 20px;
+    width: 400px;
+    margin-left: 20px;
+    border-radius: 10px;
+
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+    postition: relative;
+}
+#evening-info-description div {
+    background: black;
+    padding: 50px 50px 50px 50px;
+    color: white;
+    border-radius: 10px;
+    position: absolute;
+    left: 135px;
+    top: 350px;
+
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+    postition: relative;
+}
+#evening-info-description a {
+    color: white;
+}
+
+#evening-info-description:hover {
+    background: black;
+}
+#evening-info-description:hover a {
+    color: #87ceeb;
+}
+#evening-info-description:hover div {
+    color: transparent;
+    background: transparent;
 }

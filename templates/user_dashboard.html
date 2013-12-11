@@ -28,12 +28,23 @@
 <script type="text/javascript" src="/media/js/charts.js"></script>
 <script type="text/javascript" src="/media/js/jquery.timeentry.min.js"></script>
 
+{% if tutorial %}
+<script>
+    $(function() {
+        $('#tutorial').click();
+    })
+</script>
+{% endif %}
+
 <div id="shares_info" style="display:none;" data-load_on_scroll="0" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}" data-prepend_share_id="#wakeup-diary-box"></div>
 <div id="dashboard" onload="startTime();">
     <div id="dash-head" class="wakeup-box-shadow">
         <div id="dash-profile" class="inline">
             <input type="checkbox" id="bulb"/>
             <label id="bulb-icon" for="bulb"></label>
+            <a id="tutorial" href="#" class="tooltip" title="Dashboard Tutorial">
+                <img src="/media/icons/help-black.png"/>
+            </a>
             <a id="settings" class="tooltip" title="Profile Settings" href="/accounts/edit/">
                 {% if request.user.profile.white %}
                     <img src="/media/icons/settings-black.png"/>
@@ -139,7 +150,7 @@
             {% if not shares %}
                 <div id="no-shares">
                     <p>Oh, it seems that you haven't shared any of your calls yet...</p>
-                    <p>You just have to click share in one of your private calls!</p>
+                    <p>You just have to click share in one of your private WakeUps!</p>
                     <img style="width:200px; float: right;" src="/media/icons/right-arrow.gif"/>
                 </div>
             {% else %}

@@ -7,10 +7,13 @@
 
 {% block dashboard %}
 
-    <link rel="Stylesheet" media="screen" href="/media/css/reveal.css">
     <script type="text/javascript" src="/media/js/reveal.js"></script>
+    <script type="text/javascript" src="/media/js/mainfeed.js"></script>
+    <script type="text/javascript" src="/media/js/shares.js"></script>
+    <script type="text/javascript" src="/media/js/intro.js"></script>
 
-
+    <link rel="Stylesheet" media="screen" href="/media/css/introjs.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/reveal.css">
     <link rel="stylesheet" type="text/css" href="/media/css/mainfeed.css">
     <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
 
@@ -20,11 +23,14 @@
         <link rel="Stylesheet" media="screen" href="/media/css/black-template.css">
     {% endif %}
 
-    <script type="text/javascript" src="/media/js/shares.js"></script>
+
 <div id="shares_info" style="display:none;" data-load_on_scroll="1" data-load_shares_url="{% url 'accounts.ajax.load_shares' %}" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}" data-prepend_share_id="#main-feed-content-box"></div>
     <div id="main-feed">
         <div id="dash-body">
             <div id="main-feed-content" class="dash-block wakeup-box-shadow">
+                <a id="tutorial" href="#" class="tooltip" title="Main Feed Mini-Tutorial">
+                    <img src="/media/icons/help-black.png"/>
+                </a>
                 <div class="title">WakeUp Feed</div>
                 <div id="main-feed-content-box">
                     {% if not shares %}

@@ -49,7 +49,9 @@
     <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
     <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
     <link rel="Stylesheet" media="screen" href="/media/css/mainfeed.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/introjs.css">
 
+    <script type="text/javascript" src="/media/js/intro.js"></script>
     <script type="text/javascript" src="/media/js/reveal.js"></script>
     <script type="text/javascript" src="/media/js/shares.js"></script>
     <script type="text/javascript" src="/media/js/main.js"></script>
@@ -84,12 +86,23 @@
 
     <div id="evening-feed">
         <div id="evening-content" class="dash-block wakeup-box-shadow">
+            <a id="tutorial" href="#" class="tooltip" title="Evening Roulette Mini-Tutorial">
+                <img src="/media/icons/help-black.png"/>
+            </a>
             <div class="evening-roulette-title">#EveningRoulette</div>
             <div id="evening-container" class="inline">
                 <div id="evening-info" class="inline">
                     <div class="sub-title">Next Evening Roulette in...</div>
                     <div id="evening-time"></div>
                     <div class="sub-title" class="inline">Are you up for it?</div>
+                    <div id="evening-info-description">
+                        <p>Choose your time and turn the switch on!</p>
+                        <p>At that time, you'll get connected with a sleeping buddy around the world, and will have a chance to wake him/her up!</p>
+                        <p>Calls are made from our central server so your number is totally anonymous!</p>
+                        <p>And the best thing? It's free!</p>
+                        <p>If you'd like to set up your alarm, you can do so in your <a href="/accounts/dashboard">dashboard!</a></p>
+                        <div>Details?</div>
+                    </div>
                 </div>
                 <div id="evening-evenings">
                     {% if request.user.is_authenticated %}

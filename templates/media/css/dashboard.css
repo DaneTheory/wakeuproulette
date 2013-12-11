@@ -11,6 +11,7 @@ html {
 }
 
 
+
 .title {
     width:100%;
 
@@ -33,6 +34,18 @@ html {
 
 #settings img {
     width: 30px;
+}
+
+#tutorial {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+#tutorial:hover.tooltip:hover:after {
+    bottom: -50px;
+}
+#tutorial img {
+    width: 30px
 }
 
 /*####################### Dash-Board HEAD #######################*/
