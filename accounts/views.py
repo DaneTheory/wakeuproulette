@@ -50,7 +50,7 @@ class SecureEditProfileForm(EditProfileForm):
     
     class Meta:
         model = UserProfile
-        fields = ['mugshot', 'phone']
+        fields = ['mugshot', 'phone', 'white']
     
     def __init__(self, *args, **kwargs):
         super (SecureEditProfileForm, self).__init__(*args,**kwargs)

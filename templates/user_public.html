@@ -14,6 +14,11 @@
     <link rel="stylesheet" type="text/css" href="/media/css/dashboard.css">
     <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
     <link rel="Stylesheet" media="screen" href="/media/css/callhistory.css">
+    {% if request.user.profile.white %}
+        <link rel="Stylesheet" media="screen" href="/media/css/white-template.css">
+    {% else %}
+        <link rel="Stylesheet" media="screen" href="/media/css/black-template.css">
+    {% endif %}
 
     <script type="text/javascript" src="/media/js/dashboard.js"></script>
     <script type="text/javascript" src="/media/js/shares.js"></script>

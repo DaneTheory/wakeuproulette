@@ -5,16 +5,20 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from models import Conference, Call, Recording, RecordingShare
+from models import Conference, Call, Recording, RecordingShare, WakeUp
 from django.core.management import call_command
 from django.db import transaction
 from twilio.rest import TwilioRestClient
 from django.conf import settings
-from datetime import datetime, time
+import datetime
 from accounts.models import UserProfile
 from django.utils import timezone
 import os
-from wakeup.tools.toolbox import local_time
+from wakeup.tools.toolbox import local_date, local_time
+
+from django.contrib.auth.decorators import login_required
+from userena.decorators import secure_required
+from accounts.decorators import active_required
 
 from wakeup.tools.toolbox import send_async_mail, call_async
 
@@ -79,7 +83,7 @@ def home(request):
         return render(request, 'main_feed.html', data)
 
 def as_date(schedule):
-    return datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")
+    return datetime.datetime.strptime(schedule, "%d:%m:%y:%H:%M:%S")
 
 def find_match(schedule, call):
     logger.debug("Finding match for: " + call.user.username)
@@ -686,11 +690,39 @@ def waitingRequest(request, username):
     data = render_to_response("waitingresponse.xml",params)
     return HttpResponse(data, mimetype="application/xml")
 
-
+@login_required
+@secure_required
+@active_required
 def eveningRoulette(request):
-    evening_roulette_time = local_time(time(20, 0, 0), request)
+
+    number_of_evenings = 12
     now_server = timezone.now()
-    return render(request, 'eveningroulette.html', {'evening_roulette_time': evening_roulette_time, 'server_hour': now_server.hour, 'server_minute': now_server.minute })
+    local_now = local_date(now_server, request)
+    now_schedule = now_server.replace(minute=0, second=0, microsecond=0)
+
+    evenings = []
+
+    for time in xrange(number_of_evenings):
+        now_schedule = now_schedule + datetime.timedelta(seconds=60*60)
+
+        active_alarm = UserProfile.objects.filter(alarmon=True, alarm=now_schedule.time()).count()
+
+        local_schedule = local_date(now_schedule, request)
+
+        evening = {
+              'server_time' : now_schedule
+            , 'local_time' : local_schedule
+            , 'subscribed' : WakeUp.objects.filter(user=request.user, schedule=now_schedule).exists()
+            , 'active_count' : active_alarm
+        }
+
+        evenings.append(evening)
+
+
+    recordings = Recording.objects.filter(call__user=request.user)
+
+    print evenings
+    return render(request, 'eveningroulette.html', {'evenings': evenings, 'recordings': recordings })
 
 
 def shared_wakeup(request, shareid):

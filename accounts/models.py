@@ -77,7 +77,7 @@ class UserProfile(UserenaBaseProfile):
 
     recurring = models.BooleanField(default=False)
 
-    white = models.BooleanField(default=True)
+    white = models.BooleanField(_('Light Theme'), default=True)
 
     ######## CONTACTS ########
 

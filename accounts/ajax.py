@@ -343,3 +343,11 @@ def load_shares(request):
         response['html'] += render_to_string("layouts/recording-shares.html", {"share": share, 'request': request})
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+
+
+# WakeUps
+@require_POST
+@login_required
+def set_evening(request):
+    return
+

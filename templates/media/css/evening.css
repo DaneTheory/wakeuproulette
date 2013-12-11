@@ -1,0 +1,120 @@
+#evening-feed {
+    width: 100%;
+    position: relative;
+    clear: both;
+}
+
+#evening-content {
+    width: 850px;
+    height: 590px;
+
+    margin-left: 40px;
+    margin-top: 60px;
+
+}
+
+#call-history {
+    position: fixed;
+    left: 900px;
+    height: 590px;
+    top: 60px;
+}
+
+.evening-roulette-title {
+    text-align: center;
+    font-size: 3.5em;
+    font-family: Franchise;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.switch {
+    width: 60px;
+    float: left;
+}
+.evening-info {
+    width: 120px;
+    float: left
+}
+
+.evening-block {
+    clear: both;
+}
+
+.inline {
+    float: left;
+}
+
+#evening-container {
+    width: 100%;
+}
+
+#evening-info {
+    height: 500px;
+    float: left;
+    width: 50%;
+}
+
+#evening-evenings {
+    float: left;
+    height: 450px;
+    margin-top: 10px;
+    width: 44%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0px 20px 20px 20px;
+}
+
+
+
+/*   Evening component   */
+.evening-block {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 70px;
+    border-radius: 10px;
+
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+}
+.evening-block:hover {
+    background: black;
+    color: white;
+}
+.switch {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.evening-components {
+    background: transparent;
+    margin-top: 20px;
+}
+
+.evening-time {
+    font-size: 1.5em;
+    font-family: geosans;
+    margin-left: 50px;
+    float: left;
+    width: 100px
+}
+.evening-component-title {
+    font-size: 1.5em;
+    font-family: geosans;
+    margin-left: 0px;
+    float: left;
+}
+.evening-active {
+    font-size: 1.5em;
+    font-family: geosans;
+    float: left;
+    width: 50px;
+    text-align: center;
+}
+
+
+#evening-time {
+    font-family: Ostrich;
+    font-size: 7em;
+}

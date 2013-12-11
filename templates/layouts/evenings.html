@@ -1,0 +1,18 @@
+{% load wakeup_tags %}
+<div class="evening-block">
+    <div class="switch" class="wakeup-box-shadow inline" >
+        <input id="myonoffswitch{{ forloop.counter }}" type="checkbox" name="alarmon" class="onoffswitch-checkbox" {% if evening.subscribed %}checked{% endif %}>
+        <label class="onoffswitch-label" for="myonoffswitch{{ forloop.counter }}">
+            <div class="onoffswitch-inner">
+                <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+                <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+            </div>
+        </label>
+    </div>
+
+    <div class="evening-components inline" data-contact_id="{{ contact.id }}" data-server_time="{{ evening.server_time }}">
+        <div class="evening-time">{{ evening.local_time | time }}</div>
+        <div class="evening-component-title">Sleeping:</div>
+        <div class="evening-active">{{ evening.active_count }}</div>
+    </div>
+</div>

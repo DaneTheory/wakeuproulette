@@ -4,21 +4,11 @@ html {
 
 #main-feed {
     width: 100%;
-    color: black;
     padding-top: 30px;
 
     position: relative;
 
     font-family: NexaBold;
-}
-
-
-.wakeup-box-shadow {
-    box-shadow:
-        0 0 0 2px black,
-        0 0 0 5px white;
-
-    background: black;
 }
 
 .title {
@@ -212,8 +202,6 @@ html {
 .dash-block {
     text-align: center;
     float: left;
-
-    background: white;
 }
 
 

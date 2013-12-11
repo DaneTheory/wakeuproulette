@@ -1,0 +1,258 @@
+{% extends 'userena/base_userena.html' %}
+
+{% block content %}
+
+    <link rel="Stylesheet" media="screen" href="/media/css/switch.css">
+    <link rel="Stylesheet" media="screen" href="/media/css/dashboard.css">
+
+    <script>
+        $(function() {
+
+
+            function startCountDown()
+            {
+                var now = new Date();
+                now.setHours($("#evening_time").attr("data-server_hour"));
+                now.setMinutes($("#evening_time").attr("data-server_minute"));
+                
+                var next = new Date();
+                
+                if (now.getHours() > 19)
+                    next.setDate(next.getDate()+1);
+
+                next.setHours(20);
+                next.setMinutes(0);
+                next.setSeconds(0);
+                next.setMilliseconds(0);
+
+                var dist = next.getTime() - now.getTime();
+
+                var s = Math.floor((dist / 1000) % 60);
+                var m = Math.floor((dist / (1000*60)) % 60);
+                var h = Math.floor((dist / (1000*60*60)) % 24);
+
+                h=checkTime(h);
+                m=checkTime(m);
+                s=checkTime(s);
+
+                $('#daytime-time').text(h+":"+m+":"+s);
+                t=setTimeout(function(){startCountDown()},500);
+            }
+
+            function checkTime(i)
+            {
+                if (i<10)
+                {
+                    i="0" + i;
+                }
+                return i;
+            }
+
+            startCountDown();
+
+            $('#daytime-switch').bind('click', function(e) {
+                if(e.target.innerHTML == "") {
+                    var checked = $('#myonoffswitch').is(':checked');
+
+                    console.log(checked);
+                    console.log($('#dash-alarm').attr("data-set_alarm"));
+
+                    $.ajax({
+                        url: $('#dash-alarm').attr("data-set_alarm"),
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            onoff: checked,
+                            alarm_time : $("#evening_time").html()
+                        },
+                        success: function(res) {
+                            if (!res.error) {
+
+                            }
+                        }
+                    });
+                }
+
+                function connect_gender(men, women) {
+                    $.ajax({
+                        url: $('#dash-interests').attr("data-connect_gender_url"),
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            men: men,
+                            women: women
+                        },
+                        success: function(res) {
+
+                        }
+                    });
+                }
+
+                $("#connect_men").bind("click", function(e) {
+                    if ($("#connect_women").prop('checked')) {
+                        connect_gender(true, false);
+                    }
+                    else {
+                        e.preventDefault();
+                    }
+                });
+
+                $("#connect_women").bind("click", function(e) {
+                    if ($("#connect_men").prop('checked')) {
+                        connect_gender(false, true);
+                    }
+                    else {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+        })();
+
+    </script>
+
+    <style>
+        html {
+            height: 600px;
+        }
+        body {
+            height: 600px;
+        }
+
+        #content-wrapper {
+            padding-top: 0px;
+            margin-top: 0px;
+            width: 750px;
+            height: 520px;
+            padding: 30px 30px 30px 30px;
+            margin-top: 60px;
+            font-family: helvetica;
+        }
+
+        .title {
+            text-align: center;
+            font-family: Ostrich;
+            font-size: 3em;
+            font-weight: normal;
+            margin-bottom: 0px;
+        }
+
+        #daytime-description {
+            width: 49%;
+            height: 400px;
+            font-size: 0.6em;
+            line-height: 1.2em;
+            padding: 10px 10px 10px 10px
+        }
+        #daytime-container {
+            width: 47%;
+            padding-top: 20px;
+        }
+
+        .sub-title {
+            font-size: 0.7em;
+            text-align: center;
+            clear: both;
+        }
+        #time-container {
+            margin: auto auto;
+            text-align: center;
+            clear: both;
+            padding-top: 15px;
+        }
+        #daytime-time {
+            clear: both;
+
+            font-family: Ostrich;
+            margin-top: 5px;
+            font-size: 4em;
+        }
+        #dash-alarm, #dash-alarm-time {
+            display: none;
+            visibility: hidden;
+            clear: both;
+        }
+        #daytime-switch {
+            margin-top: 30px;
+            margin-left: 150px;
+            margin-bottom: 40px;
+            -webkit-transform:scale(1.5); /*Webkit:Scale down image to 0.8x original size*/
+            -moz-transform:scale(1.5); /*Mozilla scale version*/
+            -o-transform:scale(1.5);
+        }
+
+        #dash-interests {
+            padding-top: 30px;
+        }
+        #daytime-connect {
+            padding-left: 15px;
+            font-size: .7em;
+        }
+
+        {#      FIREFOX RENDER#}
+        @-moz-document url-prefix() {
+            #daytime-time {
+                margin-top: -20px;
+            }
+        }
+
+    </style>
+
+    <div class="content-wrapper">
+        <h1 class="title">Evening Roulette</h1>
+        <div id="daytime-description" class="inline">
+            <p>To celebrate our beta launch, we'll have Evening WakeUp runs at <strong><span id="evening_time" data-server_hour="{{ server_hour }}" data-server_minute="{{ server_minute }}">{{ evening_roulette_time|date:"H:i" }}</span> (Local Time) every day!</strong></p>
+            <p>You just have to log in, turn on the switch on the right, and you're good to go!</p>
+            <p>At 8:00pm you will receive a call from our server, and will get connected for 60 seconds with an aweosme person!</p>
+            <p>If you enjoy the evening roulette you can turn on your WakeUp alarm in your <a href="/accounts/dashboard/">Dashboard!</a></p>
+            <p>We wish you all an awesome conversation!</p>
+        </div>
+        <div id="daytime-container" class="inline">
+
+            {% if request.user.is_authenticated %}
+                {% if request.user.messageverification.verified %}
+                <div class="sub-title">Are you up for it?</div>
+                <div id="daytime-switch" class="inline wakeup-box-shadow" >
+                    <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" {% if request.user.profile.alarmon and request.user.profile.alarm.hour == 20 %}checked{% endif %}>
+                    <label class="onoffswitch-label" for="myonoffswitch">
+                        <div class="onoffswitch-inner">
+                            <div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+                            <div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+                        </div>
+                    </label>
+                </div>
+                <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ request.user.profile.get_alarm_time }}</div>
+                <div id="dash-interests" data-connect_gender_url="{% url 'accounts.ajax.connect_gender' %}" data-accept_request_url="{% url 'accounts.ajax.accept_request' %}" data-ignore_request_url="{% url 'accounts.ajax.ignore_request' %}">
+                    <div class="sub-title">Connect me with:</div>
+                    <div id="daytime-connect" style="margin-top:10px;margin-left:50px; ">
+                        <span class="inline">Men:</span>
+                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
+                            <input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
+                            <label for="connect_men"></label>
+                        </div>
+                        <span class="inline">Women:</span>
+                        <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
+                            <input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
+                            <label for="connect_women"></label>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div style="margin-top:30px;" class="sub-title">Please verify your phone.</div>
+                <div style="margin-bottom: 100px; width: 250px;" id="vactrack-buttons">
+                    <a style="width: 200px; height: 23px;" class="daytime-btn" href="/accounts/sms_verify/">Verify now</a>
+                </div>
+                {% endif %}
+            {% else %}
+            <div style="margin-top:30px;" class="sub-title">Are you up for it?</div>
+            <div style="margin-bottom: 100px;" id="vactrack-buttons">
+                <a style="height: 23px;" class="daytime-btn" href="/accounts/signup/">SignUp</a>
+                <a style="height: 23px;" class="daytime-btn" href="/accounts/signin/">Login</a>
+            </div>
+            {% endif %}
+            <div id="time-container">
+                <div class="sub-title">Next Evening Roulette in...</div>
+                <div id="daytime-time"></div>
+            </div>
+        </div>
+{% endblock %}

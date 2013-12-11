@@ -148,7 +148,7 @@ class WakeUp(models.Model):
 
     schedule = models.DateTimeField(_("WakeUpper Time"))
 
-    datecreated = models.DateTimeField(_("WakeUpper Time"), auto_now=True)
+    datecreated = models.DateTimeField(auto_now=True)
 
 
 
