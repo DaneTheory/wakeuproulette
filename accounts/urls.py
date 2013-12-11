@@ -11,7 +11,8 @@ from accounts import ajax as account_ajax
 from userena import settings as userena_settings
 
 urlpatterns = patterns('',
-                       
+
+    url(r'^set_evening/$', account_ajax.set_evening, name='set_evening'),
     url(r'^accept_request/$', account_ajax.accept_request, name='accept_request'),
     url(r'^ignore_request/$', account_ajax.ignore_request, name='ignore_request'),
     url(r'^connect_gender/$', account_ajax.connect_gender, name='connect_gender'),
@@ -25,7 +26,6 @@ urlpatterns = patterns('',
     url(r'^set_timezone/$', account_ajax.set_timezone, name='set_timezone'),
     url(r'^load_shares/$', account_ajax.load_shares, name='load_shares'),
     url(r'^set_recurrent/$', account_ajax.set_recurrent, name='set_recurrent'),
-    url(r'^set_evening/$', account_ajax.set_evening, name='set_evening'),
     # View Profiles
     url(r'^dashboard/$', account_views.wakeup_dashboard, name='wakeup_call_dashboard'),
     url(r'^public/(?P<username>[\.\w-]+)/$', account_views.wakeup_public, name='wake_up_public'),

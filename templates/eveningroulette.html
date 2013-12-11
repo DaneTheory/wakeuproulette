@@ -52,6 +52,7 @@
 
     <script type="text/javascript" src="/media/js/reveal.js"></script>
     <script type="text/javascript" src="/media/js/shares.js"></script>
+    <script type="text/javascript" src="/media/js/eveningroulette.js"></script>
 
     {% if request.user.profile.white %}
         <link rel="Stylesheet" media="screen" href="/media/css/white-template.css">
@@ -62,7 +63,7 @@
 
 
     <div id="shares_info" style="display:none;" data-load_on_scroll="0" data-load_shares_url="{% url 'accounts.ajax.load_shares' %}" data-share_recording_url="{% url 'accounts.ajax.share_recording' %}" data-insert_comment="{% url 'accounts.ajax.insert_comment' %}" data-increment_share_aura_url="{% url 'accounts.ajax.increment_share_aura' %}" data-increment_rec_rewake_url="{% url 'accounts.ajax.increment_rec_rewake' %}" data-increment_rec_play_url="{% url 'accounts.ajax.increment_rec_play' %}" data-prepend_share_id=""></div>
-    <div id="evening_info" style="display:none;" data-set_wakeup_url="{% url 'accounts.ajax.set_evening' %}"></div>
+    <div id="evening_info" style="display:none;" data-set_evening_url="{% url 'accounts.ajax.set_evening' %}"></div>
 
     <div id="call-history" class="dash-block wakeup-box-shadow">
         <div class="title">My Call History</div>
@@ -102,10 +103,10 @@
                             </div>
                         {% endif %}
                     {% else %}
-                        <div style="margin-top:30px;" class="sub-title">Are you up for it?</div>
+                        <div style="margin-top:30px;" class="sub-title">Please sign in, or sign up</div>
                         <div style="margin-bottom: 100px;" id="vactrack-buttons">
                             <a style="height: 23px;" class="daytime-btn" href="/accounts/signup/">SignUp</a>
-                            <a style="height: 23px;" class="daytime-btn" href="/accounts/signin/">Login</a>
+                            <a style="height: 23px;" class="daytime-btn" href="/accounts/signin/">SignIn</a>
                         </div>
                     {% endif %}
                 </div>

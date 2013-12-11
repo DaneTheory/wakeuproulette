@@ -51,9 +51,22 @@
 
 #evening-info {
     height: 500px;
+    margin-top: 30px;
     float: left;
     width: 50%;
+    font-size: 1.1em;
+    font-family: nexabold;
+
 }
+#evening-time {
+    font-family: Ostrich;
+    font-size: 6em;
+    margin-top: 10px;
+    margin-bottom: 40px;
+}
+
+
+
 
 #evening-evenings {
     float: left;
@@ -91,30 +104,23 @@
     background: transparent;
     margin-top: 20px;
 }
-
-.evening-time {
-    font-size: 1.5em;
-    font-family: geosans;
-    margin-left: 50px;
-    float: left;
-    width: 100px
-}
 .evening-component-title {
     font-size: 1.5em;
     font-family: geosans;
-    margin-left: 0px;
+    margin-left: 20px;
     float: left;
 }
-.evening-active {
+.evening-component-time {
+    font-size: 1.5em;
+    font-family: geosans;
+    margin-left: 30px;
+    float: left;
+    width: 100px
+}
+.evening-component-active {
     font-size: 1.5em;
     font-family: geosans;
     float: left;
     width: 50px;
     text-align: center;
-}
-
-
-#evening-time {
-    font-family: Ostrich;
-    font-size: 7em;
 }

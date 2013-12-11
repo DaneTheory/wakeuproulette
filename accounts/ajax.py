@@ -133,22 +133,17 @@ def insert_comment(request):
 @require_POST
 @login_required
 def set_alarm(request):
-    print "here!!"
     onoff = request.POST.get("onoff", "")
     alarm_time = request.POST.get("alarm_time", "")
     response = {};
 
-    print "onoff:",onoff
-    #alarm_time = "23:59"
     
     struct_time = datetime.strptime(alarm_time, "%H:%M")
-    print struct_time
-    
+
     request.user.profile.alarmon = onoff == "true"
     request.user.profile.alarm = global_time(time(struct_time.hour, struct_time.minute, 0), request)
     
-    print request.user.profile.alarm
-    
+
     request.user.profile.save()
     request.user.save()
 
@@ -282,7 +277,6 @@ def share_recording(request):
     try:
         recording = Recording.objects.get(id=rec_id)
         call = recording.call_set.exclude(user=request.user)[0]
-        print call
 
         if recording.privacy != 'P':
             raise Exception
@@ -349,5 +343,10 @@ def load_shares(request):
 @require_POST
 @login_required
 def set_evening(request):
-    return
+    checked = request.get("checked", "")
+    date = request.get("date", "")
+
+    print "herer"
+
+    return "no"
 

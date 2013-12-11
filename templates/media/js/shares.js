@@ -153,7 +153,6 @@ var shares = {
         $('#submit-share-btn').bind('click', function() {
             idx = $('#share-modal-audio').attr('idx');
             body = $('#share-modal-text').val();
-            console.log($('#shares_info').attr('data-prepend_share_id'))
 
             $.ajax({
                 url: shares_info.attr("data-share_recording_url"),

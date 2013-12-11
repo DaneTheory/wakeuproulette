@@ -10,9 +10,9 @@
         </label>
     </div>
 
-    <div class="evening-components inline" data-contact_id="{{ contact.id }}" data-server_time="{{ evening.server_time }}">
-        <div class="evening-time">{{ evening.local_time | time }}</div>
-        <div class="evening-component-title">Sleeping:</div>
-        <div class="evening-active">{{ evening.active_count }}</div>
+    <div class="evening-components inline" data-server_time="{{ evening.server_time }}">
+        <div class="evening-component-time">{{ evening.local_time | time }}</div>
+        <div class="evening-component-title">Sleepers:</div>
+        <div class="evening-component-active">{{ evening.active_count }}</div>
     </div>
 </div>

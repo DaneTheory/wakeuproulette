@@ -721,7 +721,7 @@ def eveningRoulette(request):
 
     recordings = Recording.objects.filter(call__user=request.user)
 
-    print evenings
+    print "we are here!"
     return render(request, 'eveningroulette.html', {'evenings': evenings, 'recordings': recordings })
 
 
