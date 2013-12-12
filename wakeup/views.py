@@ -157,6 +157,7 @@ def get_active_waiting_room(schedule):
 
 def send_to_conference_room(call, schedule, match, initial=False):
 
+    logger.debug("Sending " + call.user.username + " to conference room with: " + match.user.username + ". Initial: " + initial)
     # Check if the match is still on the phone - if not, mark match as not completed and try to find him a match
     flush_transaction()
     match.reload()
@@ -187,7 +188,6 @@ def send_to_waiting_room(timelimit, schedule, username, gather=None, say=None):
                                                     , 'waiturl' : '/waitingrequest/' + username
                                                     , 'beep' : False })
 
-# TODO Ensure mutually exclusive transactions - once there was a deadlock, idk why
 # This method needs to be atomic
 @transaction.commit_on_success
 def match_or_send_to_waiting_room(call, schedule):
@@ -549,6 +549,8 @@ def ratingRequest(request, schedule):
 
 # TODO Make sure that there are no bugs due to not locking this function for transactions
 @csrf_exempt
+# This method needs to be atomic so that recordings are stored succesfully and are not overwritten
+@transaction.commit_on_success
 def finishRequest(request, schedule):
 
     post = request.POST
@@ -579,6 +581,8 @@ def finishRequest(request, schedule):
         if not rURL or not rDuration:
             # TODO Handle this error, as this it twilio error [Log]
             logger.error("[Error in Finish Request - " + schedule + " - "+phone+"] No recording in Twilio POST!" )
+        else:
+            logger.debug("[Finish Request] Perfect, got recording! Duration: " + rDuration + ".")
 
 
         # Create the recording if it doesn't exists, otherwise, update the recording values
