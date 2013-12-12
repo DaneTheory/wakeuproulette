@@ -382,6 +382,7 @@ def answerCallback(request, schedule):
             wait_before_call = 0
 
             if post['CallStatus'] == 'failed':
+                logger.log("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + CFAIL_WAITgi + " seconds")
                 wait_before_call = CFAIL_WAIT
 
             call_async(phone, confurl, fallbackurl, noanswerurl, wait=wait_before_call)
