@@ -165,6 +165,15 @@ a:target {
     transition: font-size 0.2s linear;
 }
 
+
+#nav-evening-roulette-btn {
+
+}
+#nav-evening-roulette-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+
 #nav-logged {
     position: absolute;
     top: 10px;
@@ -173,39 +182,16 @@ a:target {
     font-size: 1.9em;
 }
 
-#nav-logged a:hover {
-    color: white;
-}
-
-#nav-logged b {
-    padding: 0px 20px;
-}
-
-#nav-buttons {
-    position: absolute;
-    right: 0px;
-    top: 2px;
-    margin: auto auto;
-    padding: 0px;
-    list-style-type: none;
-    width: 260px;
-}
-
-
-#nav-buttons a {
-    float: left;
+#nav-logged a{
+    margin-top: -8px;
     margin-left: 10px;
-    display: block;
+    padding-top: 0px;
+    font-size: 25px;
+    height: 23px;
+    background: rgba(0, 0, 0, 0);
+    font-family: geosans;
     width: 100px;
-    padding: 5px 5px;
-    font-family:Arial, sans-serif;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
-    text-align:center;
-    background: transparent;
-    border: 1px solid;
+
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     -o-border-radius: 10px;
@@ -216,12 +202,10 @@ a:target {
     transition: background 0.5s linear;
 }
 
-#nav-buttons a:hover {
-    background: rgba(255, 255, 255, .8);
-    font-size: 1.2em;
+#nav-logged a:hover {
     color: black;
+    background-color: white;
 }
-
 
 
 #home-body {

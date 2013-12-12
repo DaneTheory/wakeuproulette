@@ -27,7 +27,6 @@
 	}
 
 	$(window).scroll(parallax);
-
 })();
 
 

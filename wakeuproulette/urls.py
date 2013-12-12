@@ -28,7 +28,6 @@ urlpatterns = patterns('',
     #    url(r'newsletter/', views.newsletter, name='newsletter'),
     url(r'^sharedwakeup/(?P<shareid>\d+)/$', views.shared_wakeup, name='shared_wakeup'),
     url(r'^beta/', views.beta, name='beta'),
-    url(r'^dayrun/', views.eveningRoulette, name='evening' ),
     url(r'^evening/', views.eveningRoulette, name='evening' ),
 
     url(r'^survey/', views.survey, name='survey'),

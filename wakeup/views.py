@@ -81,10 +81,13 @@ def home(request):
         return render(request, 'index.html')
 
     else:
-        data = {}
-        data['shares'] = RecordingShare.query_list(request.GET, request)
-        data['recordings'] = Recording.objects.filter(call__user=request.user)
-        return render(request, 'main_feed.html', data)
+        return redirect(reverse("wakeup_call_dashboard", kwargs={ "command" : ""}))
+
+#    else:
+#        data = {}
+#        data['shares'] = RecordingShare.query_list(request.GET, request)
+#        data['recordings'] = Recording.objects.filter(call__user=request.user)
+#        return render(request, 'main_feed.html', data)
 
 def as_date(schedule):
     return datetime.datetime.strptime(schedule, settings.DATE_FORMAT)

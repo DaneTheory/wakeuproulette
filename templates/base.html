@@ -43,7 +43,6 @@
     <div class="social-media">
         <a href="http://twitter.com/wakeuproulette" class="social-media-twitter">Tweet</a>
         <a href="http://facebook.com/wakeuproulette" class="social-media-facebook">Like</a>
-        <a id="nav-evening-roulette-btn" class="wur-btn" href="/evening/">#EveningRoulette</a>
 {#        <a href="/newsletter" class="newsletter">#}
 {#            Newsletter#}
 {#        </a>#}
@@ -58,14 +57,14 @@
     <div id="usersection">
         {% if user.is_authenticated %}
             <span id="nav-logged">
-                <a id="all-wakeups-nav-button"  class="simplebutton" href="/">All WakeUps</a>
-                <a id="dashboard-nav-btn" style="padding-left: 20px"  class="simplebutton" href="/accounts/dashboard/">My Dashboard</a>
-                <a style="color: white; padding-left: 20px" class="simplebutton" href="/accounts/signout/">Sign Out</a>
+                <a id="all-wakeups-nav-button"  class="wur-btn" href="/evening">Evening</a>
+                <a id="dashboard-nav-btn"  class="wur-btn" href="/accounts/dashboard/">Morning</a>
+                <a style="width: 50px; margin-left: 30px; margin-right: 10px" class="wur-btn" href="/accounts/signout/">Exit</a>
             </span>
         {% else %}
-            <span id="nav-buttons">
-                <a href="/accounts/signup/">Sign Up</a>
-                <a href="/accounts/signin/">Log In</a>
+            <span id="nav-logged">
+                <a href="/accounts/signup/" class="wur-btn">Sign Up</a>
+                <a href="/accounts/signin/" class="wur-btn">Log In</a>
             </span>
         {% endif %}
     </div>
