@@ -333,7 +333,6 @@ def answerCallback(request, schedule):
 
         # Resetting all wakeup flags
         call.retries = 0
-        call.completed = True
         if 'CallDuration' in post: call.callduration = post['CallDuration']
         call.save()
 
@@ -367,7 +366,6 @@ def answerCallback(request, schedule):
 
             # Re-setting redial count
             call.retries = 0
-            call.completed = True
             call.save()
 
         elif not call.answered:
