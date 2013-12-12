@@ -114,22 +114,20 @@
 .evening-components {
     background: transparent;
     margin-top: 20px;
+    font-size: 1.2em;
 }
 .evening-component-title {
-    font-size: 1.5em;
     font-family: geosans;
-    margin-left: 20px;
+    margin-left: 5px;
     float: left;
 }
 .evening-component-time {
-    font-size: 1.5em;
     font-family: geosans;
-    margin-left: 30px;
+    margin-left: 5px;
     float: left;
     width: 100px
 }
 .evening-component-active {
-    font-size: 1.5em;
     font-family: geosans;
     float: left;
     width: 50px;
