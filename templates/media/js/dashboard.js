@@ -255,11 +255,6 @@ var dashboard = {
                     },
                     {
                         element: '#all-wakeups-nav-button',
-                        intro: "You can see all your contact's updates in your WakeUp Feed!",
-                        position: 'bottom'
-                    },
-                    {
-                        element: '#nav-evening-roulette-btn',
                         intro: "If you're up for making someone's day amazing by waking him/her up, you can go to the #EveningRoulette! Remember, it's free and anonymous!",
                         position: 'bottom'
                     } ,

@@ -65,7 +65,7 @@ html {
 /* Dash Profile */
 
 #dash-profile {
-    width: 25%;
+    width: 33.3%;
     height: 100%;
 
     text-align: center;
@@ -87,17 +87,15 @@ html {
 }
 
 #dash-stats {
-    width: 50%;
+    width: 33.3%;
     height: 100%;
     text-align: center;
     position: relative;
 }
 
 #global-stats {
-    width: 200px;
-
-    margin-left: 80px;
-    margin-top: 30px;
+    margin: auto auto;
+    width: 140px;
 }
 
 #global-stats * {
@@ -109,26 +107,29 @@ html {
 }
 
 #chart {
-    height: 200px;
+    margin-bottom: -10px;
+    height: 180px;
     width: 400px;
 
     position: absolute;
-    bottom: 20px;
-    right: 0px;
+    bottom: 0px;
+    right: 40px;
 }
 
 #dash-settings {
-    width: 25%;
+    width: 33%;
     text-align: center;
     position: relative;
 }
 
 #dash-time {
-
-    padding: 40px 10px 10px 40px;
     text-align: left;
-    height: 110px;
+    height: 120px;
+    padding-top: 30px;
 
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 
 
     font-family: Ostrich;
@@ -137,9 +138,9 @@ html {
 
 #dash-alarm {
     font-family: Ostrich;
-    font-size: 3.3em;
+    font-size: 5em;
 
-    padding: 0px 5px 0px 10px;
+    padding: 0px 20px 0px 60px;
 }
 
 #public-dash-alarm {
@@ -152,18 +153,24 @@ html {
 
 #dash-alarm-time {
     font-family: Ostrich;
-    font-size: 3.3em;
+    font-size: 5em;
     width: 80px;
     height: 40px;
 
     margin-top: 0px;
 }
 
+
+
 #switch {
     border: solid black;
-    margin-top: 0px;
-    margin-left: 20px;
+    margin-top: 10px;
+    margin-left: -10px;
     width: 60px;
+
+    transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
 }
 
 #dash-interests {

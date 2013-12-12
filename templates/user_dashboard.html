@@ -57,33 +57,9 @@
             <img id="profile-picture" class="wakeup-box-shadow" src="{{ request.user.profile.img_url }}"/>
             <div id="aura-points">Aura Points: {{ aura }}</div>
         </div>
-        <div id="dash-stats" class="inline">
-            <div id="dash-stats-title" class="title">WakeUp Stats</div>
-            <table id="global-stats">
-                <tr>
-                    <td>Total WakeUps:</td>
-                    <td>{{ totalcalls }}</td>
-                </tr>
-                <tr>
-                    <td>Talk Time:</td>
-                    <td>{{ recordingduration }}</td>
-                </tr>
-                <tr>
-                    <td>Call Aura:</td>
-                    <td>{{ request.user.profile.reputation }}</td>
-                </tr>
-                <tr>
-                    <td>Recording Plays:</td>
-                    <td>{{ recordingplays }}</td>
-                </tr>
-                <tr>
-                    <td>Recording Aura:</td>
-                    <td>{{ recordingaura }}</td>
-                </tr>
-            </table>
-            <div id="chart"></div>
-        </div>
-        <div id="dash-settings" class="inline tooltip alarm-tooltip" title="Click alarm time">
+
+
+        <div id="dash-settings" style="height:300px; "class="inline tooltip alarm-tooltip" title="Click alarm time">
             <div id="dash-time"></div>
             <div id="switch" class="inline wakeup-box-shadow" >
                 <input id="myonoffswitch" type="checkbox" name="alarmon" class="onoffswitch-checkbox" {% if request.user.profile.alarmon %}checked{% endif %}>
@@ -95,33 +71,75 @@
                 </label>
             </div>
             {% for allowed_time in allowed_times %}
-            	<span style="display:none;" class="allowed_time" data-time="{{ allowed_time }}"></span>
+                <span style="display:none;" class="allowed_time" data-time="{{ allowed_time }}"></span>
             {% endfor %}
             <div id="dash-alarm" class="inline" data-set_alarm="{% url 'accounts.ajax.set_alarm' %}">Alarm:</div> <div id="dash-alarm-time" class="inline">{{ alarm_time|date:"H:i" }}</div>
-			<div id="dash-interests">
-				<span class="inline" style="float:right;position:relative;right:60px;">Recurr:</span>
-				<div class="squaredTwo" style="position:relative;top:-25px;left:0px;margin-right:20px;margin-bottom:0px;">
-		  			<input type="checkbox" value="None" id="recurrent" data-set_recurrent_url="{% url 'accounts.ajax.set_recurrent' %}" name="check" {% if request.user.profile.recurring %}checked{% endif %} />
-		  			<label for="recurrent"></label>
-		  		</div>
+
+            <div id="dash-interests">
+
+                <span class="inline" style="float:right;position:relative;right:60px;">Recurr:</span>
+                <div class="squaredTwo" style="position:relative;top:-25px;left:0px;margin-right:20px;margin-bottom:0px;">
+                    <input type="checkbox" value="None" id="recurrent" data-set_recurrent_url="{% url 'accounts.ajax.set_recurrent' %}" name="check" {% if request.user.profile.recurring %}checked{% endif %} />
+                    <label for="recurrent"></label>
+                </div>
                 <h3 style="margin-bottom:5px;position:relative;top:-30px;">Connect with:</h3>
-				<div style="margin-top:10px;margin-left:50px;position:relative;top:-30px;">
-					<span class="inline">Men:</span>
-					<div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
-			  			<input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
-			  			<label for="connect_men"></label>
-			  		</div>
-			  		<span class="inline">Women:</span>
-			  		<div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
-			  			<input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
-			  			<label for="connect_women"></label>
-			  		</div>
-				</div>
+                <div style="margin-top:10px;margin-left:50px;position:relative;top:-30px;">
+                    <span class="inline">Men:</span>
+                    <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;margin-right:40px;">
+                        <input type="checkbox" value="None" id="connect_men" name="check" {% if request.user.profile.malematch %}checked{% endif %} />
+                        <label for="connect_men"></label>
+                    </div>
+                    <span class="inline">Women:</span>
+                    <div class="squaredTwo inline" style="position:relative;top:-25px;left:10px;">
+                        <input type="checkbox" value="None" id="connect_women" name="check" {% if request.user.profile.femalematch %}checked{% endif %} />
+                        <label for="connect_women"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
-       	  </div>
-        	
-
+        <div id="dash-stats" class="inline">
+            <div id="dash-stats-title" class="title">WakeUp Stats</div>
+            <table id="global-stats">
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>WakeUps:</td>
+                                <td>{{ totalcalls }}</td>
+                            </tr>
+                            <tr>
+                                <td>Talk Time:</td>
+                                <td>{{ recordingduration }}</td>
+                            </tr>
+                            <tr>
+                                <td>Call Aura:</td>
+                                <td>{{ request.user.profile.reputation }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <div style="width:30px;"></div>
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>Plays:</td>
+                                <td>{{ recordingplays }}</td>
+                            </tr>
+                            <tr>
+                                <td>Likes:</td>
+                                <td>{{ recordingaura }}</td>
+                            </tr>
+                            <tr>
+                                <td>Shares:</td>
+                                <td>{{ recordingaura }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div id="chart"></div>
         </div>
     </div>
 
@@ -217,7 +235,7 @@
                 opacity: 0.8
             },
             highlight: {
-                move: 20
+                move: 5
             },
             tooltip: {
                 frameProps: {
@@ -234,8 +252,8 @@
                 horizontal: false,
                 width: 90,
                 height: 80,
-                x: 282,
-                y: 100,
+                x: 302,
+                y: 50,
                 borderProps: {
                     "fill-opacity": 0.3
                 }
