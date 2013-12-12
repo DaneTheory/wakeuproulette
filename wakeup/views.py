@@ -319,10 +319,6 @@ def answerCallback(request, schedule):
     if 'CallDuration' in post: logger.debug('CallDuration: ' + post['CallDuration'])
     if 'AnsweredBy' in post: logger.debug("AnsweredBy: " + post['AnsweredBy'])
     if 'DialCallStatus' in post: logger.debug("DialCallStatus: " + post['DialCallStatus'])
-    if 'RecordingUrl' in post:
-        logger.debug("Recoding URL: " + post['RecordingUrl'])
-        logger.debug("Recording Duration: " + post['RecordingDuration'])
-
 
     call = get_call_or_none(schedule, phone)
 
@@ -382,8 +378,10 @@ def answerCallback(request, schedule):
             wait_before_call = 0
 
             if post['CallStatus'] == 'failed':
-                logger.log("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + CFAIL_WAITgi + " seconds")
+                logger.log("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + CFAIL_WAIT + " seconds")
                 wait_before_call = CFAIL_WAIT
+            else:
+                logger.log("[ANSWER REQUEST CORRECT] Sending to initial waiting room")
 
             call_async(phone, confurl, fallbackurl, noanswerurl, wait=wait_before_call)
 
