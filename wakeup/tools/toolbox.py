@@ -3,6 +3,7 @@ from twilio.rest import TwilioRestClient
 import threading
 from wakeuproulette import settings
 from pytz import timezone
+from django.contrib.auth.models import User
 import pytz
 import datetime
 import time
@@ -25,8 +26,22 @@ class EmailThread(threading.Thread):
             msg.attach_alternative(self.html, "text/html")
         msg.send(self.fail_silently)
 
-def send_async_mail(subject, body, from_email, recipient_list, fail_silently=False, html=None, *args, **kwargs):
-    if settings.PROD: EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
+def send_async_mail(subject, body, from_email, recipient_list, fail_silently=False, html=None, force=False, *args, **kwargs):
+    if settings.PROD:
+
+        if not force:
+            recipients = []
+            for email in recipient_list:
+                try:
+                    emailnotifications = User.objects.get(email=email).profile.emailnotifications
+                    if  emailnotifications:
+                        recipients.append(email)
+                except:
+                    pass
+            recipient_list = recipients
+
+        if recipient_list:
+            EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
     else: print "You're not in prod - you shouldn't be sending emails, if you wish to change it go to the toolbox and temporarily remove the flag"
 
 

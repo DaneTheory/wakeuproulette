@@ -77,6 +77,8 @@ class UserProfile(UserenaBaseProfile):
 
     recurring = models.BooleanField(default=False)
 
+    emailnotifications = models.BooleanField(_("Email Notifications"), default=True)
+
     white = models.BooleanField(_('Light Theme'), default=True)
 
     ######## CONTACTS ########
