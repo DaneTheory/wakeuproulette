@@ -48,7 +48,7 @@ fromnumber = "+441279702159"
 
 # Make API calls asynchronously
 class CallThread(threading.Thread):
-    def __init__(self, phone, confurl, fallbackurl, noanswerurl, silent=False, wait=wait):
+    def __init__(self, phone, confurl, fallbackurl, noanswerurl, silent=False, wait=0):
         self.phone = phone
         self.confurl = confurl
         self.fallbackurl = fallbackurl
