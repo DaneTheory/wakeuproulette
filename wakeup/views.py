@@ -378,7 +378,7 @@ def answerCallback(request, schedule):
             wait_before_call = 0
 
             if post['CallStatus'] == 'failed':
-                logger.debug("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + CFAIL_WAIT + " seconds")
+                logger.debug("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + str(CFAIL_WAIT) + " seconds")
                 wait_before_call = CFAIL_WAIT
             else:
                 logger.debug("[ANSWER REQUEST CORRECT] Sending to initial waiting room")
