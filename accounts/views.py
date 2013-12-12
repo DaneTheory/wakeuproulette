@@ -905,7 +905,7 @@ def rand_x_digit_num(x, leading_zeroes=True):
             return str("%0." + str(x) + "d") % random.randint(0, 10**x-1)
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'(^(044|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(061|\+61|\+62|062)[0-9]{9}$)'
+PHONE_REGEX = r'(^(044|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(061|\+61|\+64|064)[0-9]{9}$)'
 class WakeUpSignupForm(SignupForm):
     phone = forms.RegexField(   regex=PHONE_REGEX,
                                 max_length=30,
