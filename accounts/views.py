@@ -801,7 +801,7 @@ def wakeup_public(request, username):
     except User.DoesNotExist:
         raise Http404
 
-    if request.user == other: return redirect(reverse(wakeup_dashboard))
+    if request.user == other: return redirect(reverse(wakeup_dashboard, kwargs={'command': ""}))
 
     profile = other.get_profile()
 

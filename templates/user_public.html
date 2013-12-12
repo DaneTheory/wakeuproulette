@@ -39,24 +39,41 @@
                 <div id="dash-stats-title" class="title">WakeUp Stats</div>
                 <table id="global-stats">
                     <tr>
-                        <td>Total WakeUps:</td>
-                        <td>{{ totalcalls }}</td>
-                    </tr>
-                    <tr>
-                        <td>Talk Time:</td>
-                        <td>{{ recordingduration }}</td>
-                    </tr>
-                    <tr>
-                        <td>Call Aura:</td>
-                        <td>{{ request.user.profile.reputation }}</td>
-                    </tr>
-                    <tr>
-                        <td>Recording Plays:</td>
-                        <td>{{ recordingplays }}</td>
-                    </tr>
-                    <tr>
-                        <td>Recording Aura:</td>
-                        <td>{{ recordingaura }}</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>WakeUps:</td>
+                                    <td>{{ totalcalls }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Talk Time:</td>
+                                    <td>{{ recordingduration }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Call Aura:</td>
+                                    <td>{{ request.user.profile.reputation }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <div style="width:30px;"></div>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>Plays:</td>
+                                    <td>{{ recordingplays }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Likes:</td>
+                                    <td>{{ recordingaura }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shares:</td>
+                                    <td>{{ recordingaura }}</td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                 </table>
                 <div id="chart"></div>
@@ -171,7 +188,7 @@
                     opacity: 0.8
                 },
                 highlight: {
-                    move: 20
+                    move: 5
                 },
                 tooltip: {
                     frameProps: {
@@ -188,8 +205,8 @@
                     horizontal: false,
                     width: 90,
                     height: 80,
-                    x: 282,
-                    y: 100,
+                    x: 302,
+                    y: 50,
                     borderProps: {
                         "fill-opacity": 0.3
                     }
