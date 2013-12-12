@@ -40,6 +40,8 @@ if settings.PROD:
     REDIRECT_LIMIT = 2
     RATING_LIMIT = 3
 
+    CFAIL_WAIT = 5
+
     CONFERENCE_SCHEDULE_DELIMITER = ':'
 
     # Rating given to users that are reported
@@ -59,6 +61,8 @@ else:
     RE_DIAL_LIMIT = 5
     REDIRECT_LIMIT = 1
     RATING_LIMIT = 3
+
+    CFAIL_WAIT = 5
 
     CONFERENCE_SCHEDULE_DELIMITER = ':'
 
@@ -375,7 +379,12 @@ def answerCallback(request, schedule):
             noanswerurl = settings.WEB_ROOT + 'answercallback/' + schedule
             fallbackurl = settings.WEB_ROOT + 'fallback/' + schedule
 
-            call_async(phone, confurl, fallbackurl, noanswerurl)
+            wait_before_call = 0
+
+            if post['CallStatus'] == 'failed':
+                wait_before_call = CFAIL_WAIT
+
+            call_async(phone, confurl, fallbackurl, noanswerurl, wait=wait_before_call)
 
             call.retries = call.retries + 1
             call.save()

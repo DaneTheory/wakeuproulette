@@ -5,6 +5,8 @@ from wakeuproulette import settings
 from pytz import timezone
 import pytz
 import datetime
+import time
+
 
 # Send emails asynchronously
 class EmailThread(threading.Thread):
@@ -46,15 +48,19 @@ fromnumber = "+441279702159"
 
 # Make API calls asynchronously
 class CallThread(threading.Thread):
-    def __init__(self, phone, confurl, fallbackurl, noanswerurl, silent=False):
+    def __init__(self, phone, confurl, fallbackurl, noanswerurl, silent=False, wait=wait):
         self.phone = phone
         self.confurl = confurl
         self.fallbackurl = fallbackurl
         self.noanswerurl = noanswerurl
         self.silent = silent
+        self.wait = wait
         threading.Thread.__init__(self)
 
     def run (self):
+
+        if self.wait: time.sleep(self.wait)
+
         call = client.calls.create(
               url=self.confurl
             , to = self.phone
@@ -70,8 +76,8 @@ class CallThread(threading.Thread):
         if not self.silent:
             print "Called " + self.phone
 
-def call_async(phone, confurl, fallbackurl, noanswerurl, silent=False):
-    CallThread(phone, confurl, fallbackurl, noanswerurl).start()
+def call_async(phone, confurl, fallbackurl, noanswerurl, silent=False, wait=0):
+    CallThread(phone, confurl, fallbackurl, noanswerurl, wait=wait).start()
     
 class SmsThread(threading.Thread):
     def __init__(self, phone, message):
