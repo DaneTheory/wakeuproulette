@@ -161,7 +161,7 @@ def get_active_waiting_room(schedule):
 
 def send_to_conference_room(call, schedule, match, initial=False):
 
-    logger.debug("Sending " + call.user.username + " to conference room with: " + match.user.username + ". Initial: " + initial)
+    logger.debug("Sending " + call.user.username + " to conference room with: " + match.user.username + ". Initial: " + str(initial))
     # Check if the match is still on the phone - if not, mark match as not completed and try to find him a match
     flush_transaction()
     match.reload()
