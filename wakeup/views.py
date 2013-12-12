@@ -715,7 +715,8 @@ def eveningRoulette(request):
         for time in xrange(number_of_evenings):
             now_schedule = now_schedule + datetime.timedelta(seconds=60*60)
 
-            active_alarm = UserProfile.objects.filter(alarmon=True, alarm=now_schedule.time()).count()
+            active_alarm =    UserProfile.objects.filter(alarmon=True, alarm=now_schedule.time()).count()\
+                            + WakeUp.objects.filter(schedule=now_schedule).count()
 
             local_schedule = local_date(now_schedule, request)
 
