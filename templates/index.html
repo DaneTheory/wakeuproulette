@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='en' xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Wake Up Roulette</title>
     <link rel="stylesheet" type="text/css" href="media/css/normalize.css" />
@@ -23,7 +23,7 @@
     </script>
 
 </head>
-<body id="home-body">
+<body id="home-body" onload="window.scroll(0, screen.availHeight-40)">
 <div id="all_info" style="display:none;" data-set_timezone_url="{% url 'accounts.ajax.set_timezone' %}"></div>
 <nav id='sitenav'>
 
@@ -61,7 +61,7 @@
 <div id="home" style="background-image: url(/media/images/alarmsea.jpg);">
 
     <div id="titles">
-        <div id="vactrack-logo">Wake Up Roulette</div>
+        <img id="wur-main-logo" src="/media/images/wurlogo.png"/>
         <div style="width: 280px;" id="vactrack-buttons">
             <a style="font-size: 2em; text-weight: normal; width: 270px; margin: auto auto;font-family: Geosans" href="/evening/">
                 Try it now!</a>
@@ -77,33 +77,36 @@
 
             <h1 class="about-head-title">How does it work?</h1>
 
-            <div class="about-sub">
-                ① Set up your alarm!
+            <div style="margin-left: -40px" class="about-sub">
+                ① Set Up
             </div>
-
-
-
-
-
             <div class="col span_1_of_3">
                 <div class="img-box">
                     <div class="col-4">
                         <img src="/media/images/about/setupone.png"/>
                     </div>
                     <div id="about-setup-explanation" class="col-2">
-                        <p>
-                            After you sign in, select your
-                        </p>
-                        <p style="font-size: 3em;">
-                            WakeUp time
-                        </p>
-                        <br>
-                        <p>
-                            Then just turn on your
-                        </p>
-                        <p style="font-size: 3em;">
-                            WakeUp alarm
-                        </p>
+                        <div style="width:45%; margin-top: 80px;" class="inline">
+                            <p>
+                                Set up your
+                            </p>
+                            <br><br>
+                            <p style="font-size: 4em;">
+                                WakeUp<br>Alarm
+                            </p>
+                        </div>
+                        <div style="width:8%; padding-top: 150px;" class="inline">
+                            <p>or</p>
+                        </div>
+                        <div style="width:45%; margin-top: 80px;" class="inline">
+                            <p>
+                                Subscribe to an
+                            </p>
+                            <br><br>
+                            <p style="font-size: 4em;">
+                                Evening<br>Roulette
+                            </p>
+                        </div>
                     </div>
                     <div class="col-4">
                         <img style="right: -150px;" src="/media/images/about/setuptwo.png"/>
@@ -113,8 +116,8 @@
             </div>
             <div class="col span_1_of_3">
 
-                <div class="about-sub">
-                    ② Wake up to an awesome conversation!
+                <div style="margin-left: -40px" class="about-sub">
+                    ② Wake up
                 </div>
 
                 <div class="img-box">
@@ -122,22 +125,31 @@
                         <img src="/media/images/about/wakeupone.png"/>
                     </div>
                     <div id="about-wakeup-explanation" class="col-2">
-                        <p>
-                            Our server will give everyone a
-                        </p>
-                        <p style="font-size: 3em;">
-                            WakeUp Call
-                        </p>
-                        <br>
-                        <p>
-                            As soon as you answer
-                        </p>
-                        <p>
-                            You'll get connected for
-                        </p>
-                        <p style="font-size: 3em;">
-                            60 seconds
-                        </p>
+                        <div style="height: 40%; padding-top: 40px;">
+                            <p>
+                                Once it's time, our server will set up
+                            </p>
+                            <p style="font-size: 3em;">
+                                All Scheduled Calls
+                            </p>
+                        </div>
+                        <div style="height: 20%;">
+                            <div style="width: 50%" class="inline">
+                                <p>
+                                    You'll be awakened
+                                </p>
+                            </div>
+                            <div style="width: 50%" class="inline">
+                                <p>
+                                    You'll be connected
+                                </p>
+                            </div>
+                        </div>
+                        <div style="height: 40%;">
+                            <p style="font-size: 3em;">
+                                for 60 seconds
+                            </p>
+                        </div>
                     </div>
                     <div class="col-4">
                         <img style="right: -150px;" src="/media/images/about/wakeupseven.jpg"/>
@@ -148,21 +160,41 @@
             <div class="col span_1_of_3">
 
                 <div class="about-sub">
-                   ③ Rate your wake-up buddy of the day!
+                   ③ Rate your wake-up buddy of the day
                 </div>
 
                 <div class="img-box">
-                    <div class="col-3">
-                        <img src="/media/images/about/rateman.jpg"/>
+                    <div class="col-4">
+                        <img style="left: -220px;" src="/media/images/about/rateone.jpg"/>
                     </div>
-                    <div class="col-3">
-                        <img src="/media/images/about/ratewoman.jpg"/>
+                    <div id="about-rate-explanation" class="col-2">
+                        <div style="height: 30%; padding-top: 50px;">
+                            <p style="font-size: 3em;">
+                                And the best part?
+                            </p>
+                        </div>
+                        <div style="height: 30%;">
+                            <div style="width: 50%" class="inline">
+                                <p>
+                                    It's anonymous
+                                </p>
+                            </div>
+                            <div style="width: 50%" class="inline">
+                                <p>
+                                    It's free
+                                </p>
+                            </div>
+                        </div>
+                        <div style="height: 40%;">
+                            <p style="font-size: 3em;">
+                                Check it out!
+                            </p>
+                        </div>
                     </div>
-                    <div class="col-3">
-                        <img src="/media/images/about/rateone.jpg"/>
+                    <div class="col-4">
+                        <img style="right: -50px;" src="/media/images/about/ratewoman.jpg"/>
                     </div>
                 </div>
-
             </div>
 
             <div class="col span_1_of_3">

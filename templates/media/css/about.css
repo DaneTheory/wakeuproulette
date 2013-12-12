@@ -117,29 +117,44 @@
     color: black;
 }
 #about-setup-explanation {
-    padding-top: 3.5%;
     position: relative;
     background-color: black;
-    height: 22em;
 }
 #about-setup-explanation p {
-    padding: 20px 80px 20px 80px;
+    font-family: Geosans;
+    font-size: 2em;
+    line-height: 1em;
+}
+
+#about-wakeup-explanation {
+    position: relative;
+    background-color: black;
+}
+#about-wakeup-explanation p {
+    padding: 10px 0px 20px 0px;
     font-family: Geosans;
     font-size: 2em;
     line-height: .7em;
 }
 
-#about-wakeup-explanation {
-    padding-top: 3.5%;
+#about-wakeup-explanation div {
+    width: 100%;
+}
+
+
+#about-rate-explanation {
     position: relative;
     background-color: black;
-    height: 22em;
 }
-#about-wakeup-explanation p {
-    padding: 10px 80px 20px 80px;
+#about-rate-explanation p {
+    padding: 10px 0px 20px 0px;
     font-family: Geosans;
     font-size: 2em;
     line-height: .7em;
+}
+
+#about-rate-explanation div {
+    width: 100%;
 }
 
 .about-sub-title {

@@ -57,7 +57,7 @@
     <script type="text/javascript" src="/media/js/main.js"></script>
     <script type="text/javascript" src="/media/js/eveningroulette.js"></script>
 
-    {% if request.user.profile.white %}
+    {% if not request.user.is_authenticated or request.user.profile.white %}
         <link rel="Stylesheet" media="screen" href="/media/css/white-template.css">
     {% else %}
         <link rel="Stylesheet" media="screen" href="/media/css/black-template.css">

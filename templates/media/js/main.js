@@ -1,8 +1,11 @@
 (function() {
 
+    var animated = false;
+
 	var parallax = function() {
 		var scrolled = $(window).scrollTop();
-        console.log(scrolled, $('#home').height());
+
+        console.log(scrolled);
 
         $('#titles').css('margin-top', -(scrolled/7));
 
@@ -15,6 +18,11 @@
             $('#sitenav').removeClass('navsolid');
             $('#main-nav').removeClass('mainsolid');
             $('#up-btn').text('');
+        }
+
+        if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10 && !animated) {
+            $("html, body").animate({ scrollTop: 0 }, 1300);
+            animated = true;
         }
 	}
 
