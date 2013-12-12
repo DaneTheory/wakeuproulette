@@ -36,7 +36,7 @@ if settings.PROD:
 
     WAITING_ROOM_MAX = 4
 
-    RE_DIAL_LIMIT = 5
+    RE_DIAL_LIMIT = 3
     REDIRECT_LIMIT = 3
     RATING_LIMIT = 3
 
