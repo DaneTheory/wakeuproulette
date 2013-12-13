@@ -40,7 +40,7 @@ import warnings
 
 import re
 import random
-from wakeup.tools.toolbox import sms_async
+from wakeup.tools.toolbox import sms_async, call_async
 
 from accounts.decorators import active_required
 
@@ -874,12 +874,19 @@ def sms_verify(request):
     if mv.verified == True:
         return redirect(reverse('userena_signup_complete', kwargs={'username': request.user.username}))
     error = None
+    call_verification = 0
+    resend = 0
+
     if request.method == 'POST':
+        print "POST"
         resend_code = request.POST.get("resend", "")
+        call_verification = request.POST.get("call", "")
         if resend_code == "1":
             mv.code = rand_x_digit_num(4)
             mv.save()
             sms_async(request.user.profile.phone, "Your WakeUpRoulette verification code is " + mv.code)
+        elif call_verification == "1":
+            call_async(request.user.profile.phone, settings.WEB_ROOT + "callverification", "", "")
         else:
             code = request.POST.get("code", "")
             if mv.code == code:
@@ -892,7 +899,7 @@ def sms_verify(request):
                 return redirect(reverse('wakeup_call_dashboard', kwargs={'command': "tutorial"}))
             else:
                 error = "The code is incorrect. Please, try again"
-    return render(request, 'sms_verify.html', {'error': error})
+    return render(request, 'sms_verify.html', {'error': error, 'call_verification': call_verification})
                                                 
 
 def rand_x_digit_num(x, leading_zeroes=True):

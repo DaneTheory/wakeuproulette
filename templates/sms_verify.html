@@ -8,23 +8,38 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.js"></script>
 <script type="text/javascript" src="/media/js/sms_verify.js"></script>
 
-<form action="" method="post">
-  {% csrf_token %}
-  <fieldset>
-    <legend>Please, insert 4-digit verificaton code we have sent to {{ request.user.profile.phone }}.</legend>
-    <legend>Wrong number? You can edit your phone at your <a href="/accounts/edit/">profile settings</a>.</legend>
+<form id="verification-form" action="" method="post">
+{% csrf_token %}
+{% if call_verification %}
+    <fieldset>We're now calling {{ request.user.profile.phone }}</fieldset>
+    <fieldset>If you don't receive a call please contact us at WakeUpRoulette@gmail.com</fieldset>
+{% else %}
+    <fieldset>
+    <legend>Verificaton code sent to {{ request.user.profile.phone }}.</legend>
     <p>
-    <label for="id_code">Code</label> 
-    <input class="required" id="id_code" maxlength="4" name="code" type="text" />
+        <label for="id_code">Code</label>
+        <input class="required" id="id_code" maxlength="4" name="code" type="text" />
     </p>
+    <input type="hidden" name="call" id="call_hidden"/>
     <input type="hidden" name="resend" id="resend_code_hidden"/>
     {% if error %}
-	    <ul class="errorlist">
-	    	<li>{{ error }}</li>
-	    </ul>
-	 {% endif %}
-   </fieldset>
-   <a id="resend_code">Resend</a>
-   <input type="submit" value="Verify">
+    <ul class="errorlist">
+        <li>{{ error }}</li>
+    </ul>
+    {% endif %}
+    </fieldset>
+    <fieldset>Sms not working?</fieldset>
+    <div style="margin-left: 50px;">
+    <li>
+        <a href="/accounts/edit/">You can change your number</a>
+    </li>
+    <li>
+        Still not working? <a id="call_verification" href="/accounts/sms_verify/">Let's try giving you a call</a>.</legend>
+    </li>
+    </div>
+    <br>
+    <button id="resend_code">Resend</button>
+    <input id="submit_btn" type="submit" value="Verify">
+{% endif %}
   </form>
 {% endblock %}

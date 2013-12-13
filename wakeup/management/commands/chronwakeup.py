@@ -12,6 +12,7 @@ from django.db.models import Q
 
 
 
+
 # Settings Variables
 if settings.PROD:
     maxTries = 2

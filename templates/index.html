@@ -43,9 +43,9 @@
     <div id="usersection">
         {% if user.is_authenticated %}
             <span id="nav-logged">
-                <a id="all-wakeups-nav-button" style="color: white;"  class="simplebutton" href="/">All WakeUps</a>
-                <a style="padding-left: 20px"  class="simplebutton" href="/accounts/dashboard/">My Dashboard</a>
-                <a style="color: white; padding-left: 20px" class="simplebutton" href="/accounts/signout/">Sign Out</a>
+                <a id="all-wakeups-nav-button"  class="wur-btn" href="/evening">Evening</a>
+                <a id="dashboard-nav-btn"  class="wur-btn" href="/accounts/dashboard/">Morning</a>
+                <a style="width: 50px; margin-left: 30px; margin-right: 10px" class="wur-btn" href="/accounts/signout/">Exit</a>
             </span>
         {% else %}
             <span id="nav-logged">

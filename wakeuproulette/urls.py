@@ -20,6 +20,9 @@ urlpatterns = patterns('',
     # Handling fallback errors
     url(r'^fallback/(?P<schedule>.+)$', views.fallbackRequest, name='fallback'),
 
+    # Call verification
+    url(r'^callverification$', views.callVerifcation, name='callverification'),
+
     # Handling Incoming Calls and Text messages
 #    url(r'^call/initial/', views.callInitial, name='call'),
 #    url(r'^call/register/', views.callRegister, name='call'),

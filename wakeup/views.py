@@ -765,6 +765,35 @@ def beta(request):
 def notFound(request):
     return render(request, '404.html')
 
+@csrf_exempt
+def callVerifcation(request):
+
+    post = request.POST
+    phone = request.POST.get("To", "")
+
+    logger.debug("[Phone Verification] - Verifying phone " + phone)
+
+    say = "Welcome to WakeUpRoulette!! Your phone has been verified!! You can now access the panel and set your alarm!"
+
+    try:
+        u = UserProfile.objects.get(phone=phone)
+        u.activated = True
+        m = u.user.messageverification
+        m.verified = True
+        m.save()
+        logger.debug("[Phone Verification] - Phone succesfully verified")
+
+    except Exception:
+        logger.debug("[Phone Verification Error] - Phone " + phone + " could not be verified due to an exception")
+        say = "We're sorry, we couldn't verify your phone - please contact the WakeUpRoulette team at wakeuproulette@gmail.com"
+
+    if not ('AnsweredBy' in post and post['AnsweredBy'] == 'human' and post['CallStatus'] == 'in-progress'):
+        logger.debug("[Phone Verification Error] - Received invalid call: AnsweredBy: " + post['Anseredby'] + ". CallStatus: " + post['CallStatus'])
+        say = "We're sorry, we couldn't verify your phone - please contact the WakeUpRoulette team at wakeuproulette@gmail.com"
+
+    data = render_to_response("call_verification_complete.xml", { 'say' : say })
+    return HttpResponse(data, mimetype="application/xml")
+
 
 
 
