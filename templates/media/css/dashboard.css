@@ -140,7 +140,7 @@ html {
     font-family: Ostrich;
     font-size: 5em;
 
-    padding: 0px 20px 0px 60px;
+    padding: 0px 10px 0px 40px;
 }
 
 #public-dash-alarm {
@@ -154,8 +154,8 @@ html {
 #dash-alarm-time {
     font-family: Ostrich;
     font-size: 5em;
-    width: 80px;
-    height: 40px;
+    width: 120px;
+    height: 60px;
 
     margin-top: 0px;
 }
@@ -185,11 +185,11 @@ html {
 
 
 .alarm-tooltip:hover:after{
-    bottom: 200px;
-    margin-left: 100px;
+    bottom: 150px;
+    margin-left: 180px;
     width: 120px;
-    background-color: white;
-    color: black;
+    background-color: rgba(0,0,0,.8);
+    color: white;
 }
 
 

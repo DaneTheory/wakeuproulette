@@ -381,10 +381,10 @@ def answerCallback(request, schedule):
             wait_before_call = 0
 
             if post['CallStatus'] == 'failed':
-                logger.debug("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + str(CFAIL_WAIT) + " seconds")
+                logger.debug("[ANSWER REQUEST CALL FAILED - WAITING] Call Failed so we wait " + str(CFAIL_WAIT) + " seconds before redialing")
                 wait_before_call = CFAIL_WAIT
             else:
-                logger.debug("[ANSWER REQUEST CORRECT] Sending to initial waiting room")
+                logger.debug("[ANSWER REQUEST CORRECT] Redialing immediateily")
 
             call_async(phone, confurl, fallbackurl, noanswerurl, wait=wait_before_call)
 

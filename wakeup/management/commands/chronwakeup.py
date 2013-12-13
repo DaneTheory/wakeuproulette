@@ -52,20 +52,27 @@ class Command(NoArgsCommand):
 
         alarm_match = UserProfile.objects.filter(alarm=schedule, alarmon=True, activated=True)
         wakeup_match = WakeUp.objects.filter(schedule=schedule)
+
+        already = set()
+
         print alarm_match
         print wakeup_match
 
-        for u in alarm_match:
-            c = Call()
-            c.user = u.user
-            c.datecreated = schedule
-            c.save()
-
         for w in wakeup_match:
+            if w.user.id in already: continue
             c = Call()
             c.user = w.user
             c.datecreated = schedule
             c.save()
+            already.add(w.user.id)
+
+        for u in alarm_match:
+            if u.id in already: continue
+            c = Call()
+            c.user = u.user
+            c.datecreated = schedule
+            c.save()
+            already.add(w.user.id)
 
 
         tries = 0
@@ -90,6 +97,7 @@ class Command(NoArgsCommand):
 
             # Setting people who didn't answered on the first time to snoozed = True
             Call.objects.filter(datecreated=schedule, answered=False).update(snoozed=True)
+            Call.objects.filter(datecreated=schedule, answered=True).update(completed=True)
 
             contact_requests = Contact.objects.filter(datecreated__gt=emailschedule).filter(status='P')
             for contact_request in contact_requests:

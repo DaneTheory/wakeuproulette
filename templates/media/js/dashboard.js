@@ -55,8 +55,8 @@ var dashboard = {
             });
             
             $('#dash-alarm-time').timeEntry({show24Hours: true, minTime: alarm_times[0] + ":00", maxTime: alarm_times[alarm_times.length - 1] + ":00"});
-            
-            var time_string = "Beta available times: " + alarm_times[0] + ", " + alarm_times[1] + ", " + alarm_times[2] + ", " + alarm_times[3] + ", " + alarm_times[4] + " and " + alarm_times[5] + " only";
+
+            var time_string = "Press up and down arrow keys.";
 
             $('.alarm-tooltip').attr("title", time_string);
         }
