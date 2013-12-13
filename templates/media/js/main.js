@@ -1,35 +1,3 @@
-(function() {
-
-    var animated = false;
-
-	var parallax = function() {
-		var scrolled = $(window).scrollTop();
-
-        console.log(scrolled);
-
-        $('#titles').css('margin-top', -(scrolled/7));
-
-        if(scrolled > $('#home').height()) {
-            $('#sitenav').addClass('navsolid');
-            $('#main-nav').addClass('mainsolid');
-            $('#up-btn').text('△');
-        }
-        else {
-            $('#sitenav').removeClass('navsolid');
-            $('#main-nav').removeClass('mainsolid');
-            $('#up-btn').text('');
-        }
-
-        if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10 && !animated) {
-            $("html, body").animate({ scrollTop: 0 }, 1300);
-            animated = true;
-        }
-	}
-
-	$(window).scroll(parallax);
-})();
-
-
 //Smooth scrolling
 $(document).ready(function() {
   function filterPath(string) {

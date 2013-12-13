@@ -422,6 +422,39 @@
 <script type="text/javascript" src='/media/js/main.js'></script>
 <script type="text/javascript" src='/media/js/timezone.js'></script>
 
+<script>
+    (function() {
+
+        var animated = false;
+
+        var parallax = function() {
+            var scrolled = $(window).scrollTop();
+
+            console.log(scrolled);
+
+            $('#titles').css('margin-top', -(scrolled/7));
+
+            if(scrolled > $('#home').height()) {
+                $('#sitenav').addClass('navsolid');
+                $('#main-nav').addClass('mainsolid');
+                $('#up-btn').text('△');
+            }
+            else {
+                $('#sitenav').removeClass('navsolid');
+                $('#main-nav').removeClass('mainsolid');
+                $('#up-btn').text('');
+            }
+
+            if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10 && !animated) {
+                $("html, body").animate({ scrollTop: 0 }, 1300);
+                animated = true;
+            }
+        }
+
+        $(window).scroll(parallax);
+    })();
+</script>
+
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
 <script>(function(d, s, id) {
