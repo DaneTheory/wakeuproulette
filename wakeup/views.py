@@ -30,7 +30,7 @@ if settings.PROD:
     # These are the settings that will be used in PROD
     # For testing please modify the variables below
     CALL_LIMIT = 60
-    WELCOME_LIMIT = 10
+    WELCOME_LIMIT = 30
     HOLD_LIMIT = 20
     TIMEOUT = 20
 
@@ -698,7 +698,7 @@ def waitingRequest(request, username):
     except UserProfile.DoesNotExist:
         params['say'] = "Oh no! We just noticed that your WakeUp buddy hung up or got disconnected, please press star to proceed to the rating."
 
-    params['song'] = '/media/mp3/evenings-babe.mp3'
+    params['song'] = '/media/mp3/jinglebells.mp3'
 
     data = render_to_response("waitingresponse.xml",params)
     return HttpResponse(data, mimetype="application/xml")
