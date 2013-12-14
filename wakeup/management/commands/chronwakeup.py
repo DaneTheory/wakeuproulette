@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, NoArgsCommand
 from optparse import make_option
 from accounts.models import UserProfile, Contact
 from datetime import datetime, timedelta
@@ -30,18 +30,18 @@ else:
 def flush_transaction():
     transaction.commit()
 
-class Command(BaseCommand):
+class Command(NoArgsCommand):
 
     help = "Excecute Chron Wake Up Chron Roulette for the current batch of wake-ups."
-    option_list = BaseCommand.option_list + (
-        make_option(
-            "-f",
-            "--force",
-            dest = "force",
-            help = "force calling, used for testing",
-            metavar = "FORCE"
-        ),
-        )
+#    option_list = BaseCommand.option_list + (
+#        make_option(
+#            "-f",
+#            "--force",
+#            dest = "force",
+#            help = "force calling, used for testing",
+#            metavar = "FORCE"
+#        ),
+#        )
 
     def handle_noargs(self, **options):
 
@@ -64,12 +64,12 @@ class Command(BaseCommand):
         alarm_match = UserProfile.objects.filter(alarm=schedule, alarmon=True, activated=True)
         wakeup_match = WakeUp.objects.filter(schedule=schedule)
 
-        force = options['filename'] != None
+#        force = options['filename'] != None
 
-        if not force or alarm_match.count() + wakeup_match.count() == 1:
-            if (wakeup_match.count() and wakeup_match[0].user.is_superuser) or (alarm_match.count() and alarm_match[0].user.is_superuser):
-                # If there is only one person that will be on this round, and it is a superuser, then just ignore and return
-                return
+#        if alarm_match.count() + wakeup_match.count() == 1:
+#            if (wakeup_match.count() and wakeup_match[0].user.is_superuser) or (alarm_match.count() and alarm_match[0].user.is_superuser):
+#                # If there is only one person that will be on this round, and it is a superuser, then just ignore and return
+#                return
 
 
         already = set()
