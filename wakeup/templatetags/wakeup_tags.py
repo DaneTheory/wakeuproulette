@@ -7,7 +7,6 @@ from wakeup.tools.toolbox import local_time as local_time_func
 @register.assignment_tag(takes_context=True)
 def liked(context, share):
     user = context['request'].user
-    print "here"
 
     try:
         rating = share.recordingrating_set.get(user=user)

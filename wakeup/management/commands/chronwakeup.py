@@ -91,7 +91,7 @@ class Command(NoArgsCommand):
             c.user = u.user
             c.datecreated = schedule
             c.save()
-            already.add(w.user.id)
+            already.add(u.user.id)
 
 
         tries = 0
