@@ -24,6 +24,7 @@ from userena import signals as userena_signals
 from userena import settings as userena_settings
 from django.db.models import Sum
 from django.contrib.auth.models import User
+import re
 
 from datetime import date
 import datetime
@@ -912,26 +913,35 @@ def rand_x_digit_num(x, leading_zeroes=True):
             return str("%0." + str(x) + "d") % random.randint(0, 10**x-1)
 
 # CUSTOM FORM FOR WAKE UP SIGN UP
-PHONE_REGEX = r'(^(044|0044|\+44|44)7[0-9]{9}$|^(\+1|01|1)[0-9]{10}$|^(061|\+61|\+64|064)[0-9]{9}$)'
+PHONE_REGEX = r'(^(\+44)7[0-9]{9}$|^(\+1)[0-9]{10}$|^(\+61|\+64)[0-9]{9}$|^(\+521)[0-9]{10}$)'
+VALID_PHONES = r'(^(44)7[0-9]{9}$|^(1)[0-9]{10}$|^(61|64)[0-9]{9}$|^(521)[0-9]{10}$)'
 class WakeUpSignupForm(SignupForm):
-    phone = forms.RegexField(   regex=PHONE_REGEX,
-                                max_length=30,
-                                widget=forms.TextInput(attrs = {'class': 'required'}),
-                                label=_("Phone"),
-                                error_messages={'invalid': _("Sorry, currently it's only available for UK, US and Australian numbers.")})
+#    phone = forms.RegexField(   regex=PHONE_REGEX,
+#                                max_length=30,
+#                                widget=forms.TextInput(attrs = {'class': 'required'}),
+#                                label=_("Phone"),
+#                                error_messages={'invalid': _("Sorry, currently it's only available for UK, US and Australian numbers.")})
 
+    phone = forms.CharField(label=_("Phone"), max_length=30)
     gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female')))
     date_of_birth = forms.DateField(label=_('Date of Birth Format: [DD/MM/YYYY]'), input_formats=('%d/%m/%Y',))
 
     def clean_phone(self):
         cleaned = self.cleaned_data['phone']
-        without_trailing = re.sub(r'(00|0|\+)(\d+)', r'\2', cleaned)
-        with_uk_extension = "+" + without_trailing
+        no_symbols = re.sub(r'[^\w]', '', cleaned)
+
+        print no_symbols
+
+        if not re.match(VALID_PHONES, no_symbols):
+            raise forms.ValidationError("Sorry, currently it's only available for UK, US and Australian numbers.")
+
+        valid_phone = '+' + no_symbols
+
         try:
-            UserProfile.objects.get(phone=with_uk_extension)
+            UserProfile.objects.get(phone=valid_phone)
             raise forms.ValidationError('This phone number is already registered')
         except UserProfile.DoesNotExist: 
-            return with_uk_extension
+            return valid_phone
 
     def clean_date_of_birth(self):
         dob = self.cleaned_data['date_of_birth']

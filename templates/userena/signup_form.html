@@ -7,7 +7,7 @@
 <form action="" method="post">
   {% csrf_token %}
   <fieldset>
-    <p>WakeUpRoulette is now available in USA, Canada, United Kingdom, Australia and New Zealand!!</p>
+    <p>WakeUpRoulette is now available in USA, Mexico, Canada, United Kingdom, Australia and New Zealand!!</p>
     <p style="font-family: Helvetica; font-size: .5em;">If you don't have a number from these countries, but still would like to try out WakeUpRoulette
         send us an email at <a href="mailito:wakeuproulette@gmail.com">wakeuproulette@gmail.com</a> and we'll do our best to get you on board!!</p>
     {{ form.non_field_errors }}
@@ -24,13 +24,14 @@
     {% if field.name == 'date_of_birth' %}
 		<input id="id_date_of_birth" name="date_of_birth" placeholder="dd/mm/yyyy" type="text" value="{% if field.value %}{{ field.value }}{% endif %}" />
     {% elif field.name == 'phone' %}
-        <input class="required" id="id_phone" maxlength="13" name="phone" type="text" value="{% if field.value %}{{ field.value }}{% endif %}" />
+        <input class="required" id="id_phone" name="phone" type="text" value="{% if field.value %}{{ field.value }}{% endif %}" />
         <br>
         <h3>Accepted phone formats:</h3>
         <ul>
-            <li>UK: +44XXXXXXXXXX</li>
-            <li>USA: +1XXXXXXXXXX</li>
+            <li>UK: +44-7-XXX-XX-XX-XX</li>
+            <li>USA: +1-X-XX-XX-XX-XXX</li>
             <li>Canada: +1XXXXXXXXXX</li>
+            <li>Mexico: +521XXXXXXXXXX</li>
             <li>Australia: +61XXXXXXXXX</li>
             <li>New Zealand: +64XXXXXXXXX</li>
         </ul>

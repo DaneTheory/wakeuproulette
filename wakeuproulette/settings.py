@@ -14,7 +14,7 @@ PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 #    PROD = False
 
 # Too many issues - until we know a reliable way, this will have to be manual:
-PROD = False
+PROD = True
 
 if PROD:
     WEB_ROOT = "http://wakeuproulette.com/"
@@ -23,7 +23,7 @@ if PROD:
 
 # If app is not in production it will use the following web root, please modify it as required:
 else:
-    WEB_ROOT = "http://65038fc5.ngrok.com/"
+    WEB_ROOT = "http://706b2ade.ngrok.com/"
 
 
 
