@@ -778,6 +778,7 @@ def callVerifcation(request):
     try:
         u = UserProfile.objects.get(phone=phone)
         u.activated = True
+        u.save()
         m = u.user.messageverification
         m.verified = True
         m.save()
