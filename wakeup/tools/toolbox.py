@@ -115,7 +115,6 @@ def sms_async(phone, message):
 
 def local_date(date, request):
     tz = request.session.get("user_timezone", pytz.utc)
-    server_tz = pytz.timezone('Europe/London')
     utc_dt = date
     return utc_dt.astimezone(tz)
 

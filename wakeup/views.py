@@ -711,7 +711,6 @@ def eveningRoulette(request):
     if request.user.is_authenticated():
         number_of_evenings = 12
         now_server = timezone.now()
-        local_now = local_date(now_server, request)
         now_schedule = now_server.replace(minute=0, second=0, microsecond=0)
 
 
@@ -725,7 +724,7 @@ def eveningRoulette(request):
 
             evening = {
                   'server_time' : datetime.datetime.strftime(now_schedule, settings.DATE_FORMAT)
-                , 'local_time' : local_schedule
+                , 'local_time' : local_schedule.time()
                 , 'subscribed' : WakeUp.objects.filter(user=request.user, schedule=now_schedule).exists()
                 , 'active_count' : active_alarm
             }
@@ -736,6 +735,7 @@ def eveningRoulette(request):
         recordings = Recording.objects.filter(call__user=request.user)
 
     print "we are here!"
+    print evenings
     return render(request, 'eveningroulette.html', {'evenings': evenings, 'recordings': recordings })
 
 
