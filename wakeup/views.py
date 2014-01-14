@@ -698,7 +698,7 @@ def waitingRequest(request, username):
     except UserProfile.DoesNotExist:
         params['say'] = "Oh no! We just noticed that your WakeUp buddy hung up or got disconnected, please press star to proceed to the rating."
 
-    params['song'] = '/media/mp3/jinglebells.mp3'
+    params['song'] = '/media/mp3/evenings-babe.mp3'
 
     data = render_to_response("waitingresponse.xml",params)
     return HttpResponse(data, mimetype="application/xml")
