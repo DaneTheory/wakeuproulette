@@ -709,7 +709,7 @@ def eveningRoulette(request):
     recordings = []
 
     if request.user.is_authenticated():
-        number_of_evenings = 12
+        number_of_evenings = 20
         now_server = timezone.now()
         now_schedule = now_server.replace(minute=0, second=0, microsecond=0)
 
