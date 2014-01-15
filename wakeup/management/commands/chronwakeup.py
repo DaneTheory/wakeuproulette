@@ -66,8 +66,8 @@ class Command(NoArgsCommand):
 
 #        force = options['filename'] != None
 
-        if alarm_match.count() + wakeup_match.count() == 1:
-            if (wakeup_match.count() and wakeup_match[0].user.is_superuser) or (alarm_match.count() and alarm_match[0].user.is_superuser):
+        if wakeup_match.count() == 1:
+            if wakeup_match.count() and wakeup_match[0].user.is_superuser:
                 # If there is only one person that will be on this round, and it is a superuser, then just ignore and return
                 return
 
