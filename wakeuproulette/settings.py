@@ -17,13 +17,16 @@ PROJECT_ROOT =  '/'.join(PROJECT_ROOT.split('/')[0:-1])
 PROD = True
 
 if PROD:
-    WEB_ROOT = "http://wakeuproulette.com/"
-    ALLOWED_HOSTS = [".wakeuproulette.com"]
+    # WEB_ROOT = "http://wakeuproulette.com/"
+    # ALLOWED_HOSTS = [".wakeuproulette.com"]
+    # DEBUG = False
+    WEB_ROOT = "http://b2881024.ngrok.io/"
+    ALLOWED_HOSTS = ["*"]
     DEBUG = False
 
 # If app is not in production it will use the following web root, please modify it as required:
 else:
-    WEB_ROOT = "http://706b2ade.ngrok.com/"
+    WEB_ROOT = "*"
 
 
 
@@ -57,7 +60,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'wakeupdb',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'wakeup',
@@ -272,6 +275,12 @@ LOGGING = {
 #        },
 #    }
 #}
+
+
+SOUTH_MIGRATION_MODULES = {
+    'easy_thumbnails': 'easy_thumbnails.south_migrations',
+}
+
 
 
 TEMPLATE_CONTEXT_PROCESSORS=(

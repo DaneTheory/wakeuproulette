@@ -8,3 +8,7 @@ logs/
 build/
 wakeup/management/commands/dostuff.py
 .DS_Store
+templates/media
+venv
+wakeupdb
+admin

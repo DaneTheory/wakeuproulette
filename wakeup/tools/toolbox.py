@@ -50,16 +50,17 @@ dialingtimeout = 15
 waitingtime = 20
 
 # Twilio Settings
-account = "AC8f68f68ffac59fd5afc1a3317b1ffdf8"
-token = "5a556d4a9acf96753850c39111646ca4"
+account = "AC0bcd0075fe2fac887342194ceb5bff95"
+token = "1381268b52a1dcf44e60d88b3b2c6142"
 client = TwilioRestClient(account, token)
-fromnumber = "+441279702159"
+fromnumber = "+441332650304"
 
 # Variables for testing [Only for testing fallback url - error codes]
-#account = "AC8698b1cf15def42651825fc466513ef4"
-#token = "2d778c2946ebd9c7fcb96a985660c179"
-#client = TwilioRestClient(account, token)
-#fromnumber = "+15005550006"
+# TODO ADD ACCOUNT AND TOKEN
+# account = ""
+# token = ""
+client = TwilioRestClient(account, token)
+fromnumber = "+15005550006"
 
 # Make API calls asynchronously
 class CallThread(threading.Thread):
@@ -93,7 +94,7 @@ class CallThread(threading.Thread):
 
 def call_async(phone, confurl, fallbackurl, noanswerurl, silent=False, wait=0):
     CallThread(phone, confurl, fallbackurl, noanswerurl, wait=wait).start()
-    
+
 class SmsThread(threading.Thread):
     def __init__(self, phone, message):
         self.phone = phone
@@ -105,7 +106,7 @@ class SmsThread(threading.Thread):
                                          to=self.phone,
                                          from_=fromnumber)
         print "Messaged verification code " + self.phone
-    
+
 def sms_async(phone, message):
     try:
         SmsThread(phone, message).start()
